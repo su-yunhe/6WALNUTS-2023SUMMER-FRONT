@@ -13,9 +13,9 @@
             </template>
             <template #extra>
               <div class="flex items-center">
-                <el-popconfirm title="您将新建一个项目~">
+                <el-popconfirm title="您将新建一个项目~" @confirm="addProject()">
                   <template #reference>
-                    <el-button type="primary" plain>
+                    <el-button type="primary" plain >
                       新建项目
                       <el-icon class="el-icon--right">
                         <Plus />
@@ -50,7 +50,7 @@
                     <span @click="toSingleProject()">
                       <div class="textHeader">{{item.workName}}</div>
                     </span>
-                    <el-popconfirm title="确定删除这个项目吗？">
+                    <el-popconfirm title="确定删除这个项目吗？"  @confirm="deleteProject(item.workId)">
                       <template #reference>
                         <el-button type="danger" :icon="Delete" circle size="small" v-if="isDelete" />
                       </template>
@@ -60,14 +60,13 @@
                 </template>
                 <div class="projectBrief" @click="toSingleProject()">
                   <el-descriptions>
-                    <el-descriptions-item label="负责人">夏凡郁</el-descriptions-item>
-                    <el-descriptions-item label="创建时间">2023-8-25</el-descriptions-item>
+                    <el-descriptions-item label="负责人">{{item.leader}}</el-descriptions-item>
+                    <el-descriptions-item label="创建时间">{{item.create_time}}</el-descriptions-item>
                     <el-descriptions-item label="状态">
-                      <el-tag size="small">进行中</el-tag>
+                      <el-tag size="small">{{item.workCondition}}</el-tag>
                     </el-descriptions-item>
-                    <el-descriptions-item label="简介">
-                      这是一个项目简介这是一个项目简介这是一个项目简介这是一个项目简介这是一个项目简介这是一个项目简介
-                      这是一个项目简介这是一个项目简介这是一个项目简介这是一个项目简介这是一个项目简介这是一个项目简介
+                    <el-descriptions-item label="项目简介">
+                      <p>{{ item.workIntroduction }}</p>
                     </el-descriptions-item>
                   </el-descriptions>
                 </div>
@@ -108,15 +107,26 @@ const getAllProject = async () => {
 }
 
 // 删除项目
-// const deleteProject = async () => {
-//   await httpInstance.delete().then(res => {
-//     console.log(res)
-//   })
-// }
+const deleteProject = async (id) => {
+  console.log(id)
+  await httpInstance.post('/work_modify_condition', {
+    isdelete: true,
+    workid: id
+  }).then(res => {
+    console.log(res)
+    
+    getAllProject()
+  })
+}
 // 跳转到某一个具体项目
 const toSingleProject = () => {
   console.log("跳转到某一个具体项目")
   router.push({ path: '/project/1' })
+}
+
+// 新增项目
+const addProject = () => {
+  router.push({ path: '/addproject' })
 }
 </script>
 

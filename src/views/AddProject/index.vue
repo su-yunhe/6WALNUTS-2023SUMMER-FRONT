@@ -3,62 +3,34 @@
     <el-container>
       <el-main>
         <div class="mainHeader">
-          <el-page-header :icon="null">
+          <el-page-header :icon="null"  @back="onBack()">
             <template #content>
               <div class="flex items-center">
                 <el-avatar :size="60" class="mr-3"
                   src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
-                <span class="text-large font-600 mr-1"> 新建项目 </span>
+                <span class="text-large font-600 mr-1"> 我的项目  > 新建项目 </span>
               </div>
             </template>
           </el-page-header>
         </div>
       </el-main>
     </el-container>
-    <el-form :model="form" label-width="120px">
-      <el-form-item label="Activity name">
-        <el-input v-model="form.name" />
+    <el-form :model="newProject" label-width="120px">
+      <el-form-item label="项目名称">
+        <el-input v-model="newProject.workname" />
       </el-form-item>
-      <el-form-item label="Activity zone">
-        <el-select v-model="form.region" placeholder="please select your zone">
-          <el-option label="Zone one" value="shanghai" />
-          <el-option label="Zone two" value="beijing" />
+      <el-form-item label="项目负责人">
+        <el-select v-model="newProject.leader" placeholder="苏云鹤">
+          <el-option label="苏云鹤" value="苏云鹤" />
+          <el-option label="周报据" value="周报据" />
         </el-select>
       </el-form-item>
-      <el-form-item label="Activity time">
-        <el-col :span="11">
-          <el-date-picker v-model="form.date1" type="date" placeholder="Pick a date" style="width: 100%" />
-        </el-col>
-        <el-col :span="2" class="text-center">
-          <span class="text-gray-500">-</span>
-        </el-col>
-        <el-col :span="11">
-          <el-time-picker v-model="form.date2" placeholder="Pick a time" style="width: 100%" />
-        </el-col>
-      </el-form-item>
-      <el-form-item label="Instant delivery">
-        <el-switch v-model="form.delivery" />
-      </el-form-item>
-      <el-form-item label="Activity type">
-        <el-checkbox-group v-model="form.type">
-          <el-checkbox label="Online activities" name="type" />
-          <el-checkbox label="Promotion activities" name="type" />
-          <el-checkbox label="Offline activities" name="type" />
-          <el-checkbox label="Simple brand exposure" name="type" />
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="Resources">
-        <el-radio-group v-model="form.resource">
-          <el-radio label="Sponsor" />
-          <el-radio label="Venue" />
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="Activity form">
-        <el-input v-model="form.desc" type="textarea" />
+      <el-form-item label="项目简介">
+        <el-input v-model="newProject.introduction" type="textarea" placeholder="请输入项目简介"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">Create</el-button>
-        <el-button>Cancel</el-button>
+        <el-button type="primary" @click="onSubmit()">创建</el-button>
+        <el-button>取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -68,53 +40,35 @@
 // import { Delete, Plus, Finished } from '@element-plus/icons-vue'
 import { ref, onMounted } from 'vue'
 import httpInstance from '@/utils/http'
-// import router from '@/router/index'
+import router from '@/router/index'
 onMounted(() => {
-  console.log("onMounted")
-  getAllProject()
   isDelete.value = false
 })
+
 // 当要删除项目时
 const isDelete = ref(false)
 
 
-import { reactive } from 'vue'
-
 // do not use same name with ref
-const form = reactive({
-  name: '',
-  region: '',
-  date1: '',
-  date2: '',
-  delivery: false,
-  type: [],
-  resource: '',
-  desc: '',
+const newProject = ref({
+  workname: '',
+  groupid: 1,
+  leader: '',
+  workintroduction: ''
 })
 
-const onSubmit = () => {
-  console.log('submit!')
-}
-
-
-// 所有项目
-const allProject = ref([])
-// 获取所有项目
-const getAllProject = async () => {
-  await httpInstance.get('get_all_work').then(res => {
-    console.log(res.results)
-    allProject.value = res.results
-    console.log(allProject)
+// 提交请求，即新增一个项目
+const onSubmit = async () => {
+  await httpInstance.post('/addwork', newProject).then(res => {
+    console.log(res)
+    router.push({ path: '/project' })
   })
 }
 
-// 删除项目
-// const deleteProject = async () => {
-//   await httpInstance.delete().then(res => {
-//     console.log(res)
-//   })
-// }
-// 跳转到某一个具体项目
+// 返回上一级
+const onBack = () => {
+  router.push({ path: '/project' })
+}
 
 </script>
 

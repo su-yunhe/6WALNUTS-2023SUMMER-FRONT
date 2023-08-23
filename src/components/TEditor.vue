@@ -143,8 +143,10 @@ export default {
         success(img);
       },
     };
-    tinymce.init; // 初始化
-
+    // tinymce.init; // 初始化
+    tinymce.init({
+    selector: '#tinydemo',
+})
     const revert_data = content => {
       context.emit('update:modelValue', content);
     };
