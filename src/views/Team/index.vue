@@ -76,7 +76,7 @@ const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()
 
-const userId = userStore.userInfo.userid
+const userId = userStore.userInfo.data.userid
 const tableData = reactive([])
 const loadTeam = () => {
   httpInstance
@@ -101,7 +101,11 @@ const showDialog = ref(false)
 const createTeam = () => {
   showDialog.value = true
 }
+<<<<<<< HEAD
 const userName = userStore.userInfo.username
+=======
+const userName = userStore.userInfo.data.username
+>>>>>>> abf6b53deeb879c82606c060b55603dff5c15de9
 const input = ref('')
 const submit = () => {
   console.log(input.value)

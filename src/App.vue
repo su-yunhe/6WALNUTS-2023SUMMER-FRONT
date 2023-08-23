@@ -15,22 +15,10 @@ const username = userStore.userInfo.username
   >
     <el-menu-item index="/team">团队</el-menu-item>
     <el-menu-item index="/">项目</el-menu-item>
-    <el-menu-item index="/message">消息中心</el-menu-item>
-    <el-menu-item index="/userInfo">个人信息</el-menu-item>
-    <div v-if="username != null" class="hello">{{ username }}，您好</div>
-    <div v-else class="hello">游客，您好</div>
-    <el-avatar
-      v-if="username != null"
-      :size="50"
-      src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-      style="margin-top: 5px; margin-left: 60%"
-    />
-    <el-avatar
-      v-else
-      :size="50"
-      :src="circleUrl"
-      style="margin-top: 5px; margin-left: 60%"
-    />
+    <el-menu-item index="message">消息中心</el-menu-item>
+    <el-menu-item index="/user">个人信息</el-menu-item>
+    <div class="hello">游客，您好</div>
+    <el-avatar :size="50" :src="circleUrl" style="margin-top: 5px;margin-left: 60%;"/>
   </el-menu>
   <div class="h-6" />
   <RouterView />
@@ -99,12 +87,12 @@ nav a:first-of-type {
   }
 }
 
-.el-menu-demo {
+.el-menu-demo{
   border-radius: 10px;
   box-shadow: 1px 1px 5px #888888;
 }
 
-.hello {
+.hello{
   position: absolute;
   margin-top: 18px;
   margin-left: 92%;
