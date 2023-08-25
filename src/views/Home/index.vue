@@ -1,8 +1,8 @@
 <script setup>
 import HomeNav from './components/HomeNav.vue'
-import HomeHeader from './components/HomeHeader.vue'
-import HomeHeaderFix from './components/HomeHeaderFix.vue'
-import HomeMain from './components/HomeMain.vue'
+// import HomeHeader from './components/HomeHeader.vue'
+// import HomeHeaderFix from './components/HomeHeaderFix.vue'
+// import HomeMain from './components/HomeMain.vue'
 import HomeFooter from './components/HomeFooter.vue'
 
 
@@ -10,10 +10,11 @@ import HomeFooter from './components/HomeFooter.vue'
 
 <template>
   <HomeNav />
-  <HomeHeader />
-  <HomeHeaderFix />
+  <!-- <HomeHeader />
+  <HomeHeaderFix /> -->
   <el-backtop :right="100" :bottom="300" />
-  <HomeMain />
+  <RouterView />
+  <!-- <HomeMain /> -->
   <HomeFooter />
 </template>
 
