@@ -7,6 +7,11 @@ import Test from '@/views/Test/index.vue'
 import AllProject from '@/views/AllProject/index.vue'
 import SingleProject from '@/views/SingleProject/index.vue'
 import AddProject from '@/views/AddProject/index.vue'
+import Message from '@/views/Message/index.vue'
+import MessageReference from '@/views/Message/components/MessageReference.vue'
+import DocumentReference from "@/views/Message/components/DocumentReference.vue";
+import ChatReference from "@/views/Message/components/ChatReference.vue";
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   // path和component对应关系的位置
@@ -22,7 +27,7 @@ const router = createRouter({
         {
           path: '/project/:id',
           component: SingleProject
-        }, 
+        },
         {
           path: '/addproject',
           component: AddProject
@@ -38,7 +43,15 @@ const router = createRouter({
       path: '/test',
       component: Test
     },
-
+    {
+      path: '/message',
+      component: Message,
+      children:[
+        {path:'reference',component:MessageReference},
+        {path:'document',component:DocumentReference},
+        {path:'document',component:ChatReference}
+      ]
+    },
   ]
 })
 
