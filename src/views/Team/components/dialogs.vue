@@ -54,7 +54,7 @@ const addAdmin = () => {
     console.log("aaa")
 }
 const submitAdmin = () => {
-    showAddAdminDialog = false
+    showAddAdminDialog.value = false
 }
 
 
