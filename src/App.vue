@@ -2,9 +2,27 @@
 
 </script>
 
+
+
 <template>
   <!-- 一级路由出口组件 -->
+  <el-menu
+    :default-active="activeIndex"
+    class="el-menu-demo"
+    mode="horizontal"
+    @select="handleSelect"
+    router
+  >
+    <el-menu-item index="/team">团队</el-menu-item>
+    <el-menu-item index="/">项目</el-menu-item>
+    <el-menu-item index="3">消息中心</el-menu-item>
+    <el-menu-item index="/user">个人信息</el-menu-item>
+    <div class="hello">游客，您好</div>
+    <el-avatar :size="50" :src="circleUrl" style="margin-top: 5px;margin-left: 60%;"/>
+  </el-menu>
+  <div class="h-6" />
   <RouterView />
+  
 </template>
 
 <style scoped lang="scss">
@@ -68,5 +86,16 @@ nav a:first-of-type {
     padding: 1rem 0;
     margin-top: 1rem;
   }
+}
+
+.el-menu-demo{
+  border-radius: 10px;
+  box-shadow: 1px 1px 5px #888888;
+}
+
+.hello{
+  position: absolute;
+  margin-top: 18px;
+  margin-left: 92%;
 }
 </style>
