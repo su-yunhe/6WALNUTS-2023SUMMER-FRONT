@@ -1,4 +1,5 @@
 <template>
+    <Main>
     <div>
         <el-table :data="memberList" stripe style="width: 100%">
             <el-table-column prop="image" label="" width="80" />
@@ -14,6 +15,7 @@
             <el-table-column prop="userEmail" label="邮箱" width="180"/>
         </el-table>
     </div>
+    </Main>
 </template>
 
 <script setup>

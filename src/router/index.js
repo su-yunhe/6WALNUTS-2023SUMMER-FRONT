@@ -8,6 +8,7 @@ import Chat from '@/views/Chat/index.vue'
 import User from '@/views/User/index.vue'
 import Team from '@/views/Team/index.vue'
 import Detail from '@/views/Team/components/detail.vue'
+import Member from '@/views/Team/components/member.vue'
 import AllProject from '@/views/AllProject/index.vue'
 import SingleProject from '@/views/SingleProject/index.vue'
 import AddProject from '@/views/AddProject/index.vue'
@@ -24,18 +25,7 @@ const router = createRouter({
       path: '/',
       component: Home,
       children: [
-        {
-          path: '/project',
-          component: AllProject
-        },
-        {
-          path: '/project/:id',
-          component: SingleProject
-        },
-        {
-          path: '/addproject',
-          component: AddProject
-        }
+        
       ]
 
     },
@@ -68,11 +58,35 @@ const router = createRouter({
       name: 'team',
       children:[
         {
-          path: 'detail/:id',
+          path: 'detail',
           name: 'detail',
           meta: {
             showFooter: false
           },
+          children:[
+            {
+              path: 'member',
+              name: 'member',
+              component: Member
+            },
+            {
+              path: 'notice',
+              name: 'notice',
+              // component: Notice // TODO
+            },
+            {
+              path: 'project',
+              component: AllProject
+            },
+            {
+              path: '/project/:id',
+              component: SingleProject
+            },
+            {
+              path: '/addproject',
+              component: AddProject
+            },
+          ],
           component: Detail
         }
       ]

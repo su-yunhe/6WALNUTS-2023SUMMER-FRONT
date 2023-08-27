@@ -2,18 +2,37 @@
     <div>
       <div v-show="$route.meta.showFooter">
         <el-card class="box-card teamcard">
-        <template #header>
         <div class="card-header">
-            <el-table :data="tableData" stripe style="width: 100%" @row-click="openTeam">
+            <!-- <el-table :data="tableData" stripe style="width: 100%" @row-click="openTeam">
             <el-table-column prop="groupId" label="团队id" width="100" />
             <el-table-column prop="groupName" label="团队名称" width="180" />
             <el-table-column prop="groupBuilder" label="创建者" width="180" />
             <el-table-column prop="buildTime" label="创建时间" :formatter="dateFormat" width="240" />
             <el-table-column prop="occupation" label="我的身份" />
-            </el-table>
+            </el-table> -->
         </div>
-        </template>
-        <el-button type="primary" round @click="createTeam">创建</el-button>
+        <div v-for="item in tableData" :key="item" class="divteamCard" @click="openTeam(item.groupId)">
+          <div class="teamCard">
+            <div class="teamDiscription">
+              <div class="cardTitle">
+                {{ item.groupName }}
+              </div>
+            </div>
+            <div class="teamDiscription">
+              <el-text>创建人</el-text>
+              <el-divider direction="vertical" />
+              <el-text size="large">{{ item.groupBuilder }}</el-text>
+            </div>
+            <div class="teamDiscription">
+              <el-text>创建时间</el-text>
+              <el-divider direction="vertical" />
+              <el-text size="large">{{ moment(item.buildTime).utcOffset(8).format("YYYY-MM-DD HH:mm") }}</el-text>
+            </div>
+          </div>
+        </div>
+        <div class="divteamCard teamCard-create">
+          <el-link type="primary" :underline="false" :icon="CirclePlus" @click="createTeam" style="font-size: 50px; margin-left: 45%;margin-top: 23%;"></el-link>
+        </div>
         <el-dialog v-model="showDialog" title="创建团队" width="30%">
           <span>
             <el-input v-model="input" placeholder="输入团队名" />
@@ -37,13 +56,16 @@ import { ref,onBeforeMount, reactive } from 'vue';
 import axios , { Axios }from 'axios'
 import { useRouter,useRoute } from 'vue-router';
 import moment from 'moment'
+import { useUserStore } from '@/stores/userStore'
+import { CirclePlus } from '@element-plus/icons-vue';
 
-
+const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()
 
+
 const tableData = reactive([])
-const loadTable = () => {
+const loadTeam = () => {
   axios.post("/test",{//http://8.130.137.197/getAllGroup
     userid:1
   }).then( res => {
@@ -53,11 +75,10 @@ const loadTable = () => {
     })
   })
 }
-const openTeam = (row) => {
-  const id = row.groupId
-  router.push({name:'detail',params:{id}})
+const openTeam = (teamid) => {
+  userStore.pages.teamId = teamid
+  router.push({name:'detail'})
   route.meta.showFooter = false
-  console.log(route.meta)
 }
 
 const showDialog = ref(false)
@@ -71,7 +92,7 @@ const submit = () => {
     teamName:input.value
   }).then(res => {
     console.log(res.data)
-    
+    loadTeam()
   })  
   input.value = ''
   showDialog.value = false
@@ -86,7 +107,7 @@ const dateFormat = (row, column) => {
 }
 
 onBeforeMount( () => {
-  loadTable()
+  loadTeam()
 })
 </script>
 
@@ -113,5 +134,45 @@ onBeforeMount( () => {
 }
 .teamcard{
   height: auto;
+}
+
+.divteamCard{
+  margin: 20px;
+  width: 45%;
+  float:left;
+}
+
+.teamCard{
+  background-color:rgba(226, 231, 236, 0.242);
+  height: 300px;
+  border-radius: 10px;
+  transition-duration: 0.5s;
+  padding: 20px;
+  /* text-align: center; */
+}
+
+.teamCard:hover{
+  background-color:#d9ecff83;
+  box-shadow: 1px 1px 10px #888888;
+  color: #79bbff;
+}
+
+.teamCard-create{
+  background-color:rgba(226, 231, 236, 0.242);
+  height: 300px;
+  border-radius: 10px;
+  transition-duration: 0.5s;
+  padding: 20px;
+}
+
+.teamDiscription{
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.cardTitle{
+  font-size: 20px;
+  font-weight: bold;
+  
 }
 </style>

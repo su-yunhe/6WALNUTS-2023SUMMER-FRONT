@@ -31,11 +31,12 @@
 import { ref } from 'vue'
 import { useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/userStore'
+import axios from 'axios';
 
 const userStore = useUserStore()
-const userId = ref<String>(userStore.userInfo.userid) 
+const userId = userStore.userInfo.userid 
 const route = useRoute()
-const teamId = route.params.id
+const teamId = userStore.pages.teamId
 
 const addUsername = ref('')
 const showAddMemberDialog = ref(false)
@@ -44,6 +45,14 @@ const addMember = () => {
     
 }
 const submitMember = () => {
+    axios.post("/test/addMember",{
+        adminid: userId,
+        groupid: teamId,
+        username: addUsername
+    }).then(res => {
+        console.log(res.data)
+        
+    })
     showAddMemberDialog.value = false
 }
 
