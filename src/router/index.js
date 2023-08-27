@@ -5,7 +5,6 @@ import Login from '@/views/Login/index.vue'
 import Home from '@/views/Home/index.vue'
 import Test from '@/views/Test/index.vue'
 import Chat from '@/views/Chat/index.vue'
-import User from '@/views/User/index.vue'
 import Team from '@/views/Team/index.vue'
 import Detail from '@/views/Team/components/detail.vue'
 import Member from '@/views/Team/components/member.vue'
@@ -16,6 +15,7 @@ import Message from '@/views/Message/index.vue'
 import MessageReference from '@/views/Message/components/MessageReference.vue'
 import DocumentReference from "@/views/Message/components/DocumentReference.vue";
 import ChatReference from "@/views/Message/components/ChatReference.vue";
+import UserInfo from '@/views/UserInfo/index.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,16 +38,6 @@ const router = createRouter({
       path: '/test',
       name: 'test',
       component: Test
-    },
-    {
-      path: '/chat',
-      name: 'chat',
-      component: Chat
-    },
-    {
-      path: '/user',
-      name: 'user',
-      component: User
     },
     {
       path: '/team',
@@ -86,6 +76,10 @@ const router = createRouter({
               path: '/addproject',
               component: AddProject
             },
+            {
+              path: 'chat',
+              name: 'chat'
+            }
           ],
           component: Detail
         }
@@ -94,12 +88,18 @@ const router = createRouter({
     {
       path: '/message',
       component: Message,
+      name: 'message',
       children:[
         {path:'reference',component:MessageReference},
         {path:'document',component:DocumentReference},
         {path:'document',component:ChatReference}
       ]
     },
+    {
+      path: '/userInfo',
+      name: 'userInfo',
+      component: UserInfo
+    }
   ]
 })
 

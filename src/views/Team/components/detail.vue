@@ -17,37 +17,20 @@
                 </template>
                 </el-popover>
             </span>
-            <!-- <el-tabs v-model="activeName" class="el-tab" type="border-card" tab-position="left" @tab-click="handleClick">
-                <el-tab-pane label="成员" name="members">
-                    <Member/>
-                </el-tab-pane>
-                <el-tab-pane label="公告" name="notice">
-
-                </el-tab-pane>
-                <el-tab-pane label="项目" name="projects">
-                    
-                </el-tab-pane>
-                <el-tab-pane label="群聊" name="chat">
-                    <BubleLeft :content="messages[0].content"/>
-                    <BubleRight :content="messages[1].content"/>
-                    <BubleLeft content="11111111111111111111111111111111111111111111111111111111111111"/>
-                    <BubleRight content="收到收到收到收到收到收到收到收到收到收到收到收到收到收到收到收到收到收到收到收到收到"/>
-                </el-tab-pane>
-            </el-tabs> -->
             <div class="common-layout">
                 <el-container>
-                <el-aside width="200px">
+                <el-aside width="160px">
                     <div class="teamNavigator">
                         <el-radio-group class="radio" v-model="isCollapse" style="margin-bottom: 20px" size="small">
                             <el-radio-button :label="true"><el-icon><Fold /></el-icon></el-radio-button>
                             <el-radio-button :label="false"><el-icon><Expand /></el-icon></el-radio-button>
                         </el-radio-group>
-                        <el-menu default-active="2" class="el-menu-vertical-demo" :collapse="isCollapse" router>
+                        <el-menu default-active="/team/detail/member" class="el-menu-vertical-demo" :collapse="isCollapse" router>
                             <el-menu-item index="/team/detail/member">
                             <el-icon><User /></el-icon>
                             <template #title>成员</template>
                             </el-menu-item>
-                            <el-menu-item index="2">
+                            <el-menu-item index="/team/detail/notice">
                             <el-icon><Memo /></el-icon>
                             <template #title>公告</template>
                             </el-menu-item>
@@ -55,7 +38,7 @@
                             <el-icon><Suitcase /></el-icon>
                             <template #title>项目</template>
                             </el-menu-item>
-                            <el-menu-item index="4">
+                            <el-menu-item index="/team/detail/chat">
                             <el-icon><ChatDotSquare /></el-icon>
                             <template #title>聊天</template>
                             </el-menu-item>

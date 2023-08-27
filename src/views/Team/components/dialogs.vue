@@ -14,7 +14,10 @@
         </el-dialog>
         <el-dialog v-model="showAddAdminDialog" title="添加管理员" width="30%">
             <span>
-                <el-input v-model="addAdminname" placeholder="输入用户名" />
+                <!-- <el-input v-model="addAdminname" placeholder="输入用户名" /> -->
+                <el-select v-model="addAdminname" placeholder="选择用户">
+                    <el-option v-for="member in filteredMembers" :label="member.userName" :key="member.userName" :value="member.userName"></el-option>
+                </el-select>
             </span>
             <template #footer>
                 <span class="dialog-footer">
@@ -28,41 +31,69 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref,reactive, computed } from 'vue'
 import { useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/userStore'
 import axios from 'axios';
+import httpInstance from '@/utils/http';
+import { toRaw } from '@vue/reactivity'
+import { ElMessage } from 'element-plus'
 
 const userStore = useUserStore()
 const userId = userStore.userInfo.userid 
 const route = useRoute()
 const teamId = userStore.pages.teamId
 
+
 const addUsername = ref('')
 const showAddMemberDialog = ref(false)
 const addMember = () => {
     showAddMemberDialog.value = true
-    
 }
 const submitMember = () => {
-    axios.post("/test/addMember",{
+    axios.post("/test/addAdmin",{
         adminid: userId,
         groupid: teamId,
         username: addUsername
     }).then(res => {
         console.log(res.data)
-        
+        userStore.pages.memberlist.length = 0
+        userStore.loadMember()
+        addUsername.value = ''
+        ElMessage({
+            message: '添加成员成功！',
+            type: 'success',
+        })
     })
     showAddMemberDialog.value = false
 }
 
+const memberList = userStore.pages.memberlist
+const ml = toRaw(memberList)
 const addAdminname = ref('')
 const showAddAdminDialog = ref(false)
 const addAdmin = () => {
     showAddAdminDialog.value = true
-    console.log("aaa")
 }
+//计算属性过滤创建者和管理员
+const filteredMembers = computed( () => {
+    return ml.filter(member => member.usertype == 3)
+})
 const submitAdmin = () => {
+    axios.post("/test/addAdmin",{
+        adminid: userId,
+        username: addAdminname,
+        groupid: teamId
+    }).then(res => {
+        console.log(res.data)
+        userStore.pages.memberlist.length = 0
+        userStore.loadMember()
+        addAdminname.value = ''
+        ElMessage({
+            message: '添加管理员成功！',
+            type: 'success',
+        })
+    })
     showAddAdminDialog.value = false
 }
 

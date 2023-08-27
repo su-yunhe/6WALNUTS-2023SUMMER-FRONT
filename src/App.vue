@@ -18,7 +18,7 @@ const username = userStore.userInfo.username
     <el-menu-item index="/team">团队</el-menu-item>
     <el-menu-item index="/">项目</el-menu-item>
     <el-menu-item index="/message">消息中心</el-menu-item>
-    <el-menu-item index="/user">个人信息</el-menu-item>
+    <el-menu-item index="/userInfo">个人信息</el-menu-item>
     <div v-if="username != null" class="hello">{{username}}，您好</div>
     <div v-else class="hello">游客，您好</div>
     <el-avatar :size="50" :src="circleUrl" style="margin-top: 5px;margin-left: 60%;"/>

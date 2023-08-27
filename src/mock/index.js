@@ -40,7 +40,7 @@ Mock.mock('/test/create','post',{
     },
 })
 
-Mock.mock('/test/memberList','post',{
+Mock.mock('/test/memberlist','post',{
     res:1,
     data:[
         {
@@ -54,12 +54,23 @@ Mock.mock('/test/memberList','post',{
             "userEmail": "2677169656@qq.com",
             "userRealName": "周宝驹",
             "usertype": 3
+        },
+        {
+            "userName": "syh",
+            "userEmail": "2677169656@qq.com",
+            "userRealName": "苏云鹤",
+            "usertype": 2
         }
     ]
 })
 
 
 Mock.mock('/test/type','post',{
+    res:1,
+    data:1
+})
+
+Mock.mock('/test/addAdmin','post',{
     res:1,
     data:1
 })

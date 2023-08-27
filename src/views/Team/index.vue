@@ -58,15 +58,17 @@ import { useRouter,useRoute } from 'vue-router';
 import moment from 'moment'
 import { useUserStore } from '@/stores/userStore'
 import { CirclePlus } from '@element-plus/icons-vue';
+import httpInstance from '@/utils/http';
+import { ElMessage } from 'element-plus'
 
 const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()
 
-
+// const userId = userStore.userInfo.userid //TODO
 const tableData = reactive([])
 const loadTeam = () => {
-  axios.post("/test",{//http://8.130.137.197/getAllGroup
+  axios.post("/test",{
     userid:1
   }).then( res => {
     console.log(res.data)
@@ -77,7 +79,7 @@ const loadTeam = () => {
 }
 const openTeam = (teamid) => {
   userStore.pages.teamId = teamid
-  router.push({name:'detail'})
+  router.push({name:'member'})
   route.meta.showFooter = false
 }
 
@@ -88,11 +90,18 @@ const createTeam = () => {
 
 const input = ref('')
 const submit = () => {
-  axios.post('/test/create',{
-    teamName:input.value
+  httpInstance.post('/buildGroup',{
+    groupName: input.value,
+    buildername: 'xfy', //TODO
+    userid: 1 //TODO
   }).then(res => {
     console.log(res.data)
+    tableData.length = 0
     loadTeam()
+    ElMessage({
+      message: '创建成功！',
+      type: 'success',
+    })
   })  
   input.value = ''
   showDialog.value = false
