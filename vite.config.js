@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
-
+import * as path from 'path';
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
@@ -19,7 +19,8 @@ export default defineConfig({
     Components({
       resolvers: [
         // 1. 配置elementPlus采用sass样式配色系统
-        ElementPlusResolver({ importStyle: "sass" }),
+        //ElementPlusResolver({ importStyle: "sass" }),
+       [ElementPlusResolver()],
       ],
     }),
   ],
@@ -28,8 +29,9 @@ export default defineConfig({
     port: '8080',
     proxy:{
       '/api': {
-        target: 'http://127.0.0.1:4523/m1/3177387-0-default',
-        // target:'http://8.130.137.197', // http://127.0.0.1:8000
+        target:'http://127.0.0.1:8000',
+        // target: 'http://127.0.0.1:4523/m1/3177387-0-default',
+        // target:'http://8.130.137.197',  
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, '')
       }

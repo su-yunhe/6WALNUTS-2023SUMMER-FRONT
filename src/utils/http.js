@@ -62,10 +62,10 @@ httpInstance.interceptors.response.use(function (res) {
   }
   else {
     console.log("请求成功")
-    ElMessage({
-      type: 'success',
-      message: res.data.msg
-    })
+    // ElMessage({
+    //   type: 'success',
+    //   message: res.data.msg
+    // })
     return res.data
   }
 

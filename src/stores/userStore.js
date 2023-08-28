@@ -10,16 +10,17 @@ export const useUserStore = defineStore('user', () => {
 
   const pages = ref({
     teamId: '',
-    memberlist: []
+    memberlist: [],
+    visitMemberUsername: '',
   })
 
   const loadMember = () => {
     console.log(pages.value.teamId)
-    axios.post("/test/memberlist",{
-        groupid: pages.teamId
+    httpInstance.post("/getGroupInf",{
+        groupid: pages.value.teamId
     }).then(res => {
         console.log(res.data)
-        res.data.data.forEach(element => {
+        res.data.forEach(element => {
           pages.value.memberlist.push(element)
         })
     })
