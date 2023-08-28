@@ -40,16 +40,11 @@
 // import { Delete, Plus, Finished } from '@element-plus/icons-vue'
 import { ref, onMounted } from 'vue'
 import httpInstance from '@/utils/http'
-import router from '@/router/index'
-onMounted(() => {
-  isDelete.value = false
-})
+import { useRoute, useRouter } from "vue-router"
 
-// 当要删除项目时
+const route = useRoute()
+const router = useRouter()
 const isDelete = ref(false)
-
-
-// do not use same name with ref
 const newProject = ref({
   workname: '',
   groupid: 1,
@@ -57,7 +52,10 @@ const newProject = ref({
   workintroduction: ''
 })
 
-// 提交请求，即新增一个项目
+onMounted(() => {
+  isDelete.value = false
+})
+
 const onSubmit = async () => {
   await httpInstance.post('/addwork', newProject).then(res => {
     console.log(res)
@@ -77,7 +75,7 @@ const onBack = () => {
   height: 100px;
   margin-bottom: 10px;
   padding: 20px 30px;
-  background-color: rgba(251, 238, 221, 0.601);
+  background-color: #d9ecff83;
 }
 
 .myAside {

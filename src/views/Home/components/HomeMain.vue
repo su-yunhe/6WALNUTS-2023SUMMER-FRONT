@@ -25,6 +25,7 @@ const onSubmit = () => {
 </script>
 
 <template>
+
   <div class="container">
     <el-form :model="form" label-width="120px">
       <el-form-item label="球员姓名">
