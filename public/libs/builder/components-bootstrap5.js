@@ -16,7 +16,7 @@ limitations under the License.
 https://github.com/givanz/Vvvebjs
 */
 
-Vvveb.ComponentsGroup['Bootstrap 5组件'] =
+Vvveb.ComponentsGroup['Bootstrap 5'] =
 ["html/container", "html/gridrow", "html/btn", "html/btn-link", "html/buttongroup", "html/buttontoolbar", "html/alert", "html/card", "html/listgroup", "html/badge", "html/progress", "html/navbar", "html/breadcrumbs", "html/pagination"];
 
 
@@ -24,10 +24,10 @@ Vvveb.Components.extend("_base", "html/container", {
     classes: ["container", "container-fluid"],
     image: "icons/container.svg",
     html: '<div class="container" style="min-height:150px;"><div class="m-5">Container</div></div>',
-    name: "容器",
+    name: "Container",
     properties: [
      {
-        name: "样式",
+        name: "Type",
         key: "type",
         htmlAttr: "class",
         inputtype: SelectInput,
@@ -43,7 +43,7 @@ Vvveb.Components.extend("_base", "html/container", {
         }
     },
 	{
-        name: "背景",
+        name: "Background",
         key: "background",
 		htmlAttr: "class",
         validValues: bgcolorClasses,
@@ -53,13 +53,13 @@ Vvveb.Components.extend("_base", "html/container", {
         }
     },
 	{
-        name: "背景颜色",
+        name: "Background Color",
         key: "background-color",
 		htmlAttr: "style",
         inputtype: ColorInput,
     },
 	{
-        name: "字体颜色",
+        name: "Text Color",
         key: "color",
 		htmlAttr: "style",
         inputtype: ColorInput,
@@ -69,7 +69,7 @@ Vvveb.Components.extend("_base", "html/container", {
 Vvveb.Components.extend("html/link", "html/btn", {
     classes: ["btn"],
     nodes: null,
-    name: "按钮",
+    name: "Button",
     image: "icons/button.svg",
     html: '<a class="btn btn-primary">Primary</a>',
     properties: [{
@@ -130,7 +130,7 @@ Vvveb.Components.extend("html/link", "html/btn", {
             }]
         }
     }, {
-        name: "大小",
+        name: "Size",
         key: "size",
         htmlAttr: "class",
         inputtype: SelectInput,
@@ -148,14 +148,14 @@ Vvveb.Components.extend("html/link", "html/btn", {
             }]
         }
    	},{
-        name: "自动对齐",
+        name: "Autofocus",
         key: "autofocus",
         htmlAttr: "autofocus",
         inputtype: CheckboxInput,
 		inline:true,
         col:6,
    	},{
-        name: "禁用",
+        name: "Disabled",
         key: "disabled",
         htmlAttr: "class",
 		inline:true,
@@ -176,7 +176,7 @@ Vvveb.Components.extend("html/link", "html/btn", {
 	
 Vvveb.Components.extend("_base", "html/buttongroup", {
     classes: ["btn-group"],
-    name: "按钮组",
+    name: "Button Group",
     image: "icons/button_group.svg",
     html: '<div class="btn-group" role="group" aria-label="Basic example"><button type="button" class="btn btn-secondary">Left</button><button type="button" class="btn btn-secondary">Middle</button> <button type="button" class="btn btn-secondary">Right</button></div>',
 	properties: [{
@@ -725,7 +725,7 @@ Vvveb.Components.extend("_base", "html/tablebody", {
 });
 
 Vvveb.Components.add("html/gridcolumn", {
-    name: "网格项目",
+    name: "Grid Column",
     image: "icons/grid_row.svg",
     classesRegex: ["col-"],
     html: '<div class="col-sm-4"><h3>col-sm-4</h3></div>',

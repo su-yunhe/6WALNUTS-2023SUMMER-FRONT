@@ -29,13 +29,13 @@ Vvveb.ComponentsGroup['Elements'] = [
 
 Vvveb.Components.extend("_base","elements/svg-icon", {
     nodes: ["svg"],
-    name: "Svg图标",
+    name: "Svg Icon",
     image: "icons/star.svg",
     html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64">
 		<path d="M 30.335938 12.546875 L 20.164063 11.472656 L 16 2.132813 L 11.835938 11.472656 L 1.664063 12.546875 L 9.261719 19.394531 L 7.140625 29.398438 L 16 24.289063 L 24.859375 29.398438 L 22.738281 19.394531 Z"/>
     </svg>`,
     properties: [{
-		name: "图标",
+		name: "Icon",
 		key: "icon",
 		inline:true,
 		inputtype: HtmlListSelectInput,
@@ -147,7 +147,7 @@ Vvveb.Components.extend("_base","elements/svg-icon", {
             }]
 		},
 	}, {
-		name: "宽度",
+		name: "Width",
 		key: "width",
 		htmlAttr: "width",
 		inputtype: RangeInput,
@@ -157,7 +157,7 @@ Vvveb.Components.extend("_base","elements/svg-icon", {
 			step:1
 		}
    }, {
-		name: "高度",
+		name: "Height",
 		key: "height",
 		htmlAttr: "height",
 		inputtype: RangeInput,
@@ -167,7 +167,7 @@ Vvveb.Components.extend("_base","elements/svg-icon", {
 			step:1
 		}			
    }, {
-		name: "轮廓宽度",
+		name: "Stroke width",
 		key: "stroke-width",
 		htmlAttr: "stroke-width",
 		inputtype: RangeInput,
@@ -184,7 +184,7 @@ Vvveb.Components.extend("_base","elements/svg-icon", {
 		section: style_section,
 		data: {header:"Svg colors"},
 	}, {
-        name: "全色",
+        name: "Fill Color",
         key: "fill",
         //sort: base_sort++,
         col:4,
@@ -193,7 +193,7 @@ Vvveb.Components.extend("_base","elements/svg-icon", {
 		htmlAttr: "fill",
         inputtype: ColorInput,
    },{
-        name: "颜色",
+        name: "Color",
         key: "color",
         //sort: base_sort++,
         col:4,
@@ -202,7 +202,7 @@ Vvveb.Components.extend("_base","elements/svg-icon", {
 		htmlAttr: "color",
         inputtype: ColorInput,
    },{
-        name: "边框",
+        name: "Stroke",
         key: "Stroke",
         //sort: base_sort++,
         col:4,
@@ -216,11 +216,11 @@ Vvveb.Components.extend("_base","elements/svg-icon", {
 
 Vvveb.Components.add("elements/svg-element", {
     nodes: ["path", "line", "polyline", "polygon", "rect", "circle", "ellipse", "g"],
-    name: "Sv元素",
+    name: "Svg element",
     image: "icons/star.svg",
     html: ``,
     properties: [{
-        name: "全色",
+        name: "Fill Color",
         key: "fill",
         //sort: base_sort++,
         col:4,
@@ -229,7 +229,7 @@ Vvveb.Components.add("elements/svg-element", {
 		htmlAttr: "fill",
         inputtype: ColorInput,
    },{
-        name: "颜色",
+        name: "Color",
         key: "color",
         //sort: base_sort++,
         col:4,
@@ -238,7 +238,7 @@ Vvveb.Components.add("elements/svg-element", {
 		htmlAttr: "color",
         inputtype: ColorInput,
    },{
-        name: "边框",
+        name: "Stroke",
         key: "Stroke",
         //sort: base_sort++,
         col:4,
@@ -247,7 +247,7 @@ Vvveb.Components.add("elements/svg-element", {
 		htmlAttr: "color",
         inputtype: ColorInput,
   	}, {
-  		name: "边框宽度",
+  		name: "Stroke width",
 		key: "stroke-width",
 		htmlAttr: "stroke-width",
 		inputtype: RangeInput,
@@ -262,7 +262,7 @@ Vvveb.Components.add("elements/svg-element", {
 //Gallery
 Vvveb.Components.add("elements/gallery", {
     attributes: ["data-component-gallery"],
-    name: "图片展览",
+    name: "Gallery",
     image: "icons/images.svg",
     html: `
 			<div class="gallery masonry has-shadow" data-component-gallery>
@@ -304,7 +304,7 @@ Vvveb.Components.add("elements/gallery", {
 			</div>
 			`,
 		properties: [{
-			name: "砌体布局",
+			name: "Masonry layout",
 			key: "masonry",
 			htmlAttr: "class",
 			validValues: ["masonry", "flex"],
@@ -329,7 +329,7 @@ Vvveb.Components.add("elements/gallery", {
 				}
 			},   			
 		}, {
-			name: "图片阴影",
+			name: "Image shadow",
 			key: "shadow",
 			htmlAttr: "class",
 			validValues: [ "", "has-shadow"],
@@ -339,7 +339,7 @@ Vvveb.Components.add("elements/gallery", {
 				off: ""
 			},
 		}, {
-			name: "水平间断",
+			name: "Horizontal gap",
 			key: "column-gap",
 			htmlAttr: "style",
 			inputtype: CssUnitInput,
@@ -349,7 +349,7 @@ Vvveb.Components.add("elements/gallery", {
 				step:1
 			}
 	   }, {
-			name: "垂直间断",
+			name: "Vertical gap",
 			key: "margin-bottom",
 			htmlAttr: "style",
 			child: ".item",
@@ -360,7 +360,7 @@ Vvveb.Components.add("elements/gallery", {
 				step:1
 			}
 	   }, {
-			name: "每行图片数",
+			name: "Images per row masonry",
 			key: "column-count",
 			group:"masonry",
 			htmlAttr: "style",
@@ -371,7 +371,7 @@ Vvveb.Components.add("elements/gallery", {
 				step:1
 			}
 		}, {
-			name: "每列图片数",
+			name: "Images per row flex",
 			group:"flex",
 			key: "flex-basis",
 			child: ".item",
@@ -421,12 +421,12 @@ Vvveb.Components.add("elements/gallery", {
 
 /* Section */
 let ComponentSectionContent = [{
-        name: "标题",
+        name: "Title",
         key: "title",
         htmlAttr: "title",
         inputtype: TextInput
     }, {
-        name: "容器宽度",
+        name: "Container width",
         key: "container-width",
 		child:"> .container, > .container-fluid",
         htmlAttr: "class",
@@ -448,7 +448,7 @@ let ComponentSectionContent = [{
 			}]
         }
 	}, {
-        name: "容器高度",
+        name: "Container height",
         key: "container-height",
 		child:"> .container:first-child, > .container-fluid:first-child",
         htmlAttr: "class",
@@ -564,7 +564,7 @@ let ComponentSectionContent = [{
    
 
 let ComponentSectionStyle =  [{
-		key: "段落风格",
+		key: "Section Style",
 		inputtype: SectionInput,
 		name:false,
 		section: style_section,
@@ -572,7 +572,7 @@ let ComponentSectionStyle =  [{
 }];
 
 let ComponentSectionAdvanced =  [{
-		key: "段落高级设计",
+		key: "Section Advanced",
 		inputtype: SectionInput,
 		name:false,
 		section: advanced_section,
@@ -583,7 +583,7 @@ let ComponentSectionAdvanced =  [{
 
 Vvveb.Components.add("elements/section", {
     nodes: ["section"],
-    name: "段落",
+    name: "Section",
     image: "icons/stream-solid.svg",
     init: function (node)
 	{
@@ -610,7 +610,7 @@ Vvveb.Components.add("elements/section", {
 
 Vvveb.Components.add("elements/header", {
     nodes: ["header"],
-    name: "标题",
+    name: "Header",
     image: "icons/stream-solid.svg",
     html: `<header>
 				<div class="container">
@@ -627,7 +627,7 @@ Vvveb.Components.add("elements/header", {
 
 Vvveb.Components.add("elements/footer", {
     nodes: ["footer"],
-    name: "围栏",
+    name: "Footer",
     image: "icons/stream-solid.svg",
     html: `<footer>
 				<div class="container">

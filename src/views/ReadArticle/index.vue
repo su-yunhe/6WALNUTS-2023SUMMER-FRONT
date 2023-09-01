@@ -28,8 +28,8 @@
           <el-page-header :icon="null">
             <template #content>
               <div class="flex items-center">
-                <el-avatar :size="60" class="mr-3"
-                  src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+                <!-- <el-avatar :size="60" class="mr-3"
+                  src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" /> -->
                 <span class="text-large font-600 mr-1"> 阅读文档 </span>
               </div>
             </template>
@@ -84,7 +84,9 @@ const article = ref({})
 
 // 初始化获取文章
 const getArticle = async () => {
-  await httpInstance.post('/get_single_file', route.params.id).then(res => {
+  await httpInstance.post('/get_single_file', {
+    fileId: route.params.id
+  }).then(res => {
     article.value = res.results[0]
     console.log(article.value)
     renderMarkdown(article.value.fileInclude)
@@ -101,8 +103,8 @@ const renderMarkdown = (md) => {
 // 编辑
 const modify = async () => {
   await httpInstance.post('/reference_check', {
-    fileid: route.params.id,
-    user_now_id: 1
+    fileId: route.params.id,
+    userNowId: 6
   }).then(res => {
     // console.log(res)
     if (res.error === 0) {

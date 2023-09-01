@@ -79,7 +79,7 @@ Vvveb.Components.add("_base", {
         inputtype: SectionInput,
         name:false,
         sort:base_sort++,
-        data: {header:"通用"},
+        data: {header:"General"},
     }, {
         name: "Id",
         key: "id",
@@ -109,7 +109,7 @@ Vvveb.Components.extend("_base", "_base", {
         name:false,
         sort: base_sort++,
 		section: style_section,
-        data: {header:"渲染"},
+        data: {header:"Display"},
      }, {
 		//linked styles notice message
 		name:"",
@@ -153,7 +153,7 @@ Vvveb.Components.extend("_base", "_base", {
 			}
 		},	 
 	 }, {
-        name: "渲染",
+        name: "Display",
         key: "display",
         htmlAttr: "style",
         sort: base_sort++,
@@ -208,7 +208,7 @@ Vvveb.Components.extend("_base", "_base", {
             }]
         }
     }, {
-        name: "位置",
+        name: "Position",
         key: "position",
         htmlAttr: "style",
         sort: base_sort++,
@@ -233,7 +233,7 @@ Vvveb.Components.extend("_base", "_base", {
             }]
         }
     }, {
-        name: "上方",
+        name: "Top",
         key: "top",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -243,7 +243,7 @@ Vvveb.Components.extend("_base", "_base", {
         parent:"",
         inputtype: CssUnitInput
 	}, {
-        name: "左侧",
+        name: "Left",
         key: "left",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -253,7 +253,7 @@ Vvveb.Components.extend("_base", "_base", {
         parent:"",
         inputtype: CssUnitInput
     }, {
-        name: "下方",
+        name: "Bottom",
         key: "bottom",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -263,7 +263,7 @@ Vvveb.Components.extend("_base", "_base", {
         parent:"",
         inputtype: CssUnitInput
 	}, {
-        name: "右侧",
+        name: "Right",
         key: "right",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -273,7 +273,7 @@ Vvveb.Components.extend("_base", "_base", {
         parent:"",
         inputtype: CssUnitInput
     },{
-        name: "浮动",
+        name: "Float",
         key: "float",
         htmlAttr: "style",
         sort: base_sort++,
@@ -304,7 +304,7 @@ Vvveb.Components.extend("_base", "_base", {
             }],
          }
 	}, {
-        name: "透明度",
+        name: "Opacity",
         key: "opacity",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -319,7 +319,7 @@ Vvveb.Components.extend("_base", "_base", {
 			step:0.1
        },
 	}, {
-        name: "背景颜色",
+        name: "Background Color",
         key: "background-color",
         sort: base_sort++,
 		section: style_section,
@@ -328,7 +328,7 @@ Vvveb.Components.extend("_base", "_base", {
 		htmlAttr: "style",
         inputtype: ColorInput,
 	}, {
-        name: "字体颜色",
+        name: "Text Color",
         key: "color",
         sort: base_sort++,
 		section: style_section,
@@ -348,10 +348,10 @@ var ComponentBaseTypography = {
 		name:false,
 		sort: base_sort++,
 		section: style_section,
-		data: {header:"字体设计"},
+		data: {header:"Typography"},
  
 	}, {
-        name: "字体大小",
+        name: "Font size",
         key: "font-size",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -360,7 +360,7 @@ var ComponentBaseTypography = {
 		inline:false,
         inputtype: CssUnitInput
 	}, {
-        name: "字体粗细",
+        name: "Font weight",
         key: "font-weight",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -402,7 +402,7 @@ var ComponentBaseTypography = {
 			}],
 		}
     }, {
-        name: "字体类型",
+        name: "Font family",
         key: "font-family",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -414,7 +414,7 @@ var ComponentBaseTypography = {
 			options: fontList
 		}
 	}, {
-        name: "文字对齐",
+        name: "Text align",
         key: "text-align",
         htmlAttr: "style",
         sort: base_sort++,
@@ -457,7 +457,7 @@ var ComponentBaseTypography = {
             }],
         },
 	}, {
-        name: "字体高度",
+        name: "Line height",
         key: "line-height",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -466,7 +466,7 @@ var ComponentBaseTypography = {
 		inline:false,
         inputtype: CssUnitInput
 	}, {
-        name: "字体间距",
+        name: "Letter spacing",
         key: "letter-spacing",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -475,7 +475,7 @@ var ComponentBaseTypography = {
 		inline:false,
         inputtype: CssUnitInput
 	}, {
-        name: "文字装饰",
+        name: "Text decoration",
         key: "text-decoration-line",
         htmlAttr: "style",
         sort: base_sort++,
@@ -518,7 +518,7 @@ var ComponentBaseTypography = {
             }],
         },
 	}, {
-        name: "装饰颜色",
+        name: "Decoration Color",
         key: "text-decoration-color",
         sort: base_sort++,
 		section: style_section,
@@ -527,7 +527,7 @@ var ComponentBaseTypography = {
 		htmlAttr: "style",
         inputtype: ColorInput,
 	}, {
-        name: "装饰风格",
+        name: "Decoration style",
         key: "text-decoration-style",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -569,9 +569,9 @@ var ComponentBaseSize = {
 		name:false,
 		sort: base_sort++,
 		section: style_section,
-		data: {header:"大小", expanded:false},
+		data: {header:"Size", expanded:false},
 	}, {
-        name: "宽度",
+        name: "Width",
         key: "width",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -580,7 +580,7 @@ var ComponentBaseSize = {
 		inline:false,
         inputtype: CssUnitInput
 	}, {
-        name: "高度",
+        name: "Height",
         key: "height",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -589,7 +589,7 @@ var ComponentBaseSize = {
 		inline:false,
         inputtype: CssUnitInput
 	}, {
-        name: "最小宽度",
+        name: "Min Width",
         key: "min-width",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -598,7 +598,7 @@ var ComponentBaseSize = {
 		inline:false,
         inputtype: CssUnitInput
 	}, {
-        name: "最小高度",
+        name: "Min Height",
         key: "min-height",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -607,7 +607,7 @@ var ComponentBaseSize = {
 		inline:false,
         inputtype: CssUnitInput
 	}, {
-        name: "最大宽度",
+        name: "Max Width",
         key: "max-width",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -616,7 +616,7 @@ var ComponentBaseSize = {
 		inline:false,
         inputtype: CssUnitInput
 	}, {
-        name: "最大高度",
+        name: "Max Height",
         key: "max-height",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -637,9 +637,9 @@ var ComponentBaseMargin = {
 		name:false,
 		sort: base_sort++,
 		section: style_section,
-		data: {header:"边框", expanded:false},
+		data: {header:"Margin", expanded:false},
 	}, {
-        name: "上方",
+        name: "Top",
         key: "margin-top",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -648,7 +648,7 @@ var ComponentBaseMargin = {
 		inline:false,
         inputtype: CssUnitInput
 	}, {
-        name: "右侧",
+        name: "Right",
         key: "margin-right",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -657,7 +657,7 @@ var ComponentBaseMargin = {
 		inline:false,
         inputtype: CssUnitInput
     }, {
-        name: "下方",
+        name: "Bottom",
         key: "margin-bottom",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -666,7 +666,7 @@ var ComponentBaseMargin = {
 		inline:false,
         inputtype: CssUnitInput
     }, {
-        name: "左侧",
+        name: "Left",
         key: "margin-left",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -688,9 +688,9 @@ var ComponentBasePadding = {
 		name:false,
 		sort: base_sort++,
 		section: style_section,
-		data: {header:"边距", expanded:false},
+		data: {header:"Padding", expanded:false},
 	}, {
-        name: "上方",
+        name: "Top",
         key: "padding-top",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -699,7 +699,7 @@ var ComponentBasePadding = {
 		inline:false,
         inputtype: CssUnitInput
 	}, {
-        name: "右侧",
+        name: "Right",
         key: "padding-right",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -708,7 +708,7 @@ var ComponentBasePadding = {
 		inline:false,
         inputtype: CssUnitInput
     }, {
-        name: "下方",
+        name: "Bottom",
         key: "padding-bottom",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -717,7 +717,7 @@ var ComponentBasePadding = {
 		inline:false,
         inputtype: CssUnitInput
     }, {
-        name: "左侧",
+        name: "Left",
         key: "padding-left",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -739,9 +739,9 @@ Vvveb.Components.extend("_base", "_base", {
 		name:false,
 		sort: base_sort++,
 		section: style_section,
-		data: {header:"边界", expanded:false},
+		data: {header:"Border", expanded:false},
 	 }, {        
-        name: "样式",
+        name: "Style",
         key: "border-style",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -765,7 +765,7 @@ Vvveb.Components.extend("_base", "_base", {
 			}],
 		}
 	}, {
-        name: "宽度",
+        name: "Width",
         key: "border-width",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -774,7 +774,7 @@ Vvveb.Components.extend("_base", "_base", {
 		inline:false,
         inputtype: CssUnitInput
    	}, {
-        name: "颜色",
+        name: "Color",
         key: "border-color",
         sort: base_sort++,
 		section: style_section,
@@ -795,9 +795,9 @@ Vvveb.Components.extend("_base", "_base", {
 		name:false,
 		sort: base_sort++,
 		section: style_section,
-		data: {header:"边界圆角化", expanded:false},
+		data: {header:"Border radius", expanded:false},
 	}, {
-        name: "左上角",
+        name: "Top Left",
         key: "border-top-left-radius",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -806,7 +806,7 @@ Vvveb.Components.extend("_base", "_base", {
 		inline:false,
         inputtype: CssUnitInput
 	}, {
-        name: "右上角",
+        name: "Top Right",
         key: "border-top-right-radius",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -815,7 +815,7 @@ Vvveb.Components.extend("_base", "_base", {
 		inline:false,
         inputtype: CssUnitInput
     }, {
-        name: "左下角",
+        name: "Bottom Left",
         key: "border-bottom-left-radius",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -824,7 +824,7 @@ Vvveb.Components.extend("_base", "_base", {
 		inline:false,
         inputtype: CssUnitInput
     }, {
-        name: "右下角",
+        name: "Bottom Right",
         key: "border-bottom-right-radius",
 		htmlAttr: "style",
         sort: base_sort++,
@@ -843,7 +843,7 @@ Vvveb.Components.extend("_base", "_base", {
 		name:false,
 		sort: base_sort++,
 		section: style_section,
-		data: {header:"背景图片", expanded:false},
+		data: {header:"Background Image", expanded:false},
 	 },{
         name: "Image",
         key: "Image",
@@ -965,9 +965,9 @@ var ComponentDeviceVisibility = {
 		name:false,
 		sort: base_sort++,
 		section: advanced_section,
-		data: {header:"高级选项"},
+		data: {header:"Hide based on device screen width"},
 	}, {
-        name: "极小元素",
+        name: "Extra small devices",
         key: "hidexs",
         col:6,
 		inline:true,
@@ -981,7 +981,7 @@ var ComponentDeviceVisibility = {
             off: ""
         }
 	}, {
-        name: "小元素",
+        name: "Small devices",
         key: "hidesm",
         col:6,
 		inline:true,
@@ -995,7 +995,7 @@ var ComponentDeviceVisibility = {
             off: ""
         }
 	}, {
-        name: "中元素",
+        name: "Medium devices",
         key: "hidemd",
         col:6,
 		inline:true,
@@ -1009,7 +1009,7 @@ var ComponentDeviceVisibility = {
             off: ""
         }
 	}, {
-        name: "大元素",
+        name: "Large devices",
         key: "hidelg",
         col:6,
 		inline:true,
@@ -1023,7 +1023,7 @@ var ComponentDeviceVisibility = {
             off: ""
         }
 	}, {
-        name: "较大元素",
+        name: "Xl devices",
         key: "hidexl",
         col:6,
 		inline:true,
@@ -1037,7 +1037,7 @@ var ComponentDeviceVisibility = {
             off: ""
         }
 	}, {
-        name: "极大元素",
+        name: "Xxl devices",
         key: "hidexxl",
         col:6,
 		inline:true,

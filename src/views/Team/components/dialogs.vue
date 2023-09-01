@@ -41,7 +41,8 @@ import { toRaw } from '@vue/reactivity'
 import { ElMessage } from 'element-plus'
 
 const userStore = useUserStore()
-const userId = userStore.userInfo.data.userid
+// const userId = userStore.userInfo.data.userid
+const userId = 1
 const route = useRoute()
 const teamId = userStore.pages.teamId
 

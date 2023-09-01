@@ -6,8 +6,8 @@
           <el-page-header :icon="null"  @back="onBack()">
             <template #content>
               <div class="flex items-center">
-                <el-avatar :size="60" class="mr-3"
-                  src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+                <!-- <el-avatar :size="60" class="mr-3"
+                  src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" /> -->
                 <span class="text-large font-600 mr-1"> 我的项目  > 新建项目 </span>
               </div>
             </template>
@@ -17,7 +17,7 @@
     </el-container>
     <el-form :model="newProject" label-width="120px">
       <el-form-item label="项目名称">
-        <el-input v-model="newProject.workname" />
+        <el-input v-model="newProject.workName" />
       </el-form-item>
       <el-form-item label="项目负责人">
         <el-select v-model="newProject.leader" placeholder="苏云鹤">
@@ -46,10 +46,10 @@ const route = useRoute()
 const router = useRouter()
 const isDelete = ref(false)
 const newProject = ref({
-  workname: '',
-  groupid: 1,
+  workName: '',
+  groupId: 6,
   leader: '',
-  workintroduction: ''
+  introduction: ''
 })
 
 onMounted(() => {
@@ -57,7 +57,8 @@ onMounted(() => {
 })
 
 const onSubmit = async () => {
-  await httpInstance.post('/addwork', newProject).then(res => {
+  console.log(newProject.value)
+  await httpInstance.post('/addwork', newProject.value).then(res => {
     console.log(res)
     router.push({ path: '/project' })
   })

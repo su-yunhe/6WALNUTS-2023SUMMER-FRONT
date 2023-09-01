@@ -1,7 +1,7 @@
 <script setup>
 import { useUserStore } from '@/stores/userStore'
 const userStore = useUserStore()
-const username = userStore.userInfo.username
+// const username = userStore.userInfo.username
 </script>
 
 <template>
@@ -14,7 +14,7 @@ const username = userStore.userInfo.username
     router
   >
     <el-menu-item index="/team">团队</el-menu-item>
-    <el-menu-item index="/">项目</el-menu-item>
+    <el-menu-item index="/project">项目</el-menu-item>
     <el-menu-item index="message">消息中心</el-menu-item>
     <el-menu-item index="/user">个人信息</el-menu-item>
     <div class="hello">游客，您好</div>

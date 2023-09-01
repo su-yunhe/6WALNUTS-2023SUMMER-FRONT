@@ -139,8 +139,8 @@ const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 
-const userId = userStore.userInfo.data.userid
-
+// const userId = userStore.userInfo.data.userid
+const userId = 1
 const team_id = userStore.pages.teamId
 const teamName = ref('')
 const getName = () => {

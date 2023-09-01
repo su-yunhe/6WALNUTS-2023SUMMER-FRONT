@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+	 http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,59 +15,60 @@ limitations under the License.
 
 https://github.com/givanz/VvvebJs
 */
-
+// import {ref} from 'vue'
+// import httpInstance from '@/utils/http';
 
 // Simple JavaScript Templating
 // John Resig - https://johnresig.com/ - MIT Licensed
-(function(){
-  var cache = {};
-  var startTag = "{%";
-  var endTag = "%}";
-  var re1 = new RegExp(`((^|${endTag})[^\t]*)'`,"g");
-  var re2 = new RegExp(`\t=(.*?)${endTag}`,"g");
-  
-  this.tmpl = function tmpl(str, data){
-    // Figure out if we're getting a template, or if we need to
-    // load the template - and be sure to cache the result.
-	var fn = /^[-a-zA-Z0-9]+$/.test(str) ?
-      cache[str] = cache[str] ||
-        tmpl(document.getElementById(str).innerHTML) :
-              
-      // Generate a reusable function that will serve as a template
-      // generator (and which will be cached).
-      new Function("obj",
-        "var p=[],print=function(){p.push.apply(p,arguments);};" +
-         
-        // Introduce the data as local variables using with(){}
-        "with(obj){p.push('" +
-         
-        // Convert the template into pure JavaScript
-        str
-          .replace(/[\r\t\n]/g, " ")
-          .split(startTag).join("\t")
-          .replace(re1, "$1\r")
-          .replace(re2, "',$1,'")
-          .split("\t").join("');")
-          .split(endTag).join("p.push('")
-          .split("\r").join("\\'")
-      + "');}return p.join('');");
-    // Provide some basic currying to the user
-    return data ? fn( data ) : fn;
-  };
+(function () {
+	var cache = {};
+	var startTag = "{%";
+	var endTag = "%}";
+	var re1 = new RegExp(`((^|${endTag})[^\t]*)'`, "g");
+	var re2 = new RegExp(`\t=(.*?)${endTag}`, "g");
+
+	this.tmpl = function tmpl(str, data) {
+		// Figure out if we're getting a template, or if we need to
+		// load the template - and be sure to cache the result.
+		var fn = /^[-a-zA-Z0-9]+$/.test(str) ?
+			cache[str] = cache[str] ||
+			tmpl(document.getElementById(str).innerHTML) :
+
+			// Generate a reusable function that will serve as a template
+			// generator (and which will be cached).
+			new Function("obj",
+				"var p=[],print=function(){p.push.apply(p,arguments);};" +
+
+				// Introduce the data as local variables using with(){}
+				"with(obj){p.push('" +
+
+				// Convert the template into pure JavaScript
+				str
+					.replace(/[\r\t\n]/g, " ")
+					.split(startTag).join("\t")
+					.replace(re1, "$1\r")
+					.replace(re2, "',$1,'")
+					.split("\t").join("');")
+					.split(endTag).join("p.push('")
+					.split("\r").join("\\'")
+				+ "');}return p.join('');");
+		// Provide some basic currying to the user
+		return data ? fn(data) : fn;
+	};
 })();
 
-var delay = (function(){
-  var timer = 0;
-  return function(callback, ms){
-    clearTimeout (timer);
-    timer = setTimeout(callback, ms);
-  };
+var delay = (function () {
+	var timer = 0;
+	return function (callback, ms) {
+		clearTimeout(timer);
+		timer = setTimeout(callback, ms);
+	};
 })();
 
-function isElement(obj){
-   return (typeof obj==="object") &&
-      (obj.nodeType===1) && (typeof obj.style === "object") &&
-      (typeof obj.ownerDocument ==="object")/* && obj.tagName != "BODY"*/;
+function isElement(obj) {
+	return (typeof obj === "object") &&
+		(obj.nodeType === 1) && (typeof obj.style === "object") &&
+		(typeof obj.ownerDocument === "object")/* && obj.tagName != "BODY"*/;
 }
 
 if (Vvveb === undefined) var Vvveb = {};
@@ -80,216 +81,190 @@ Vvveb.dragIcon = 'icon';
 Vvveb.dragElementStyle = "background:limegreen;;width:100%;height:3px;border:1px solid limegreen;box-shadow:0px 0px 2px 1px rgba(0,0,0,0.14);overflow:hidden;";
 Vvveb.dragHtml = '<div style="' + Vvveb.dragElementStyle + '"></div>';
 
-Vvveb.baseUrl =  document.currentScript?document.currentScript.src.replace(/[^\/]*?\.js$/,''):'';
-Vvveb.imgBaseUrl =  Vvveb.baseUrl;
+Vvveb.baseUrl = document.currentScript ? document.currentScript.src.replace(/[^\/]*?\.js$/, '') : '';
+Vvveb.imgBaseUrl = Vvveb.baseUrl;
 
 Vvveb.ComponentsGroup = {};
 Vvveb.SectionsGroup = {};
 Vvveb.BlocksGroup = {};
 
 Vvveb.Components = {
-	
+
 	_components: {},
-	
+
 	_nodesLookup: {},
-	
+
 	_attributesLookup: {},
 
 	_classesLookup: {},
-	
+
 	_classesRegexLookup: {},
-	
+
 	componentPropertiesElement: "#right-panel .component-properties",
 
 	componentPropertiesDefaultSection: "content",
 
-	get: function(type) {
+	get: function (type) {
 		return this._components[type];
 	},
 
-	updateProperty: function(type, key, value) {
+	updateProperty: function (type, key, value) {
 		let properties = this._components[type]["properties"];
 		for (property in properties) {
-			if (key == properties[property]["key"])  {
-				return this._components[type]["properties"][property] = 
-				Object.assign(properties[property], value);
+			if (key == properties[property]["key"]) {
+				return this._components[type]["properties"][property] =
+					Object.assign(properties[property], value);
 			}
 		}
 	},
 
-	getProperty: function(type, key) {
+	getProperty: function (type, key) {
 		let properties = this._components[type] ? this._components[type]["properties"] : [];
 		for (property in properties) {
-			if (key == properties[property]["key"])  {
+			if (key == properties[property]["key"]) {
 				return properties[property];
 			}
 		}
 	},
 
-	add: function(type, data) {
+	add: function (type, data) {
 		data.type = type;
-		
+
 		this._components[type] = data;
-		
-		if (data.nodes) 
-		{
-			for (var i in data.nodes)
-			{	
-				this._nodesLookup[ data.nodes[i] ] = data;
+
+		if (data.nodes) {
+			for (var i in data.nodes) {
+				this._nodesLookup[data.nodes[i]] = data;
 			}
 		}
-		
-		if (data.attributes) 
-		{
-			if (data.attributes.constructor === Array)
-			{
-				for (var i in data.attributes)
-				{	
-					this._attributesLookup[ data.attributes[i] ] = data;
+
+		if (data.attributes) {
+			if (data.attributes.constructor === Array) {
+				for (var i in data.attributes) {
+					this._attributesLookup[data.attributes[i]] = data;
 				}
-			} else
-			{
-				for (var i in data.attributes)
-				{	
-					if (typeof this._attributesLookup[i] === 'undefined')
-					{
+			} else {
+				for (var i in data.attributes) {
+					if (typeof this._attributesLookup[i] === 'undefined') {
 						this._attributesLookup[i] = {};
 					}
 
-					if (typeof this._attributesLookup[i][ data.attributes[i] ] === 'undefined')
-					{
-						this._attributesLookup[i][ data.attributes[i] ] = {};
+					if (typeof this._attributesLookup[i][data.attributes[i]] === 'undefined') {
+						this._attributesLookup[i][data.attributes[i]] = {};
 					}
 
-					this._attributesLookup[i][ data.attributes[i] ] = data;
+					this._attributesLookup[i][data.attributes[i]] = data;
 				}
 			}
 		}
-		
-		if (data.classes) 
-		{
-			for (var i in data.classes)
-			{	
-				this._classesLookup[ data.classes[i] ] = data;
+
+		if (data.classes) {
+			for (var i in data.classes) {
+				this._classesLookup[data.classes[i]] = data;
 			}
 		}
-		
-		if (data.classesRegex) 
-		{
-			for (var i in data.classesRegex)
-			{	
-				this._classesRegexLookup[ data.classesRegex[i] ] = data;
+
+		if (data.classesRegex) {
+			for (var i in data.classesRegex) {
+				this._classesRegexLookup[data.classesRegex[i]] = data;
 			}
 		}
 	},
-	
-	extend: function(inheritType, type, data) {
-		 
-		 var newData = data;
-		 
-		 if (inheritData = this._components[inheritType])
-		 {
-			newData = $.extend(true,{}, inheritData, data);
-			newData.properties = $.merge( $.merge([], inheritData.properties?inheritData.properties:[]), data.properties?data.properties:[]);
-		 }
-		 
-		 //sort by order
-		 newData.properties.sort(function (a,b) 
-			{
-				if (typeof a.sort  === "undefined") a.sort = 0;
-				if (typeof b.sort  === "undefined") b.sort = 0;
 
-				if (a.sort < b.sort)
-					return -1;
-				if (a.sort > b.sort)
-					return 1;
-				return 0;
-			});
-/*		 
-		var output = array.reduce(function(o, cur) {
+	extend: function (inheritType, type, data) {
 
-		  // Get the index of the key-value pair.
-		  var occurs = o.reduce(function(n, item, i) {
-			return (item.key === cur.key) ? i : n;
-		  }, -1);
+		var newData = data;
 
-		  // If the name is found,
-		  if (occurs >= 0) {
+		if (inheritData = this._components[inheritType]) {
+			newData = $.extend(true, {}, inheritData, data);
+			newData.properties = $.merge($.merge([], inheritData.properties ? inheritData.properties : []), data.properties ? data.properties : []);
+		}
 
-			// append the current value to its list of values.
-			o[occurs].value = o[occurs].value.concat(cur.value);
+		//sort by order
+		newData.properties.sort(function (a, b) {
+			if (typeof a.sort === "undefined") a.sort = 0;
+			if (typeof b.sort === "undefined") b.sort = 0;
 
-		  // Otherwise,
-		  } else {
-
-			// add the current item to o (but make sure the value is an array).
-			var obj = {name: cur.key, value: [cur.value]};
-			o = o.concat([obj]);
-		  }
-
-		  return o;
-		}, newData.properties);		 
-*/
+			if (a.sort < b.sort)
+				return -1;
+			if (a.sort > b.sort)
+				return 1;
+			return 0;
+		});
+		/*		 
+				var output = array.reduce(function(o, cur) {
 		
+					// Get the index of the key-value pair.
+					var occurs = o.reduce(function(n, item, i) {
+					return (item.key === cur.key) ? i : n;
+					}, -1);
+		
+					// If the name is found,
+					if (occurs >= 0) {
+		
+					// append the current value to its list of values.
+					o[occurs].value = o[occurs].value.concat(cur.value);
+		
+					// Otherwise,
+					} else {
+		
+					// add the current item to o (but make sure the value is an array).
+					var obj = {name: cur.key, value: [cur.value]};
+					o = o.concat([obj]);
+					}
+		
+					return o;
+				}, newData.properties);		 
+		*/
+
 		this.add(type, newData);
 	},
-	
-	
-	matchNode: function(node) {
+
+
+	matchNode: function (node) {
 		var component = {};
-		
+
 		if (!node || !node.tagName) return false;
-		
-		if (node.attributes && node.attributes.length)
-		{
+
+		if (node.attributes && node.attributes.length) {
 			//search for attributes
-			for (var i in node.attributes)
-			{
-				if (node.attributes[i])
-				{
+			for (var i in node.attributes) {
+				if (node.attributes[i]) {
+					attr = node.attributes[i].name;
+					value = node.attributes[i].value;
+
+					if (attr in this._attributesLookup) {
+						component = this._attributesLookup[attr];
+
+						//currently we check that is not a component by looking at name attribute
+						//if we have a collection of objects it means that attribute value must be checked
+						if (typeof component["name"] === "undefined") {
+							if (value in component) {
+								return component[value];
+							}
+						} else
+							return component;
+					}
+				}
+			}
+
+			for (var i in node.attributes) {
 				attr = node.attributes[i].name;
 				value = node.attributes[i].value;
 
-				if (attr in this._attributesLookup) 
-				{
-					component = this._attributesLookup[ attr ];
-					
-					//currently we check that is not a component by looking at name attribute
-					//if we have a collection of objects it means that attribute value must be checked
-					if (typeof component["name"] === "undefined")
-					{
-						if (value in component)
-						{
-							return component[value];
-						}
-					} else 
-					return component;
-				}
-			}
-			}
-				
-			for (var i in node.attributes)
-			{
-				attr = node.attributes[i].name;
-				value = node.attributes[i].value;
-				
 				//check for node classes
-				if (attr == "class")
-				{
+				if (attr == "class") {
 					classes = value.split(" ");
-					
-					for (j in classes) 
-					{
+
+					for (j in classes) {
 						if (classes[j] in this._classesLookup)
-						return this._classesLookup[ classes[j] ];	
+							return this._classesLookup[classes[j]];
 					}
-					
-					for (regex in this._classesRegexLookup) 
-					{
+
+					for (regex in this._classesRegexLookup) {
 						regexObj = new RegExp(regex);
-						if (regexObj.exec(value)) 
-						{
-							return this._classesRegexLookup[ regex ];	
+						if (regexObj.exec(value)) {
+							return this._classesRegexLookup[regex];
 						}
 					}
 				}
@@ -297,17 +272,17 @@ Vvveb.Components = {
 		}
 
 		tagName = node.tagName.toLowerCase();
-		if (tagName in this._nodesLookup) return this._nodesLookup[ tagName ];
-	
+		if (tagName in this._nodesLookup) return this._nodesLookup[tagName];
+
 		return false;
 		//return false;
 	},
-	
-	render: function(type, panel = false) {
+
+	render: function (type, panel = false) {
 
 		var component = this._components[type];
 		if (!component) return;
-		
+
 		if (panel) {
 			componentsPanel = panel;
 		} else {
@@ -318,159 +293,153 @@ Vvveb.Components = {
 		var defaultSection = this.componentPropertiesDefaultSection;
 		var componentsPanelSections = {};
 
-		$(panel + " .tab-pane").each(function ()
-		{
+		$(panel + " .tab-pane").each(function () {
 			var sectionName = this.dataset.section;
 			componentsPanelSections[sectionName] = $(this);
 			$('.section[data-section!="default"]', this).remove();
 			$('label[for!="header_default"]', this).remove();
 			$('input[id!="header_default"]', this).remove();
 		});
-		
+
 		var section = componentsPanelSections[defaultSection].find('.section[data-section="default"]');
-		
-		if (!(Vvveb.preservePropertySections && section.length))
-		{
-			componentsPanelSections[defaultSection].html('').append(tmpl("vvveb-input-sectioninput", {key:"default", header:component.name}));
+
+		if (!(Vvveb.preservePropertySections && section.length)) {
+			componentsPanelSections[defaultSection].html('').append(tmpl("vvveb-input-sectioninput", { key: "default", header: component.name }));
 			section = componentsPanelSections[defaultSection].find(".section");
 		}
 
 		componentsPanelSections[defaultSection].find('[data-header="default"] span').html(component.name);
-		section.html("");	
-	
+		section.html("");
+
 		if (component.beforeInit) component.beforeInit(Vvveb.Builder.selectedEl.get(0));
-		
+
 		var element;
-		
-		var fn = function(component, property) {
+
+		var fn = function (component, property) {
 			return property.input.on('propertyChange', function (event, value, input) {
-					
-					var element = selectedElement = Vvveb.Builder.selectedEl;
-					
-					if (property.child) element = element.find(property.child);
-					if (property.parent) element = element.parent(property.parent);
-					
-					if (property.onChange) {
-						let ret = property.onChange(element, value, input, component);
-						//if on change returns an object then is returning the dom node otherwise is returning the new value
-						if (typeof ret == "object")  {
-							element = ret;
+
+				var element = selectedElement = Vvveb.Builder.selectedEl;
+
+				if (property.child) element = element.find(property.child);
+				if (property.parent) element = element.parent(property.parent);
+
+				if (property.onChange) {
+					let ret = property.onChange(element, value, input, component);
+					//if on change returns an object then is returning the dom node otherwise is returning the new value
+					if (typeof ret == "object") {
+						element = ret;
+					} else {
+						value = ret;
+					}
+				}/* else */
+				if (property.htmlAttr) {
+					oldValue = element.attr(property.htmlAttr);
+
+					if (property.htmlAttr == "class" && property.validValues) {
+						element.removeClass(property.validValues.join(" "));
+						element = element.addClass(value);
+					}
+					else if (property.htmlAttr == "style") {
+						//keep old style for undo
+						oldStyle = $("#vvvebjs-styles", window.FrameDocument).html();
+						element = Vvveb.StyleManager.setStyle(element, property.key, value);
+					} else if (property.htmlAttr == "innerHTML") {
+						element = Vvveb.ContentManager.setHtml(element, value);
+					} else if (property.htmlAttr == "innerText") {
+						element = Vvveb.ContentManager.setText(element, value);
+					} else {
+						//if value is empty then remove attribute useful for attributes without values like disabled
+						if (value) {
+							element = element.attr(property.htmlAttr, value);
 						} else {
-							value = ret;
-						}
-					}/* else */
-					if (property.htmlAttr)
-					{
-						oldValue = element.attr(property.htmlAttr);
-						
-						if (property.htmlAttr == "class" && property.validValues) {
-							element.removeClass(property.validValues.join(" "));
-							element = element.addClass(value);
-						}
-						else if (property.htmlAttr == "style") {
-							//keep old style for undo
-							oldStyle = $("#vvvebjs-styles", window.FrameDocument).html();
-							element = Vvveb.StyleManager.setStyle(element, property.key, value);
-						} else if (property.htmlAttr == "innerHTML")  {
-							element = Vvveb.ContentManager.setHtml(element, value);
-						} else if (property.htmlAttr == "innerText")  {
-							element = Vvveb.ContentManager.setText(element, value);
-						} else {
-							//if value is empty then remove attribute useful for attributes without values like disabled
-							if (value) {
-								element = element.attr(property.htmlAttr, value);
-							} else {
-								element = element.removeAttr(property.htmlAttr);
-							}
-						}
-						
-						if (property.htmlAttr == "style")  {
-							mutation = {
-								type: 'style', 
-								target: element.get(0), 
-								attributeName: property.htmlAttr, 
-								oldValue: oldStyle, 
-								newValue: $("#vvvebjs-styles", window.FrameDocument).html()};
-							
-							Vvveb.Undo.addMutation(mutation);
-						} else {
-								Vvveb.Undo.addMutation(
-									{type: 'attributes', 
-									target: element.get(0), 
-									attributeName: property.htmlAttr, 
-									oldValue: oldValue, 
-									newValue: element.attr(property.htmlAttr)});
+							element = element.removeAttr(property.htmlAttr);
 						}
 					}
 
-					if (component.onChange) {
-						element = component.onChange(element, property, value, input);
-					}
-					
-					if (property.child || property.parent) {
-						Vvveb.Builder.selectNode(selectedElement);
+					if (property.htmlAttr == "style") {
+						mutation = {
+							type: 'style',
+							target: element.get(0),
+							attributeName: property.htmlAttr,
+							oldValue: oldStyle,
+							newValue: $("#vvvebjs-styles", window.FrameDocument).html()
+						};
+
+						Vvveb.Undo.addMutation(mutation);
 					} else {
-						Vvveb.Builder.selectNode(element);
+						Vvveb.Undo.addMutation(
+							{
+								type: 'attributes',
+								target: element.get(0),
+								attributeName: property.htmlAttr,
+								oldValue: oldValue,
+								newValue: element.attr(property.htmlAttr)
+							});
 					}
-					
-					return element;
-			});				
-		};			
-	
+				}
+
+				if (component.onChange) {
+					element = component.onChange(element, property, value, input);
+				}
+
+				if (property.child || property.parent) {
+					Vvveb.Builder.selectNode(selectedElement);
+				} else {
+					Vvveb.Builder.selectNode(element);
+				}
+
+				return element;
+			});
+		};
+
 		var nodeElement = Vvveb.Builder.selectedEl;
 
-		for (var i in component.properties)
-		{
+		for (var i in component.properties) {
 			var property = component.properties[i];
 			var element = nodeElement;
-			
+
 			if (property.beforeInit) property.beforeInit(element.get(0));
-			
+
 			if (property.child) element = element.find(property.child);
 			if (property.parent) element = element.parent(property.parent);
-			
+
 			if (property.data) {
 				property.data["key"] = property.key;
-			} else
-			{
-				property.data = {"key" : property.key};
+			} else {
+				property.data = { "key": property.key };
 			}
 
-			if (typeof property.group  === 'undefined') property.group = null;
+			if (typeof property.group === 'undefined') property.group = null;
 
 			property.input = property.inputtype.init(property.data);
-			
+
 			let value;
-			if (property.init)
-			{
+			if (property.init) {
 				property.inputtype.setValue(property.init(element.get(0)));
-			} else if (property.htmlAttr)
-			{
-				if (property.htmlAttr == "style")
-				{
+			} else if (property.htmlAttr) {
+				if (property.htmlAttr == "style") {
 					//value = element.css(property.key);//jquery css returns computed style
 					value = Vvveb.StyleManager.getStyle(element, property.key);//getStyle returns declared style
 				} else
-				if (property.htmlAttr == "innerHTML") {
-					value = Vvveb.ContentManager.getHtml(element);
-				} else if (property.htmlAttr == "innerText") {
-					value = Vvveb.ContentManager.getText(element);
-				} else {
-					value = element.attr(property.htmlAttr);
-				}
+					if (property.htmlAttr == "innerHTML") {
+						value = Vvveb.ContentManager.getHtml(element);
+					} else if (property.htmlAttr == "innerText") {
+						value = Vvveb.ContentManager.getText(element);
+					} else {
+						value = element.attr(property.htmlAttr);
+					}
 
 				//if attribute is class check if one of valid values is included as class to set the select
-				if (value && property.htmlAttr == "class" && property.validValues)
-				{
-					let valid = value.split(" ").filter(function(el) {
+				if (value && property.htmlAttr == "class" && property.validValues) {
+					let valid = value.split(" ").filter(function (el) {
 						return property.validValues.indexOf(el) != -1
 					});
 					if (valid && valid.length) {
 						value = valid[0];
-					} else  {
+					} else {
 						value = "";
 					}
-				} 
+				}
 
 				if (!value && property.defaultValue) {
 					value = property.defaultValue;
@@ -484,87 +453,80 @@ Vvveb.Components = {
 
 				property.inputtype.setValue(value);
 			}
-			
+
 			fn(component, property);
-			
+
 			var propertySection = defaultSection;
-			if (property.section)
-			{
+			if (property.section) {
 				propertySection = property.section;
 			}
-			
-			if (property.inputtype == SectionInput)
-			{
+
+			if (property.inputtype == SectionInput) {
 				section = componentsPanelSections[propertySection].find('.section[data-section="' + property.key + '"]');
-				
-				if (Vvveb.preservePropertySections && section.length)
-				{
+
+				if (Vvveb.preservePropertySections && section.length) {
 					section.html("");
-				} else 
-				{
+				} else {
 					componentsPanelSections[propertySection].append(property.input);
 					section = componentsPanelSections[propertySection].find('.section[data-section="' + property.key + '"]');
 				}
 			}
-			else
-			{
-				var row = $(tmpl('vvveb-property', property)); 
+			else {
+				var row = $(tmpl('vvveb-property', property));
 				row.find('.input').append(property.input);
 				section.append(row);
 			}
-			
-			if (property.inputtype.afterInit)
-			{
+
+			if (property.inputtype.afterInit) {
 				property.inputtype.afterInit(property.input);
 			}
-			
-			if (property.afterInit)
-			{
+
+			if (property.afterInit) {
 				property.afterInit(element.get(0), property.input);
 			}
 		}
-		
+
 		if (component.init) component.init(Vvveb.Builder.selectedEl.get(0));
 	}
-};	
+};
 
 
 Vvveb.Blocks = {
-	
+
 	_blocks: {},
 
-	get: function(type) {
+	get: function (type) {
 		return this._blocks[type];
 	},
 
-	add: function(type, data) {
+	add: function (type, data) {
 		data.type = type;
 		this._blocks[type] = data;
 	},
-};	
+};
 
 Vvveb.Sections = {
-	
+
 	_sections: {},
 
-	get: function(type) {
+	get: function (type) {
 		return this._sections[type];
 	},
 
-	add: function(type, data) {
+	add: function (type, data) {
 		data.type = type;
 		this._sections[type] = data;
 	},
-};	
+};
 
 
 
 Vvveb.WysiwygEditor = {
-	
+
 	isActive: false,
 	oldValue: '',
-	doc:false,
-	
+	doc: false,
+
 
 	editorSetStyle: function (tag, style = {}, toggle = false) {
 		let iframeWindow = Vvveb.Builder.iframe.contentWindow;
@@ -578,34 +540,34 @@ Vvveb.WysiwygEditor = {
 
 		if (selection.rangeCount > 0) {
 			//check if the whole text is inside an existing node to use the node directly
-			if ((selection.baseNode && selection.baseNode.nextSibling == null && selection.baseNode.previousSibling == null 
-				&& selection.anchorOffset == 0 && selection.focusOffset == selection.baseNode.length) 
+			if ((selection.baseNode && selection.baseNode.nextSibling == null && selection.baseNode.previousSibling == null
+				&& selection.anchorOffset == 0 && selection.focusOffset == selection.baseNode.length)
 				|| (selection.anchorOffset == selection.focusOffset)) {
-					
+
 				element = selection.baseNode.parentNode;
-				
+
 			} else {
 				element = document.createElement(tag);
 				range = selection.getRangeAt(0);
 				range.surroundContents(element);
-				range.selectNodeContents(element.childNodes[0], 0); 
+				range.selectNodeContents(element.childNodes[0], 0);
 			}
 		}
-		
+
 		if (element && style) {
 			for (name in style) {
 
-				if ( !style[name] || 
+				if (!style[name] ||
 					(toggle && element.style.getPropertyValue(name))) {
 
 					element.style.removeProperty(name);
-					
+
 				} else {
 					element.style.setProperty(name, style[name]);
 				}
 			}
 		}
-		
+
 		//if edited text is an empty span remove the span
 		if (element.tagName == "SPAN" && element.style.length == 0 && element.attributes.length <= 1) {
 			let textNode = iframeWindow.document.createTextNode(element.innerText);
@@ -615,9 +577,9 @@ Vvveb.WysiwygEditor = {
 			range = iframeWindow.document.createRange();
 			range.selectNodeContents(element);
 			selection.removeAllRanges();
-			selection.addRange(range);		
-        }
-		
+			selection.addRange(range);
+		}
+
 		//select link element to edit link etc
 		if (tag == "a") {
 			Vvveb.Builder.selectNode(element);
@@ -625,212 +587,210 @@ Vvveb.WysiwygEditor = {
 		}
 		return element;
 	},
-	
-	init: function(doc) {
+
+	init: function (doc) {
 		this.doc = doc;
 		let self = this;
-		
+
 		$("#bold-btn").on("click", function (e) {
-				//doc.execCommand('bold',false,null);
-				//self.editorSetStyle("b", {"font-weight" : "bold"}, true);
-				self.editorSetStyle(false, {"font-weight" : "bold"}, true);
-				e.preventDefault();
-				return false;
+			//doc.execCommand('bold',false,null);
+			//self.editorSetStyle("b", {"font-weight" : "bold"}, true);
+			self.editorSetStyle(false, { "font-weight": "bold" }, true);
+			e.preventDefault();
+			return false;
 		});
 
 		$("#italic-btn").on("click", function (e) {
-				//doc.execCommand('italic',false,null);
-				//self.editorSetStyle("i", {"font-style" : "italic"}, true);
-				self.editorSetStyle(false, {"font-style" : "italic"}, true);
-				e.preventDefault();
-				return false;
+			//doc.execCommand('italic',false,null);
+			//self.editorSetStyle("i", {"font-style" : "italic"}, true);
+			self.editorSetStyle(false, { "font-style": "italic" }, true);
+			e.preventDefault();
+			return false;
 		});
 
 		$("#underline-btn").on("click", function (e) {
-				//doc.execCommand('underline',false,null);
-				//self.editorSetStyle("u", {"text-decoration" : "underline"}, true);
-				self.editorSetStyle(false, {"text-decoration" : "underline"}, true);
-				e.preventDefault();
-				return false;
+			//doc.execCommand('underline',false,null);
+			//self.editorSetStyle("u", {"text-decoration" : "underline"}, true);
+			self.editorSetStyle(false, { "text-decoration": "underline" }, true);
+			e.preventDefault();
+			return false;
 		});
-		
+
 		$("#strike-btn").on("click", function (e) {
-				//doc.execCommand('strikeThrough',false,null);
-				//self.editorSetStyle("strike",  {"text-decoration" : "line-through"}, true);
-				self.editorSetStyle(false,  {"text-decoration" : "line-through"}, true);
-				e.preventDefault();
-				return false;
+			//doc.execCommand('strikeThrough',false,null);
+			//self.editorSetStyle("strike",  {"text-decoration" : "line-through"}, true);
+			self.editorSetStyle(false, { "text-decoration": "line-through" }, true);
+			e.preventDefault();
+			return false;
 		});
 
 		$("#link-btn").on("click", function (e) {
-				//doc.execCommand('createLink',false,"#");
-				self.editorSetStyle("a");
-				e.preventDefault();
-				return false;
+			//doc.execCommand('createLink',false,"#");
+			self.editorSetStyle("a");
+			e.preventDefault();
+			return false;
 		});
 
 		$("#fore-color").on("change", function (e) {
-				//doc.execCommand('foreColor',false,this.value);
-				self.editorSetStyle(false, {"color" : this.value});
-				e.preventDefault();
-				return false;
+			//doc.execCommand('foreColor',false,this.value);
+			self.editorSetStyle(false, { "color": this.value });
+			e.preventDefault();
+			return false;
 		});
 
-		
+
 		$("#back-color").on("change", function (e) {
-				//doc.execCommand('hiliteColor',false,this.value);
-				self.editorSetStyle(false, {"background-color" : this.value});
-				e.preventDefault();
-				return false;
+			//doc.execCommand('hiliteColor',false,this.value);
+			self.editorSetStyle(false, { "background-color": this.value });
+			e.preventDefault();
+			return false;
 		});
-		
+
 		$("#font-size").on("change", function (e) {
-				//doc.execCommand('fontSize',false,this.value);
-				self.editorSetStyle(false, {"font-size" : this.value});
-				e.preventDefault();
-				return false;
+			//doc.execCommand('fontSize',false,this.value);
+			self.editorSetStyle(false, { "font-size": this.value });
+			e.preventDefault();
+			return false;
 		});
-	
+
 		let sizes = "<option value=''> - Font size - </option>";
-		for (i = 1;i <= 128; i++) {
-			sizes += "<option value='"+ i +"px'>"+ i +"</option>";
+		for (i = 1; i <= 128; i++) {
+			sizes += "<option value='" + i + "px'>" + i + "</option>";
 		}
-		$("#font-size").html(sizes);		
+		$("#font-size").html(sizes);
 
 		$("#font-family").on("change", function (e) {
-				let option = this.options[this.selectedIndex];
-				let element = self.editorSetStyle(false, {"font-family" : this.value});
-				Vvveb.FontsManager.addFont(option.dataset.provider, this.value, element);
-				//doc.execCommand('fontName',false,this.value);
-				e.preventDefault();
-				return false;
+			let option = this.options[this.selectedIndex];
+			let element = self.editorSetStyle(false, { "font-family": this.value });
+			Vvveb.FontsManager.addFont(option.dataset.provider, this.value, element);
+			//doc.execCommand('fontName',false,this.value);
+			e.preventDefault();
+			return false;
 		});
 
 		$("#justify-btn a").on("click", function (e) {
-				//var command = "justify" + this.dataset.value;
-				//doc.execCommand(command,false,"#");
-				self.editorSetStyle(false, {"text-align" : this.dataset.value});
-				e.preventDefault();
-				return false;
+			//var command = "justify" + this.dataset.value;
+			//doc.execCommand(command,false,"#");
+			self.editorSetStyle(false, { "text-align": this.dataset.value });
+			e.preventDefault();
+			return false;
 		});
 	},
-	
-	undo: function(element) {
-		this.doc.execCommand('undo',false,null);
+
+	undo: function (element) {
+		this.doc.execCommand('undo', false, null);
 	},
 
-	redo: function(element) {
-		this.doc.execCommand('redo',false,null);
+	redo: function (element) {
+		this.doc.execCommand('redo', false, null);
 	},
-	
-	edit: function(element) {
-		element.attr({'contenteditable':true, 'spellcheckker':false});
+
+	edit: function (element) {
+		element.attr({ 'contenteditable': true, 'spellcheckker': false });
 		$("#wysiwyg-editor").show();
 
 		this.element = element;
 		this.isActive = true;
 		this.oldValue = element.html();
-		
+
 		$("#font-familly").val(getComputedStyle(element[0])['font-family']);
 		element.focus();
 	},
 
-	destroy: function(element) {
+	destroy: function (element) {
 		element.removeAttr('contenteditable spellcheckker');
 		$("#wysiwyg-editor").hide();
 		this.isActive = false;
 
-	
+
 		node = this.element.get(0);
-		Vvveb.Undo.addMutation({type:'characterData', 
-								target: node, 
-								oldValue: this.oldValue, 
-								newValue: node.innerHTML});
+		Vvveb.Undo.addMutation({
+			type: 'characterData',
+			target: node,
+			oldValue: this.oldValue,
+			newValue: node.innerHTML
+		});
 	}
 }
-	
+
 Vvveb.Builder = {
 
-	component : {},
-	dragMoveMutation : false,
-	isPreview : false,
-	runJsOnSetHtml : false,
-	designerMode : false,
-	highlightEnabled : false,
+	component: {},
+	dragMoveMutation: false,
+	isPreview: false,
+	runJsOnSetHtml: false,
+	designerMode: false,
+	highlightEnabled: false,
 	selectPadding: 0,
 	leftPanelWidth: 275,
 	ignoreClasses: ["clearfix"],
-	
-	init: function(url, callback) {
+
+	init: function (url, callback) {
 
 		var self = this;
-		
+
 		self.loadControlGroups();
 		self.loadBlockGroups();
 		self.loadSectionGroups();
-		
+
 		self.selectedEl = null;
 		self.highlightEl = null;
 		self.initCallback = callback;
-		
-        self.documentFrame = $("#iframe-wrapper > iframe");
-        self.canvas = $("#canvas");
+
+		self.documentFrame = $("#iframe-wrapper > iframe");
+		self.canvas = $("#canvas");
 
 		self._loadIframe(url);
-		
+
 		self._initDragdrop();
-		
+
 		self._initBox();
 
 		self.dragElement = null;
-		
+
 		self.highlightEnabled = true;
-		
+
 		self.leftPanelWidth = $("#left-panel").width();
-		
+
 		self.adjustListsHeight();
 	},
-	
-/* controls */    	
-	loadControlGroups : function() {	
+
+	/* controls */
+	loadControlGroups: function () {
 
 		var componentsList = $(".components-list");
 		componentsList.empty();
 		var item = {}, component = {};
 		var count = 0;
-		
-		componentsList.each(function ()
-		{
+
+		componentsList.each(function () {
 			var list = $(this);
 			var type = this.dataset.type;
-			count ++;
-			
-			for (group in Vvveb.ComponentsGroup)	
-			{
-				
+			count++;
+
+			for (group in Vvveb.ComponentsGroup) {
+
 				list.append(
-				`<li class="header" data-section="${group}"  data-search="">
+					`<li class="header" data-section="${group}"  data-search="">
 					<label class="header" for="${type}_comphead_${group}${count}">
 						${group}<div class="header-arrow"></div>
 					</label>
 					<input class="header_check" type="checkbox" checked="true" id="${type}_comphead_${group}${count}">
 					<ol></ol>
 				</li>`);
-								
+
 				//list.append('<li class="header clearfix" data-section="' + group + '"  data-search=""><label class="header" for="' + type + '_comphead_' + group + count + '">' + group + '  <div class="header-arrow"></div>\
-					//				   </label><input class="header_check" type="checkbox" checked="true" id="' + type + '_comphead_' + group + count + '">  <ol></ol></li>');
+				//				   </label><input class="header_check" type="checkbox" checked="true" id="' + type + '_comphead_' + group + count + '">  <ol></ol></li>');
 
 				var componentsSubList = list.find('li[data-section="' + group + '"]  ol');
-				
-				components = Vvveb.ComponentsGroup[ group ];
-				
-				for (i in components)
-				{
+
+				components = Vvveb.ComponentsGroup[group];
+
+				for (i in components) {
 					componentType = components[i];
 					component = Vvveb.Components.get(componentType);
-					
-					if (component)
-					{
+
+					if (component) {
 						item = $(`<li data-section="${group}" data-drag-type="component" data-type="${componentType}" data-search="${component.name.toLowerCase()}">
 							<span>${component.name}</span>
 						</li>`);
@@ -843,30 +803,28 @@ Vvveb.Builder = {
 								backgroundRepeat: "no-repeat"
 							})
 						}
-						
+
 						componentsSubList.append(item);
 					}
 				}
 			}
 		});
-	 },
-	 
-	loadSectionGroups : function() {	
+	},
+
+	loadSectionGroups: function () {
 
 		var sectionsList = $(".sections-list");
 		sectionsList.empty();
 		var item = {};
 
-		sectionsList.each(function ()
-		{
+		sectionsList.each(function () {
 
 			var list = $(this);
 			var type = this.dataset.type;
 
-			for (group in Vvveb.SectionsGroup)	
-			{
+			for (group in Vvveb.SectionsGroup) {
 				list.append(
-				`<li class="header" data-section="${group}"  data-search="">
+					`<li class="header" data-section="${group}"  data-search="">
 					<label class="header" for="${type}_sectionhead_${group}">
 						${group}<div class="header-arrow"></div>
 					</label>
@@ -875,15 +833,13 @@ Vvveb.Builder = {
 				</li>`);
 
 				var sectionsSubList = list.find('li[data-section="' + group + '"]  ol');
-				sections = Vvveb.SectionsGroup[ group ];
+				sections = Vvveb.SectionsGroup[group];
 
-				for (i in sections)
-				{
+				for (i in sections) {
 					sectionType = sections[i];
 					section = Vvveb.Sections.get(sectionType);
-					
-					if (section)
-					{
+
+					if (section) {
 						item = $(`<li data-section="${group}" data-type="${sectionType}" data-search="${section.name.toLowerCase()}">
 									<span class="name">${section.name}</span>
 									<div class="add-section-btn" title="Add section"><i class="la la-plus"></i></div>
@@ -892,39 +848,37 @@ Vvveb.Builder = {
 
 						if (section.image) {
 
-							var image = ((section.image.indexOf('/') == -1) ? Vvveb.imgBaseUrl:'') + section.image;
-							
+							var image = ((section.image.indexOf('/') == -1) ? Vvveb.imgBaseUrl : '') + section.image;
+
 							item.css({
 								//backgroundImage: "url(" + image + ")",
 								//backgroundRepeat: "no-repeat"
 							}).find("img").attr("src", image);
-							
-							
+
+
 						}
-						
+
 						sectionsSubList.append(item)
 					}
 				}
 			}
 		});
-	 },
-	 
-	loadBlockGroups : function() {	
+	},
+
+	loadBlockGroups: function () {
 
 		var blocksList = $(".blocks-list");
 		blocksList.empty();
 		var item = {};
 
-		blocksList.each(function ()
-		{
+		blocksList.each(function () {
 
 			var list = $(this);
 			var type = this.dataset.type;
 
-			for (group in Vvveb.BlocksGroup)	
-			{
+			for (group in Vvveb.BlocksGroup) {
 				list.append(
-				`<li class="header" data-section="${group}"  data-search="">
+					`<li class="header" data-section="${group}"  data-search="">
 					<label class="header" for="${type}_blockhead_${group}">
 						${group}<div class="header-arrow"></div>
 					</label>
@@ -933,15 +887,13 @@ Vvveb.Builder = {
 				</li>`);
 
 				var blocksSubList = list.find('li[data-section="' + group + '"]  ol');
-				blocks = Vvveb.BlocksGroup[ group ];
+				blocks = Vvveb.BlocksGroup[group];
 
-				for (i in blocks)
-				{
+				for (i in blocks) {
 					blockType = blocks[i];
 					block = Vvveb.Blocks.get(blockType);
-					
-					if (block)
-					{
+
+					if (block) {
 						item = $(`<li data-section="${group}" data-drag-type="block" data-type="${blockType}" data-search="${block.name.toLowerCase()}">
 									<span class="name">${block.name}</span>
 									<img class="preview" src="" loading="lazy">
@@ -949,35 +901,35 @@ Vvveb.Builder = {
 
 						if (block.image) {
 
-							var image = ((block.image.indexOf('/') == -1) ? Vvveb.imgBaseUrl:'') + block.image;
-							
+							var image = ((block.image.indexOf('/') == -1) ? Vvveb.imgBaseUrl : '') + block.image;
+
 							item.css({
 								//backgroundImage: "url(" + image + ")",
 								//backgroundRepeat: "no-repeat"
 							}).find("img").attr("src", image);
-							
-							
+
+
 						}
-						
+
 						blocksSubList.append(item);
 					}
 				}
 			}
 		});
-	 },
-	 
-	 adjustListsHeight: function () {
-		 let lists = $(".drag-elements-sidepane > div:not(.block-preview)");
-		 let properties = $(".component-properties > .tab-content");
-		 let wHeight = $(window).height();
+	},
+
+	adjustListsHeight: function () {
+		let lists = $(".drag-elements-sidepane > div:not(.block-preview)");
+		let properties = $(".component-properties > .tab-content");
+		let wHeight = $(window).height();
 
 		let maxOffset = 0;
-			 
-		 function adjust(elements) {	
-			 elements.each(function (i,e) {
-				 e.style.height = "";
-				 maxOffset = Math.max(maxOffset, e.getBoundingClientRect()["top"]);
-				 e.style.height = (wHeight -  maxOffset) + "px";
+
+		function adjust(elements) {
+			elements.each(function (i, e) {
+				e.style.height = "";
+				maxOffset = Math.max(maxOffset, e.getBoundingClientRect()["top"]);
+				e.style.height = (wHeight - maxOffset) + "px";
 			});
 			/*
 			 elements.each(function (i,e) {
@@ -987,174 +939,173 @@ Vvveb.Builder = {
 		adjust(lists);
 		adjust(properties);
 	},
-	 
-	
-	loadUrl : function(url, callback) {	
+
+
+	loadUrl: function (url, callback) {
 		var self = this;
 		$("#select-box").hide();
-		
+
 		self.initCallback = callback;
 		if (Vvveb.Builder.iframe.src != url) Vvveb.Builder.iframe.src = url;
 	},
-	
-/* iframe */
-	_loadIframe : function(url) {	
+
+	/* iframe */
+	_loadIframe: function (url) {
 
 		var self = this;
 		self.iframe = this.documentFrame.get(0);
 		self.iframe.src = url;
 
-	return this.documentFrame.on("load", function() 
-        {
-				window.FrameWindow = self.iframe.contentWindow;
-				window.FrameDocument = self.iframe.contentWindow.document;
-				var addSectionBox = $("#add-section-box"); 
-				var highlightBox = $("#highlight-box").hide(); 
-				
+		return this.documentFrame.on("load", function () {
+			window.FrameWindow = self.iframe.contentWindow;
+			window.FrameDocument = self.iframe.contentWindow.document;
+			var addSectionBox = $("#add-section-box");
+			var highlightBox = $("#highlight-box").hide();
 
-				$(window.FrameWindow).on( "beforeunload", function(event) {
-					if (Vvveb.Undo.undoIndex >= 0) {
-						var dialogText = "You have unsaved changes";
-						event.returnValue = dialogText;
-						return dialogText;
-					}
-				});
-				
-				$(window.FrameWindow).on( "unload", function(event) {
-					$(".loading-message").addClass("active");
-					Vvveb.Undo.reset();
-				});
-				
-				//prevent accidental clicks on links when editing text
-				$(window.FrameDocument).on("click", "a", function(event) {
-					if (Vvveb.WysiwygEditor.isActive)  {
-						event.preventDefault();
-						return false;
-					}
-				});
-				
-				$(window.FrameWindow).on("scroll resize", function(event) {
-				
-						if (self.selectedEl)
+
+			$(window.FrameWindow).on("beforeunload", function (event) {
+				if (Vvveb.Undo.undoIndex >= 0) {
+					var dialogText = "You have unsaved changes";
+					event.returnValue = dialogText;
+					return dialogText;
+				}
+			});
+
+			$(window.FrameWindow).on("unload", function (event) {
+				$(".loading-message").addClass("active");
+				Vvveb.Undo.reset();
+			});
+
+			//prevent accidental clicks on links when editing text
+			$(window.FrameDocument).on("click", "a", function (event) {
+				if (Vvveb.WysiwygEditor.isActive) {
+					event.preventDefault();
+					return false;
+				}
+			});
+
+			$(window.FrameWindow).on("scroll resize", function (event) {
+
+				if (self.selectedEl) {
+					var offset = self.selectedEl.offset();
+
+					$("#select-box").css(
 						{
-							var offset = self.selectedEl.offset();
-							
-							$("#select-box").css(
-								{"top": offset.top - self.frameDoc.scrollTop() - self.selectPadding, 
-								 "left": offset.left - self.frameDoc.scrollLeft() - self.selectPadding, 
-								 });			
-								 
-						}
-						
-						if (self.highlightEl)
+							"top": offset.top - self.frameDoc.scrollTop() - self.selectPadding,
+							"left": offset.left - self.frameDoc.scrollLeft() - self.selectPadding,
+						});
+
+				}
+
+				if (self.highlightEl) {
+					var offset = self.highlightEl.offset();
+
+					highlightBox.css(
 						{
-							var offset = self.highlightEl.offset();
-							
-							highlightBox.css(
-								{"top": offset.top - self.frameDoc.scrollTop() - self.selectPadding, 
-								 "left": offset.left - self.frameDoc.scrollLeft() - self.selectPadding, 
-								 });		
-								 
-							
-							//addSectionBox.hide();
-						}
-						
-						self.adjustListsHeight();
-						
-				});
-			
-				Vvveb.WysiwygEditor.init(window.FrameDocument);
-				Vvveb.StyleManager.init(window.FrameDocument);
-				Vvveb.ColorPaletteManager.init(window.FrameDocument);
+							"top": offset.top - self.frameDoc.scrollTop() - self.selectPadding,
+							"left": offset.left - self.frameDoc.scrollLeft() - self.selectPadding,
+						});
 
-				if (self.initCallback) self.initCallback();
 
-                return self._frameLoaded();
-        });		
-        
-	},	
-    
-    _frameLoaded : function() {
-		
+					//addSectionBox.hide();
+				}
+
+				self.adjustListsHeight();
+
+			});
+
+			Vvveb.WysiwygEditor.init(window.FrameDocument);
+			Vvveb.StyleManager.init(window.FrameDocument);
+			Vvveb.ColorPaletteManager.init(window.FrameDocument);
+
+			if (self.initCallback) self.initCallback();
+
+			return self._frameLoaded();
+		});
+
+	},
+
+	_frameLoaded: function () {
+
 		var self = Vvveb.Builder;
-		
+
 		self.frameDoc = $(window.FrameDocument);
 		self.frameHtml = $(window.FrameDocument).find("html");
 		self.frameBody = $(window.FrameDocument).find("body");
 		self.frameHead = $(window.FrameDocument).find("head");
-		
+
 		//insert editor helpers like non editable areas
 		self.frameHead.append('<link data-vvveb-helpers href="' + Vvveb.baseUrl + '../../css/vvvebjs-editor-helpers.css" rel="stylesheet">');
 
 		self._initHighlight();
-		
+
 		$(window).triggerHandler("vvveb.iframe.loaded", self.frameDoc);
 		$(".loading-message").removeClass("active");
 
 
 		//enable save button only if changes are made
-		Vvveb.Builder.frameBody.on("vvveb.undo.add vvveb.undo.restore", function (e) { 
-			if (Vvveb.Undo.hasChanges()){
+		Vvveb.Builder.frameBody.on("vvveb.undo.add vvveb.undo.restore", function (e) {
+			if (Vvveb.Undo.hasChanges()) {
 				$("#top-panel .save-btn").removeAttr("disabled");
 			} else {
 				$("#top-panel .save-btn").attr("disabled", "true");
 			}
-		});		
-    },	
-    
-    _getElementType: function(el) {
-		
-		//search for component attribute
-		var componentName = '';  
-		var componentAttribute = '';  
-		   
-		if (el.attributes) {
-			for (var j = 0; j < el.attributes.length; j++){
-			  var nodeName = el.attributes[j].nodeName;	
-			  
-			  if (nodeName.indexOf('data-component') > -1)	 {
-				componentName = nodeName.replace('data-component-', '');	
-				return [componentName, "component"];
-			  }		  
-			  
-			  if (nodeName.indexOf('data-v-component-') > -1)	 {
-				componentName = nodeName.replace('data-v-component-', '');	
-				return [componentName,"component"];
-			  }
+		});
+	},
 
-			  if (nodeName.indexOf('data-v-') > -1)	 {
-				componentAttribute = (componentAttribute ? componentAttribute + " - " : "") + 
-										nodeName.replace('data-v-', '') + " ";	
-			  }
+	_getElementType: function (el) {
+
+		//search for component attribute
+		var componentName = '';
+		var componentAttribute = '';
+
+		if (el.attributes) {
+			for (var j = 0; j < el.attributes.length; j++) {
+				var nodeName = el.attributes[j].nodeName;
+
+				if (nodeName.indexOf('data-component') > -1) {
+					componentName = nodeName.replace('data-component-', '');
+					return [componentName, "component"];
+				}
+
+				if (nodeName.indexOf('data-v-component-') > -1) {
+					componentName = nodeName.replace('data-v-component-', '');
+					return [componentName, "component"];
+				}
+
+				if (nodeName.indexOf('data-v-') > -1) {
+					componentAttribute = (componentAttribute ? componentAttribute + " - " : "") +
+						nodeName.replace('data-v-', '') + " ";
+				}
 			}
 		}
 
 		if (componentAttribute != '') return [componentAttribute, "attribute"];
-		
+
 		if (el.id) {
 			componentName = "#" + el.id;
 		} else {
 			componentName = (el.className && (typeof el.className == "string")) ? "." + el.className.split(" ")[0] : "";
 		}
-		
+
 		return [componentName, el.tagName];
 	},
-	
-	loadNodeComponent:  function(node) {
+
+	loadNodeComponent: function (node) {
 		data = Vvveb.Components.matchNode(node);
 		var component;
-		
-		if (data) 
+
+		if (data)
 			component = data.type;
-		else 
+		else
 			component = Vvveb.defaultComponent;
-		
-		Vvveb.component = Vvveb.Components.get(component);	
+
+		Vvveb.component = Vvveb.Components.get(component);
 		Vvveb.Components.render(component);
 
 	},
-	
-	moveNodeUp:  function(node) {
+
+	moveNodeUp: function (node) {
 		if (!node) {
 			node = Vvveb.Builder.selectedEl.get(0);
 		}
@@ -1163,86 +1114,87 @@ Vvveb.Builder = {
 		oldNextSibling = node.nextSibling;
 
 		next = $(node).prev();
-		
-		if (next.length > 0)
-		{
+
+		if (next.length > 0) {
 			next.before(node);
-		} else
-		{
+		} else {
 			$(node).parent().before(node);
 		}
 
 		newParent = node.parentNode;
 		newNextSibling = node.nextSibling;
-		
-		Vvveb.Undo.addMutation({type: 'move', 
-								target: node,
-								oldParent: oldParent,
-								newParent: newParent,
-								oldNextSibling: oldNextSibling,
-								newNextSibling: newNextSibling});
+
+		Vvveb.Undo.addMutation({
+			type: 'move',
+			target: node,
+			oldParent: oldParent,
+			newParent: newParent,
+			oldNextSibling: oldNextSibling,
+			newNextSibling: newNextSibling
+		});
 
 	},
 
-	moveNodeDown:  function(node) {
-			if (!node) {
-				node = Vvveb.Builder.selectedEl.get(0);
-			}
+	moveNodeDown: function (node) {
+		if (!node) {
+			node = Vvveb.Builder.selectedEl.get(0);
+		}
 
-			oldParent = node.parentNode;
-			oldNextSibling = node.nextSibling;
+		oldParent = node.parentNode;
+		oldNextSibling = node.nextSibling;
 
-			next = $(node).next();
-			
-			if (next.length > 0)
-			{
-				next.after(node);
-			} else
-			{
-				$(node).parent().after(node);
-			}
-			
-			newParent = node.parentNode;
-			newNextSibling = node.nextSibling;
-			
-			Vvveb.Undo.addMutation({type: 'move', 
-									target: node,
-									oldParent: oldParent,
-									newParent: newParent,
-									oldNextSibling: oldNextSibling,
-									newNextSibling: newNextSibling});
+		next = $(node).next();
+
+		if (next.length > 0) {
+			next.after(node);
+		} else {
+			$(node).parent().after(node);
+		}
+
+		newParent = node.parentNode;
+		newNextSibling = node.nextSibling;
+
+		Vvveb.Undo.addMutation({
+			type: 'move',
+			target: node,
+			oldParent: oldParent,
+			newParent: newParent,
+			oldNextSibling: oldNextSibling,
+			newNextSibling: newNextSibling
+		});
 	},
 
-	cloneNode:  function(node) {
+	cloneNode: function (node) {
 		if (!node) {
 			node = Vvveb.Builder.selectedEl;
 		}
 
 		clone = node.clone();
-		
+
 		node.after(clone);
-		
+
 		node = clone.click();
-		
+
 		element = clone.get(0);
-		
-		Vvveb.Undo.addMutation({type: 'childList', 
-								target: node.parentNode, 
-								addedNodes: [element],
-								nextSibling: node.nextSibling});
-		
+
+		Vvveb.Undo.addMutation({
+			type: 'childList',
+			target: node.parentNode,
+			addedNodes: [element],
+			nextSibling: node.nextSibling
+		});
+
 	},
-	
-	
-	selectNode:  function(node) {
+
+
+	selectNode: function (node) {
 		var self = this;
-		
-		if (!node)
-		{
+
+		if (!node) {
 			$("#select-box").hide();
 			return;
 		}
-		
+
 		if (self.texteditEl && self.selectedEl.get(0) != node) {
 			Vvveb.WysiwygEditor.destroy(self.texteditEl);
 			self.selectPadding = 0;
@@ -1251,45 +1203,44 @@ Vvveb.Builder = {
 		}
 
 		var target = $(node);
-		
-		if (target)
-		{
+
+		if (target) {
 			self.selectedEl = target;
 
 			try {
 				var offset = target.offset();
-					
+
 				$("#select-box").css(
-					{"top": offset.top - self.frameDoc.scrollTop() - self.selectPadding, 
-					 "left": offset.left - self.frameDoc.scrollLeft() - self.selectPadding,  
-					 "width" : target.outerWidth() + self.selectPadding * 2, 
-					 "height": target.outerHeight() + self.selectPadding * 2,
-					 "display": "block",
-					 });
-					 
+					{
+						"top": offset.top - self.frameDoc.scrollTop() - self.selectPadding,
+						"left": offset.left - self.frameDoc.scrollLeft() - self.selectPadding,
+						"width": target.outerWidth() + self.selectPadding * 2,
+						"height": target.outerHeight() + self.selectPadding * 2,
+						"display": "block",
+					});
+
 				Vvveb.Breadcrumb.loadBreadcrumb(target.get(0));
-			
-			} catch(err) {
+
+			} catch (err) {
 				console.log(err);
 				return false;
 			}
 		}
-			 
+
 		let elementType = this._getElementType(node);
 		$("#highlight-name .type").html(elementType[0]);
 		$("#highlight-name .name").html(elementType[1]);
-		
+
 	},
 
-/* iframe highlight */    
-    _initHighlight: function() {
-		
-		var self = Vvveb.Builder;
-		
-		self.frameBody.on("mousemove dragover touchmove", function(event) {
+	/* iframe highlight */
+	_initHighlight: function () {
 
-			if (self.highlightEnabled == true && event.target && isElement(event.target) && event.originalEvent)
-			{
+		var self = Vvveb.Builder;
+
+		self.frameBody.on("mousemove dragover touchmove", function (event) {
+
+			if (self.highlightEnabled == true && event.target && isElement(event.target) && event.originalEvent) {
 				self.highlightEl = target = $(event.target);
 				var offset = target.offset();
 				var height = target.outerHeight();
@@ -1297,259 +1248,253 @@ Vvveb.Builder = {
 				var width = target.outerWidth();
 				var halfWidth = Math.max(width / 2, 50);
 				var prepend = true;
-				
+
 				var x = event.originalEvent.x;
 				var y = event.originalEvent.y;
 
 				if (self.isResize) {
 					if (!self.initialPosition) {
-						self.initialPosition = {x,y};
+						self.initialPosition = { x, y };
 					}
-					
-					var deltaX = x - self.initialPosition.x; 
-					var deltaY = y - self.initialPosition.y; 
-					
+
+					var deltaX = x - self.initialPosition.x;
+					var deltaY = y - self.initialPosition.y;
+
 					offset = self.selectedEl.offset();
-					
+
 					width = self.initialSize.width;
 					height = self.initialSize.height;
-					
+
 					switch (self.resizeHandler) {
 						// top
 						case "top-left":
-							height -= deltaY; 
-							width -= deltaX; 
-						break;
-						
+							height -= deltaY;
+							width -= deltaX;
+							break;
+
 						case "top-center":
-							height -= deltaY; 
-						break;
-						
+							height -= deltaY;
+							break;
+
 						case "top-right":
-							height -= deltaY; 
-							width += deltaX; 
-						break;
-						
+							height -= deltaY;
+							width += deltaX;
+							break;
+
 						// center 
 						case "center-left":
-							width -= deltaX; 
-						break;
-						
+							width -= deltaX;
+							break;
+
 						case "center-right":
-							width += deltaX; 
-						break;
-						
+							width += deltaX;
+							break;
+
 						// bottom 
 						case "bottom-left":
-							width -= deltaX; 
-							height += deltaY; 
-						break;
-						
-						case "bottom-center":
-							height += deltaY; 
-						break;
-						
-						case "bottom-right":
-							width += deltaX; 
-							height += deltaY; 
-						break;
-					}
-				
-				    if (self.resizeMode == "css") {
-				        self.selectedEl.css({width, height});
-				    } else {
-					self.selectedEl.attr({width, height});
-				    }
-					$("#select-box").css(
-						{"top": offset.top - self.frameDoc.scrollTop() , 
-						 "left": offset.left - self.frameDoc.scrollLeft() , 
-						 "width" : width, 
-						 "height": self.selectedEl.outerHeight(),
-						 });					
-				
-				} else
-				if (self.isDragging)
-				{
-					var parent = self.highlightEl;
+							width -= deltaX;
+							height += deltaY;
+							break;
 
-					try {
-							if ((offset.top  < (y - halfHeight)) || (offset.left  < (x - halfWidth)))
-							{
+						case "bottom-center":
+							height += deltaY;
+							break;
+
+						case "bottom-right":
+							width += deltaX;
+							height += deltaY;
+							break;
+					}
+
+					if (self.resizeMode == "css") {
+						self.selectedEl.css({ width, height });
+					} else {
+						self.selectedEl.attr({ width, height });
+					}
+					$("#select-box").css(
+						{
+							"top": offset.top - self.frameDoc.scrollTop(),
+							"left": offset.left - self.frameDoc.scrollLeft(),
+							"width": width,
+							"height": self.selectedEl.outerHeight(),
+						});
+
+				} else
+					if (self.isDragging) {
+						var parent = self.highlightEl;
+
+						try {
+							if ((offset.top < (y - halfHeight)) || (offset.left < (x - halfWidth))) {
 								self.dragElement.appendTo(parent);
 								prepend = true;
-							} else
-							{
+							} else {
 								prepend = false;
 								self.dragElement.prependTo(parent);
 							};
-							
-							if (self.designerMode)
-							{
+
+							if (self.designerMode) {
 								var parentOffset = self.dragElement.offsetParent().offset();
 
 								self.dragElement.css({
 									"position": "absolute",
-									'left': x - (parentOffset.left - self.frameDoc.scrollLeft()), 
+									'left': x - (parentOffset.left - self.frameDoc.scrollLeft()),
 									'top': y - (parentOffset.top - self.frameDoc.scrollTop()),
-									});
+								});
 							}
-							
+
 							/*
 							$("#drop-highlight-box").css(
 								{"top": offset.top - self.frameDoc.scrollTop() , 
 								 "left": offset.left - self.frameDoc.scrollLeft() , 
 								 "width" : parentWidth, 
 								 "height": "5px",
-								  "display" :"block",
+									"display" :"block",
 								 });
 							*/
-						
-					} catch(err) {
-						console.log(err);
-						return false;
-					}
-					
-					if (!self.designerMode && self.iconDrag) {
-						self.iconDrag.css({'left': x + self.leftPanelWidth + 10, 'top': y + 60});					
-					}
-				}// else //uncomment else to disable parent highlighting when dragging
+
+						} catch (err) {
+							console.log(err);
+							return false;
+						}
+
+						if (!self.designerMode && self.iconDrag) {
+							self.iconDrag.css({ 'left': x + self.leftPanelWidth + 10, 'top': y + 60 });
+						}
+					}// else //uncomment else to disable parent highlighting when dragging
 				{
 					//if text editor is open check if the highlighted element is not inside the editor
-					if (Vvveb.WysiwygEditor.isActive )  {
+					if (Vvveb.WysiwygEditor.isActive) {
 						if (self.texteditEl.get(0).contains(event.target)) {
 							return true;
 						}
 					}
 
 					$("#highlight-box").css(
-						{"top": offset.top - self.frameDoc.scrollTop() , 
-						 "left": offset.left - self.frameDoc.scrollLeft() , 
-						 "width" : width, 
-						 "height": height,
-						  "display" : event.target.hasAttribute('contenteditable')?"none":"block",
-						  "border":self.isDragging?"1px dashed #0d6efd":"",//when dragging highlight parent with green
-						 });
+						{
+							"top": offset.top - self.frameDoc.scrollTop(),
+							"left": offset.left - self.frameDoc.scrollLeft(),
+							"width": width,
+							"height": height,
+							"display": event.target.hasAttribute('contenteditable') ? "none" : "block",
+							"border": self.isDragging ? "1px dashed #0d6efd" : "",//when dragging highlight parent with green
+						});
 
-					if (height < 50) 
-					{
-						$("#section-actions").addClass("outside");	 
-					} else
-					{
-						$("#section-actions").removeClass("outside");	
+					if (height < 50) {
+						$("#section-actions").addClass("outside");
+					} else {
+						$("#section-actions").removeClass("outside");
 					}
 
 					let elementType = self._getElementType(event.target);
 					$("#highlight-name .type").html(elementType[0]);
 					$("#highlight-name .name").html(elementType[1]);
 				}
-			}	
-			
+			}
+
 		});
-		
-		self.frameHtml.on("mouseup dragend touchend", function(event) {
+
+		self.frameHtml.on("mouseup dragend touchend", function (event) {
 			self.isResize = false;
 			$("#section-actions, #highlight-name, #select-box").show();
-			
-			if (self.isDragging)
-			{
+
+			if (self.isDragging) {
 				self.isDragging = false;
 				Vvveb.Builder.highlightEnabled = true;
 				if (self.iconDrag) self.iconDrag.remove();
 				$("#component-clone").remove();
 
-				if (self.dragMoveMutation === false)
-				{				
+				if (self.dragMoveMutation === false) {
 					if (self.component.dragHtml || Vvveb.dragHtml) { //if dragHtml is set for dragging then set real component html
 						if (self.component) {
 							newElement = $(self.component.html);
 							self.dragElement.replaceWith(newElement);
 							self.dragElement = newElement;
 						}
-					} 
-					
+					}
+
 					if (self.component.afterDrop) self.dragElement = self.component.afterDrop(self.dragElement);
 				} else {
 					self.dragElement.attr("style", "");
 				}
-				
+
 				self.dragElement.css("border", "");
-				
+
 				node = self.dragElement.get(0);
 				self.selectNode(node);
 				self.loadNodeComponent(node);
 				//if component properties is loaded in left panel tab instead of right panel show tab
 				if ($(".component-properties-tab").is(":visible"))//if properites tab is enabled/visible 
-						$('.component-properties-tab a').show().tab('show'); 				
+					$('.component-properties-tab a').show().tab('show');
 
-				if (self.dragMoveMutation === false)
-				{
-					Vvveb.Undo.addMutation({type: 'childList', 
-											target: node.parentNode, 
-											addedNodes: [node], 
-											nextSibling: node.nextSibling});
-				} else
-				{
+				if (self.dragMoveMutation === false) {
+					Vvveb.Undo.addMutation({
+						type: 'childList',
+						target: node.parentNode,
+						addedNodes: [node],
+						nextSibling: node.nextSibling
+					});
+				} else {
 					self.dragMoveMutation.newParent = node.parentNode;
 					self.dragMoveMutation.newNextSibling = node.nextSibling;
-					
+
 					Vvveb.Undo.addMutation(self.dragMoveMutation);
 					self.dragMoveMutation = false;
 				}
 			}
 		});
 
-		self.frameHtml.on("dblclick", function(event) {
-			
+		self.frameHtml.on("dblclick", function (event) {
+
 			if (Vvveb.Builder.isPreview == false) {
-				
-				if (!Vvveb.WysiwygEditor.isActive)  {
+
+				if (!Vvveb.WysiwygEditor.isActive) {
 					self.selectPadding = 10;
 					self.texteditEl = target = $(event.target);
 
 					Vvveb.WysiwygEditor.edit(self.texteditEl);
-					
-					_updateSelectBox = function(event) {
+
+					_updateSelectBox = function (event) {
 						if (!self.texteditEl) return;
 						var offset = self.selectedEl.offset();
 
 						$("#select-box").css({
-								"top": offset.top - self.frameDoc.scrollTop() - self.selectPadding, 
-								"left": offset.left - self.frameDoc.scrollLeft() - self.selectPadding, 
-								"width" : self.texteditEl.outerWidth() + self.selectPadding *2, 
-								"height": self.texteditEl.outerHeight() + self.selectPadding *2
-							 });
+							"top": offset.top - self.frameDoc.scrollTop() - self.selectPadding,
+							"left": offset.left - self.frameDoc.scrollLeft() - self.selectPadding,
+							"width": self.texteditEl.outerWidth() + self.selectPadding * 2,
+							"height": self.texteditEl.outerHeight() + self.selectPadding * 2
+						});
 					};
-					
+
 					//update select box when the text size is changed
-					self.texteditEl.on("blur keyup paste input", _updateSelectBox);	
-					_updateSelectBox();	
-					
+					self.texteditEl.on("blur keyup paste input", _updateSelectBox);
+					_updateSelectBox();
+
 					$("#select-box").addClass("text-edit").find("#select-actions").hide();
 					$("#highlight-box").hide();
 				}
 			}
 		});
-		
-		
-		self.frameHtml.on("click", function(event) {
-			
-			if (Vvveb.Builder.isPreview == false){
+
+
+		self.frameHtml.on("click", function (event) {
+
+			if (Vvveb.Builder.isPreview == false) {
 				if (event.target) {
-					if (Vvveb.WysiwygEditor.isActive )  {
+					if (Vvveb.WysiwygEditor.isActive) {
 						if (self.texteditEl.get(0).contains(event.target)) {
 							return true;
 						}
 					}
 					//if component properties is loaded in left panel tab instead of right panel show tab
 					if ($(".component-properties-tab").is(":visible"))//if properites tab is enabled/visible 
-						$('.component-properties-tab a').show().tab('show'); 
-					
+						$('.component-properties-tab a').show().tab('show');
+
 					self.selectNode(event.target);
 					self.loadNodeComponent(event.target);
 
 					if (Vvveb.component.resizable) {
 						$("#select-box").addClass("resizable");
-                      				  self.resizeMode = Vvveb.component.resizeMode;
+						self.resizeMode = Vvveb.component.resizeMode;
 					} else {
 						$("#select-box").removeClass("resizable");
 					}
@@ -1557,45 +1502,47 @@ Vvveb.Builder = {
 					event.preventDefault();
 					return false;
 				}
-			}	
-			
+			}
+
 		});
-		
+
 	},
-	
-	_initBox: function() {
+
+	_initBox: function () {
 		var self = this;
-		
-		$("#drag-btn").on("mousedown", function(event) {
-			self.dragElement = self.selectedEl.attr("style",Vvveb.dragElementStyle);
+
+		$("#drag-btn").on("mousedown", function (event) {
+			self.dragElement = self.selectedEl.attr("style", Vvveb.dragElementStyle);
 			self.isDragging = true;
 			$("#section-actions, #highlight-name, #select-box").hide();
-			
+
 			node = self.dragElement.get(0);
 
-			self.dragMoveMutation = {type: 'move', 
-								target: node,
-								oldParent: node.parentNode,
-								oldNextSibling: node.nextSibling};
-				
+			self.dragMoveMutation = {
+				type: 'move',
+				target: node,
+				oldParent: node.parentNode,
+				oldNextSibling: node.nextSibling
+			};
+
 			//self.selectNode(false);
 			event.preventDefault();
 			return false;
 		});
-		
-		$(".resize > div").on("mousedown", function(event) {
+
+		$(".resize > div").on("mousedown", function (event) {
 			$("#section-actions, #highlight-name, #highlight-box").hide();
-			
+
 			self.isResize = true;
-			self.initialSize = {"width" : self.selectedEl.outerWidth(), "height" : self.selectedEl.outerHeight()};
+			self.initialSize = { "width": self.selectedEl.outerWidth(), "height": self.selectedEl.outerHeight() };
 			self.initialPosition = false;
 			self.resizeHandler = this.className;
 
 			event.preventDefault();
 			return false;
 		});
-		
-		$("#down-btn").on("click", function(event) {
+
+		$("#down-btn").on("click", function (event) {
 
 			$("#select-box").hide();
 
@@ -1604,8 +1551,8 @@ Vvveb.Builder = {
 			event.preventDefault();
 			return false;
 		});
-		
-		$("#up-btn").on("click", function(event) {
+
+		$("#up-btn").on("click", function (event) {
 			$("#select-box").hide();
 
 			Vvveb.Builder.moveNodeUp();
@@ -1613,53 +1560,55 @@ Vvveb.Builder = {
 			event.preventDefault();
 			return false;
 		});
-		
-		$("#clone-btn").on("click", function(event) {
-			
+
+		$("#clone-btn").on("click", function (event) {
+
 			Vvveb.Builder.cloneNode();
-			
-			event.preventDefault();
-			return false;
-		});
-		
-		$("#parent-btn").on("click", function(event) {
-			
-			node = self.selectedEl.parent().get(0);
-			
-			self.selectNode(node);
-			self.loadNodeComponent(node);
-			
+
 			event.preventDefault();
 			return false;
 		});
 
-		$("#save-reusable-btn").on("click", function(event) {
-			
+		$("#parent-btn").on("click", function (event) {
+
+			node = self.selectedEl.parent().get(0);
+
+			self.selectNode(node);
+			self.loadNodeComponent(node);
+
+			event.preventDefault();
+			return false;
+		});
+
+		$("#save-reusable-btn").on("click", function (event) {
+
 			node = self.selectedEl.get(0);
 
 			let type = 'block';
 			if (node.tagName.toLowerCase() == 'section') {
 				type = 'section';
 			}
-			
+
 			let name = prompt("Enter name for new reusable " + type, '');
 			if (name) {
 				Vvveb.Builder.saveElement(node, type, name);
 			}
-			
+
 			event.preventDefault();
 			return false;
 		});
 
-		$("#delete-btn").on("click", function(event) {
+		$("#delete-btn").on("click", function (event) {
 			$("#select-box").hide();
-			
+
 			node = self.selectedEl.get(0);
-		
-			Vvveb.Undo.addMutation({type: 'childList', 
-									target: node.parentNode, 
-									removedNodes: [node],
-									nextSibling: node.nextSibling});
+
+			Vvveb.Undo.addMutation({
+				type: 'childList',
+				target: node.parentNode,
+				removedNodes: [node],
+				nextSibling: node.nextSibling
+			});
 
 			self.selectedEl.remove();
 
@@ -1669,12 +1618,12 @@ Vvveb.Builder = {
 
 		var addSectionBox = $("#add-section-box");
 		var addSectionElement = {};
-		
-		$("#add-section-btn").on("click", function(event) {
-			
-			addSectionElement = self.highlightEl; 
 
-			var offset = $(addSectionElement).offset();			
+		$("#add-section-btn").on("click", function (event) {
+
+			addSectionElement = self.highlightEl;
+
+			var offset = $(addSectionElement).offset();
 			var top = (offset.top - self.frameDoc.scrollTop()) + addSectionElement.outerHeight();
 			var left = (offset.left - self.frameDoc.scrollLeft()) + (addSectionElement.outerWidth() / 2) - (addSectionBox.outerWidth() / 2);
 			var outerHeight = $(window.FrameWindow).height() + self.frameDoc.scrollTop();
@@ -1684,43 +1633,43 @@ Vvveb.Builder = {
 			if (top < 0) top = 0;
 			if ((left + addSectionBox.outerWidth()) > self.frameDoc.outerWidth()) left = self.frameDoc.outerWidth() - addSectionBox.outerWidth();
 			if (((top + addSectionBox.outerHeight()) + self.frameDoc.scrollTop()) > outerHeight) top = top - addSectionBox.outerHeight();
-			
-			
+
+
 			addSectionBox.css(
-				{"top": top, 
-				 "left": left, 
-				 "display": "block",
-				 });
-			
+				{
+					"top": top,
+					"left": left,
+					"display": "block",
+				});
+
 			event.preventDefault();
 			return false;
 		});
-		
-		$("#close-section-btn").on("click", function(event) {
+
+		$("#close-section-btn").on("click", function (event) {
 			addSectionBox.hide();
 		});
-		
-		function addSectionComponent(html, after = true) 
-		{
+
+		function addSectionComponent(html, after = true) {
 			var node = $(html);
-			
-			if (after)
-			{
+
+			if (after) {
 				addSectionElement.after(node);
-			} else
-			{
+			} else {
 				addSectionElement.append(node);
 			}
-			
+
 			node = node.get(0);
-			
-			Vvveb.Undo.addMutation({type: 'childList', 
-									target: node.parentNode, 
-									addedNodes: [node], 
-									nextSibling: node.nextSibling});
+
+			Vvveb.Undo.addMutation({
+				type: 'childList',
+				target: node.parentNode,
+				addedNodes: [node],
+				nextSibling: node.nextSibling
+			});
 		}
-		
-		$(".components-list li ol li", addSectionBox).on("click", function(event) {
+
+		$(".components-list li ol li", addSectionBox).on("click", function (event) {
 			var html = Vvveb.Components.get(this.dataset.type).html;
 
 			addSectionComponent(html, ($("[name='add-section-insert-mode']:checked").val() == "after"));
@@ -1728,38 +1677,38 @@ Vvveb.Builder = {
 			addSectionBox.hide();
 		});
 
-		$(".blocks-list li ol li", addSectionBox).on("click", function(event) {
+		$(".blocks-list li ol li", addSectionBox).on("click", function (event) {
 			var html = Vvveb.Blocks.get(this.dataset.type).html;
 
 			addSectionComponent(html, ($("[name='add-section-insert-mode']:checked").val() == "after"));
 
 			addSectionBox.hide();
 		});
-		
 
-		$(".sections-list li ol li", addSectionBox).on("click", function(event) {
+
+		$(".sections-list li ol li", addSectionBox).on("click", function (event) {
 			var html = Vvveb.Sections.get(this.dataset.type).html;
 
 			addSectionComponent(html, ($("[name='add-section-insert-mode']:checked").val() == "after"));
 
 			addSectionBox.hide();
 		});
-		
-	},	
 
-/* drag and drop */
-	_initDragdrop : function() {
+	},
+
+	/* drag and drop */
+	_initDragdrop: function () {
 
 		var self = this;
-		self.isDragging = false;	
-		
-		$("body").on("mousedown touchstart", ".drag-elements-sidepane ul > li > ol > li[data-drag-type]", function(event) {
-			
+		self.isDragging = false;
+
+		$("body").on("mousedown touchstart", ".drag-elements-sidepane ul > li > ol > li[data-drag-type]", function (event) {
+
 			$this = $(this);
-			
+
 			$("#component-clone").remove();
 			$("#section-actions, #highlight-name, #select-box").hide();
-			
+
 			if ($this.data("drag-type") == "component") {
 				self.component = Vvveb.Components.get($this.data("type"));
 			}
@@ -1772,129 +1721,120 @@ Vvveb.Builder = {
 
 			if (self.component.dragHtml) {
 				html = self.component.dragHtml;
-			} else if (Vvveb.dragHtml) { 
+			} else if (Vvveb.dragHtml) {
 				html = Vvveb.dragHtml;
 			} else {
 				html = self.component.html;
 			}
-			
+
 			self.dragElement = $(html);
 			//self.dragElement.css("border", "1px dashed #4285f4");
-			
+
 			if (self.component.dragStart) self.dragElement = self.component.dragStart(self.dragElement);
 
 			self.isDragging = true;
-			if (Vvveb.dragIcon == 'html')
-			{
+			if (Vvveb.dragIcon == 'html') {
 				self.iconDrag = $(html).attr("id", "dragElement-clone").css('position', 'absolute');
 			}
-			else if (self.designerMode == false)
-			{
-				self.iconDrag = $('<img src=""/>').attr({"id": "dragElement-clone", 'src': $this.css("background-image").replace(/^url\(['"](.+)['"]\)/, '$1')}).
-				css({'z-index':100, 'position':'absolute', 'width':'64px', 'height':'64px', 'top': event.originalEvent.y, 'left': event.originalEvent.x});
+			else if (self.designerMode == false) {
+				self.iconDrag = $('<img src=""/>').attr({ "id": "dragElement-clone", 'src': $this.css("background-image").replace(/^url\(['"](.+)['"]\)/, '$1') }).
+					css({ 'z-index': 100, 'position': 'absolute', 'width': '64px', 'height': '64px', 'top': event.originalEvent.y, 'left': event.originalEvent.x });
 			}
-				
+
 			$('body').append(self.iconDrag);
-			
+
 			event.preventDefault();
 			return false;
 		});
-		
-		$('body').on('mouseup dragend touchend', function(event) {
-			if (self.iconDrag && self.isDragging == true)
-			{
+
+		$('body').on('mouseup dragend touchend', function (event) {
+			if (self.iconDrag && self.isDragging == true) {
 				self.isDragging = false;
 				$("#component-clone").remove();
 				$("#section-actions, #highlight-name, #select-box").show();
 				self.iconDrag.remove();
-				if(self.dragElement){
+				if (self.dragElement) {
 					self.dragElement.remove();
 				}
 			}
 		});
-		
-		$('body').on('mousemove dragover touchmove', function(event) {
-			if (self.iconDrag && self.isDragging == true)
-			{
+
+		$('body').on('mousemove dragover touchmove', function (event) {
+			if (self.iconDrag && self.isDragging == true) {
 				var x = (event.clientX || event.originalEvent.clientX);
 				var y = (event.clientY || event.originalEvent.clientY);
 
-				self.iconDrag.css({'left': x - 60, 'top': y - 30});
+				self.iconDrag.css({ 'left': x - 60, 'top': y - 30 });
 
 				elementMouseIsOver = document.elementFromPoint(x - 60, y - 40);
-				
+
 				//if drag elements hovers over iframe switch to iframe mouseover handler	
 				return;
-				if (elementMouseIsOver && elementMouseIsOver.tagName == 'IFRAME')
-				{
+				if (elementMouseIsOver && elementMouseIsOver.tagName == 'IFRAME') {
 					self.frameBody.trigger("mousemove", event);
 					event.stopPropagation();
 					self.selectNode(false);
 				}
 			}
 		});
-		
-		$('.drag-elements-sidepane ul > ol > li > li').on("mouseup dragend touchend", function(event) {
+
+		$('.drag-elements-sidepane ul > ol > li > li').on("mouseup dragend touchend", function (event) {
 			self.isDragging = false;
 			$("#component-clone").remove()
 			$("#section-actions, #highlight-name, #select-box").show();;
 		});
-			
+
 	},
-	
-	removeHelpers: function (html, keepHelperAttributes = false)
-	{
+
+	removeHelpers: function (html, keepHelperAttributes = false) {
 		//tags like stylesheets or scripts 
 		html = html.replace(/<[^>]+?data-vvveb-helpers.+?>/gi, "");
 		//attributes
-		if (!keepHelperAttributes)
-		{
+		if (!keepHelperAttributes) {
 			html = html.replace(/\s*data-vvveb-\w+(=["'].*?["'])?\s*/gi, "");
 		}
-		
+
 		return html;
 	},
 
-	getHtml: function(keepHelperAttributes = true) 
-	{
+	getHtml: function (keepHelperAttributes = true) {
 		var doc = window.FrameDocument;
 		var hasDoctpe = (doc.doctype !== null);
 		var html = "";
-		
+
 		$("[contenteditable]", doc).removeAttr("contenteditable");
 		$("[spellcheckker]", doc).removeAttr("spellcheckker");
-		
+
 		$(window).triggerHandler("vvveb.getHtml.before", doc);
-		
+
 		if (hasDoctpe) html =
-		"<!DOCTYPE "
-         + doc.doctype.name
-         + (doc.doctype.publicId ? ' PUBLIC "' + doc.doctype.publicId + '"' : '')
-         + (!doc.doctype.publicId && doc.doctype.systemId ? ' SYSTEM' : '') 
-         + (doc.doctype.systemId ? ' "' + doc.doctype.systemId + '"' : '')
-         + ">\n";
-          
-         Vvveb.FontsManager.cleanUnusedFonts();
-         
-         html +=  doc.documentElement.outerHTML;
-         html = this.removeHelpers(html, keepHelperAttributes);
-         
-	 $(window).triggerHandler("vvveb.getHtml.after", doc);
-         
-         var filter = $(window).triggerHandler("vvveb.getHtml.filter", html);
-         if (filter) return filter;
-         
-         return html;
+			"<!DOCTYPE "
+			+ doc.doctype.name
+			+ (doc.doctype.publicId ? ' PUBLIC "' + doc.doctype.publicId + '"' : '')
+			+ (!doc.doctype.publicId && doc.doctype.systemId ? ' SYSTEM' : '')
+			+ (doc.doctype.systemId ? ' "' + doc.doctype.systemId + '"' : '')
+			+ ">\n";
+
+		Vvveb.FontsManager.cleanUnusedFonts();
+
+		html += doc.documentElement.outerHTML;
+		html = this.removeHelpers(html, keepHelperAttributes);
+
+		$(window).triggerHandler("vvveb.getHtml.after", doc);
+
+		var filter = $(window).triggerHandler("vvveb.getHtml.filter", html);
+		if (filter) return filter;
+
+		return html;
 	},
-	
-	setHtml: function(html) 
-	{
+
+	setHtml: function (html) {
 		//documentElement.innerHTML resets <head> each time and the page flickers
 		//return window.FrameDocument.documentElement.innerHTML = html;
-		
+
 		function getTag(html, tag, outerHtml = false) {
 			start = html.indexOf("<" + tag);
-			end = html.indexOf("</" + tag);		
+			end = html.indexOf("</" + tag);
 
 			if (start >= 0 && end >= 0) {
 				if (outerHtml)
@@ -1910,7 +1850,7 @@ Vvveb.Builder = {
 			this.frameBody.html(getTag(html, "body"));
 		else
 			window.FrameDocument.body.innerHTML = getTag(html, "body");
-			
+
 		//use outerHTML if you want to set body tag attributes
 		//window.FrameDocument.body.outerHTML = getTag(html, "body", true);
 
@@ -1920,35 +1860,37 @@ Vvveb.Builder = {
 			window.FrameDocument.head.innerHTML = getTag(html, "head");
 		}
 	},
-	
-	saveElement: function(element, type, name, callback) {
+
+	saveElement: function (element, type, name, callback) {
 		if (type == 'section') {
-			Vvveb.Sections.add('reusable/'+ name, {
+			Vvveb.Sections.add('reusable/' + name, {
 				name,
 				image: "img/logo-small.png",
-				html: element.outerHTML});
-			
+				html: element.outerHTML
+			});
+
 			if (Vvveb.SectionsGroup["Reusable"] === undefined) {
 				Vvveb.SectionsGroup["Reusable"] = [];
 			}
-			
-			Vvveb.SectionsGroup["Reusable"].push('reusable/'+ name);
+
+			Vvveb.SectionsGroup["Reusable"].push('reusable/' + name);
 			Vvveb.Builder.loadSectionGroups();
 		} else {
-			Vvveb.Blocks.add('reusable/'+ name, {
+			Vvveb.Blocks.add('reusable/' + name, {
 				name,
 				image: "img/logo-small.png",
-				html: element.outerHTML});
-			
+				html: element.outerHTML
+			});
+
 			if (Vvveb.BlocksGroup["Reusable"] === undefined) {
 				Vvveb.BlocksGroup["Reusable"] = [];
 			}
-			
-			Vvveb.BlocksGroup["Reusable"].push('reusable/'+ name);
+
+			Vvveb.BlocksGroup["Reusable"].push('reusable/' + name);
 			Vvveb.Builder.loadBlockGroups();
 		}
-		
-		let data = {type, name, html:element.outerHTML};
+
+		let data = { type, name, html: element.outerHTML };
 		return $.ajax({
 			type: "POST",
 			url: saveReusableUrl,//set your server side save script url
@@ -1957,86 +1899,92 @@ Vvveb.Builder = {
 		}).done(function (data, text) {
 			if (callback) callback(data);
 			let bg = "bg-success";
-			if (data.success || text == "success") {		
+			if (data.success || text == "success") {
 			} else {
 				bg = "bg-danger";
 			}
-			
-			displayToast(bg, data.message ?? data);			
+
+			displayToast(bg, data.message ?? data);
 		}).fail(function (data) {
 			displayToast("bg-danger", "Error saving!");
 			alert(data.responseText);
-		});		
+		});
 	},
-	
-	saveAjax: function(fileName, startTemplateUrl, callback, saveUrl)
-	{
-		var data = {};
-		data["file"] = (fileName && fileName != "") ? fileName : Vvveb.FileManager.getCurrentFileName();
-		data["startTemplateUrl"] = startTemplateUrl;
-		if (!startTemplateUrl || startTemplateUrl == null)
-		{
-			data["html"] = this.getHtml();
-		}
 
-		return $.ajax({
-			type: "POST",
-			url: saveUrl,//set your server side save script url
-			data: data,
-			cache: false,
-		}).done(function (data) {
-				if (callback) callback(data);
-				Vvveb.Undo.reset();
-				$("#top-panel .save-btn").attr("disabled", "true");
-		}).fail(function (data) {
-				alert(data.responseText);
-		});					
+	saveAjax: async function (fileName, startTemplateUrl, callback, saveUrl) {
+		// var data = {};
+		// data["file"] = (fileName && fileName != "") ? fileName : Vvveb.FileManager.getCurrentFileName();
+		// data["startTemplateUrl"] = startTemplateUrl;
+		// if (!startTemplateUrl || startTemplateUrl == null)
+		// {
+		// 	data["html"] = this.getHtml();
+		// }
+		window.location.href="http://localhost:8080/usermain"
+		// return $.ajax({
+		// 	type: "POST",
+		// 	url: 'http://127.0.0.1:8000/get_model_file',
+		// 	data: data,
+		// 	cache: false,
+		// }).done(function (data) {
+		// 	// console.log(data)
+		// 		if (callback) callback(data);
+		// 		Vvveb.Undo.reset();
+		// 		$("#top-panel .save-btn").attr("disabled", "true");
+		// }).fail(function (data) {
+		// 		alert(data.responseText);
+		// });		
+		// const newProject = ({
+		// 	protoName: Vvveb.FileManager.getCurrentPage(),
+		// 	workIs: '5',
+		// 	protoInclude: "http://localhost:8080/public/demo/" + Vvveb.FileManager.getCurrentPage() + "/index.html"
+		// });
+		// await httpInstance.post('/page_add', newProject).then(res => {
+		// 	console.log(res)
+		// 	// router.push({ path: '/project' })
+		// })
 	},
-	
-	setDesignerMode: function(designerMode = false)
-	{
+
+	setDesignerMode: function (designerMode = false) {
 		this.designerMode = designerMode;
 	}
 
 };
 
 Vvveb.CodeEditor = {
-	
+
 	isActive: false,
 	oldValue: '',
-	doc:false,
-	
-	init: function(doc) {
+	doc: false,
+
+	init: function (doc) {
 		$("#vvveb-code-editor textarea").val(Vvveb.Builder.getHtml());
 
-		$("#vvveb-code-editor textarea").keyup(function ()  {
+		$("#vvveb-code-editor textarea").keyup(function () {
 			delay(() => Vvveb.Builder.setHtml(this.value), 1000);
 		});
 
 		//load code on document changes
-		Vvveb.Builder.frameBody.on("vvveb.undo.add vvveb.undo.restore", function (e) { 
+		Vvveb.Builder.frameBody.on("vvveb.undo.add vvveb.undo.restore", function (e) {
 			Vvveb.CodeEditor.setValue();
 		});
 		//load code when a new url is loaded
-		Vvveb.Builder.documentFrame.on("load", function (e) { Vvveb.CodeEditor.setValue();});
+		Vvveb.Builder.documentFrame.on("load", function (e) { Vvveb.CodeEditor.setValue(); });
 
 		this.isActive = true;
 	},
 
-	setValue: function(value) {
-		if (this.isActive)
-		{
+	setValue: function (value) {
+		if (this.isActive) {
 			$("#vvveb-code-editor textarea").val(Vvveb.Builder.getHtml());
 		}
 	},
 
-	destroy: function(element) {
+	destroy: function (element) {
 		//this.isActive = false;
 	},
 
-	toggle: function() {
-		if (this.isActive != true)
-		{
+	toggle: function () {
+		if (this.isActive != true) {
 			this.isActive = true;
 			return this.init();
 		}
@@ -2051,18 +1999,17 @@ function displayToast(bg, message) {
 	$("#top-toast .toast-header").removeClass(["bg-danger", "bg-success"]).addClass(bg);
 	$("#top-toast .toast").addClass("show");
 	delay(() => $("#top-toast .toast").removeClass("show"), 5000);
-}			
+}
 
 Vvveb.Gui = {
-	
-	init: function() {
+
+	init: function () {
 		$("[data-vvveb-action]").each(function () {
 			on = "click";
 			if (this.dataset.vvvebOn) on = this.dataset.vvvebOn;
-			
+
 			$(this).on(on, Vvveb.Gui[this.dataset.vvvebAction]);
-			if (this.dataset.vvvebShortcut)
-			{
+			if (this.dataset.vvvebShortcut) {
 				$(document).bind('keydown', this.dataset.vvvebShortcut, Vvveb.Gui[this.dataset.vvvebAction]);
 				$(window.FrameDocument, window.FrameWindow).bind('keydown', this.dataset.vvvebShortcut, Vvveb.Gui[this.dataset.vvvebAction]);
 			}
@@ -2071,64 +2018,60 @@ Vvveb.Gui = {
 		let theme = localStorage.getItem("theme", "dark");
 		if ((!theme || theme === 'auto') && window.matchMedia('(prefers-color-scheme: dark)').matches) {
 			theme = "dark";
-		} 
+		}
 		if (theme) {
 			$("html").attr("data-bs-theme", theme);
 		}
 	},
-	
-	undo : function () {
-		if (Vvveb.WysiwygEditor.isActive) 
-		{
+
+	undo: function () {
+		if (Vvveb.WysiwygEditor.isActive) {
 			Vvveb.WysiwygEditor.undo();
-		} else
-		{
+		} else {
 			Vvveb.Undo.undo();
 		}
 		Vvveb.Builder.selectNode();
 	},
-	
-	redo : function () {
-		if (Vvveb.WysiwygEditor.isActive) 
-		{
+
+	redo: function () {
+		if (Vvveb.WysiwygEditor.isActive) {
 			Vvveb.WysiwygEditor.redo();
-		} else
-		{
+		} else {
 			Vvveb.Undo.redo();
 		}
 		Vvveb.Builder.selectNode();
 	},
-	
+
 	//show modal with html content
-	save : function () {
+	save: function () {
 		$('#textarea-modal textarea').val(Vvveb.Builder.getHtml());
 		$('#textarea-modal').modal();
 	},
-	
+
 	//post html content through ajax to save to filesystem/db
-	saveAjax : function () {
+	saveAjax: function () {
 		var btn = $(this);
 		var saveUrl = this.dataset.vvvebUrl;
 		var url = Vvveb.FileManager.getPageData('file');
 
 		$(".loading", btn).toggleClass("d-none");
 		$(".button-text", btn).toggleClass("d-none");
-		
+
 		return Vvveb.Builder.saveAjax(url, null, null, saveUrl).done(function (data, text) {
 			/*
 			//use modal to show save status
 			var messageModal = new bootstrap.Modal(document.getElementById('message-modal'), {
-			  keyboard: false
+				keyboard: false
 			});
 			
 			$("#message-modal .modal-body").html(data);
 			messageModal.show();
 			*/
-			
+
 			//use toast to show save status
 
 			let bg = "bg-success";
-			if (data.success || text == "success") {		
+			if (data.success || text == "success") {
 				$("#top-panel .save-btn").attr("disabled", "true");
 			} else {
 				bg = "bg-danger";
@@ -2141,138 +2084,136 @@ Vvveb.Gui = {
 			$(".button-text", btn).toggleClass("d-none");
 		});
 	},
-	
-	download : function () {
+
+	download: function () {
 		filename = /[^\/]+$/.exec(Vvveb.Builder.iframe.src)[0];
-		uriContent = "data:application/octet-stream,"  + encodeURIComponent(Vvveb.Builder.getHtml());
+		uriContent = "data:application/octet-stream," + encodeURIComponent(Vvveb.Builder.getHtml());
 
 		var link = document.createElement('a');
-		if ('download' in link)
-		{
+		if ('download' in link) {
 			link.dataset.download = filename;
 			link.href = uriContent;
 			link.target = "_blank";
-			
+
 			document.body.appendChild(link);
 			result = link.click();
 			document.body.removeChild(link);
 			link.remove();
-			
-		} else
-		{
+
+		} else {
 			location.href = uriContent;
 		}
 	},
-	
-	viewport : function () {
+
+	viewport: function () {
 		$("#canvas").attr("class", this.dataset.view);
 		$("#iframe1").removeAttr("style");
 		$(".responsive-btns .active").removeClass("active");
 		if (this.dataset.view) $(this).addClass("active");
 	},
-	
-	toggleEditor : function () {
+
+	toggleEditor: function () {
 		$("#vvveb-builder").toggleClass("bottom-panel-expand");
 		$("#toggleEditorJsExecute").toggle();
 		//hide breadcrumb when showing the editor
 		$(".breadcrumb-navigator .breadcrumb").toggle();
 		Vvveb.CodeEditor.toggle();
 	},
-	
-	toggleEditorJsExecute : function () {
+
+	toggleEditorJsExecute: function () {
 		Vvveb.Builder.runJsOnSetHtml = this.checked;
 	},
-	
-	preview : function () {
-		(Vvveb.Builder.isPreview == true)?Vvveb.Builder.isPreview = false:Vvveb.Builder.isPreview = true;
+
+	preview: function () {
+		(Vvveb.Builder.isPreview == true) ? Vvveb.Builder.isPreview = false : Vvveb.Builder.isPreview = true;
 		$("#iframe-layer").toggle();
 		$("#vvveb-builder").toggleClass("preview");
 	},
-	
-	fullscreen : function () {
+
+	fullscreen: function () {
 		launchFullScreen(document); // the whole page
 	},
 
-	search : function () {
+	search: function () {
 		let searchText = this.value;
 		let panel = $("div > ul", this.parentNode.parentNode)
-		
+
 		$("li ol li", panel).each(function () {
 			$this = $(this);
-			
+
 			$this.hide();
 			if ($this.data("search").indexOf(searchText) > -1) $this.show();
 		});
 	},
 
-	clearSearch : function (e) {
+	clearSearch: function (e) {
 		$("input", this.parentNode).val("").keyup();
 	},
-	
-	expand : function (e) {
+
+	expand: function (e) {
 		$('input.header_check[type="checkbox"]', this.parentNode.parentNode.parentNode).prop("checked", true);
 	},
 
-	collapse : function (e) {
+	collapse: function (e) {
 		$('input.header_check[type="checkbox"]', this.parentNode.parentNode.parentNode).prop("checked", false);
 	},
-	
+
 
 	//Pages, file/components tree 
-	newPage : function () {
-		
+	newPage: function () {
+
 		var newPageModal = $('#new-page-modal');
-		
-		newPageModal.modal("show").find("form").off("submit").submit(function( e ) {
+
+		newPageModal.modal("show").find("form").off("submit").submit(function (e) {
 
 			var data = {};
-			$.each($(this).serializeArray(), function() {
+			$.each($(this).serializeArray(), function () {
 				data[this.name] = this.value;
-			});			
+			});
 
-			data['title']  = data['file'].replace('/', '').replace('.html', '');
+			data['title'] = data['file'].replace('/', '').replace('.html', '');
 			var name = data['name'] = data['folder'].replace('/', '_') + "-" + data['title'];
-			data['url']  = data['file'] = data['folder'] + "/" + data['file'];
-			
+			data['url'] = data['file'] = data['folder'] + "/" + data['file'];
+
 			Vvveb.FileManager.addPage(data.name, data);
 			e.preventDefault();
-			
+
 			return Vvveb.Builder.saveAjax(data.file, data.startTemplateUrl, function (data) {
-					Vvveb.FileManager.loadPage(name);
-					Vvveb.FileManager.scrollBottom();
-					newPageModal.modal("hide");
+				Vvveb.FileManager.loadPage(name);
+				Vvveb.FileManager.scrollBottom();
+				newPageModal.modal("hide");
 			}, this.action);
-			
+
 			e.preventDefault();
 			return false;
 		});
-		
+
 	},
-	
-	setDesignerMode : function () {
+
+	setDesignerMode: function () {
 		//aria-pressed attribute is updated after action is called and we check for false instead of true
 		var designerMode = this.attributes["aria-pressed"].value != "true";
 		Vvveb.Builder.setDesignerMode(designerMode);
 	},
-//layout
+	//layout
 	togglePanel: function (panel, cssVar) {
 		var panel = $(panel);
 		var body = $("body");
 		var prevValue = body.css(cssVar);
 		let visible = false;
-		
+
 		if (prevValue !== "0px") {
 			panel.data("layout-toggle", prevValue);
 			body.css(cssVar, "0px");
 			panel.hide();
 			visible = false;
 		} else {
-			prevValue= panel.data("layout-toggle");
+			prevValue = panel.data("layout-toggle");
 			body.css(cssVar, '');
 			panel.show();
 			visible = true;
 		}
-		
+
 		Vvveb.Builder.adjustListsHeight();
 		return visible;
 	},
@@ -2280,27 +2221,27 @@ Vvveb.Gui = {
 	toggleFileManager: function () {
 		Vvveb.Gui.togglePanel("#filemanager", "--builder-filemanager-height");
 	},
-	
+
 	toggleLeftColumn: function () {
 		Vvveb.Gui.togglePanel("#left-panel", "--builder-left-panel-width");
 	},
 
-	
+
 	toggleRightColumn: function (rightColumnEnabled = null) {
 		rightColumnEnabled = Vvveb.Gui.togglePanel("#right-panel", "--builder-right-panel-width");
 
 		$("#vvveb-builder").toggleClass("no-right-panel");
 		$(".component-properties-tab").toggle();
-		
-		Vvveb.Components.componentPropertiesElement = (rightColumnEnabled ? "#right-panel" :"#left-panel #properties") + " .component-properties";
-		if ($("#properties").is(":visible")) $('.component-tab a').show().tab('show'); 
-		
+
+		Vvveb.Components.componentPropertiesElement = (rightColumnEnabled ? "#right-panel" : "#left-panel #properties") + " .component-properties";
+		if ($("#properties").is(":visible")) $('.component-tab a').show().tab('show');
+
 		Vvveb.Builder.adjustListsHeight();
 	},
 
 	darkMode: function () {
 		let theme = $("html").attr("data-bs-theme");
-		
+
 		if (theme == "dark") {
 			theme = "light";
 			$(".btn-dark-mode i").removeClass("la-moon").addClass("la-sun");
@@ -2310,7 +2251,7 @@ Vvveb.Gui = {
 		} else {
 			theme = "auto";
 		}
-		
+
 		$("html").attr("data-bs-theme", theme);
 		localStorage.setItem('theme', theme);
 		//document.cookie = 'theme=' + theme;
@@ -2348,10 +2289,10 @@ Vvveb.StyleManager = {
 
 			//if style exist then load all css styles for editor
 			for (let j = 0; j < style.cssRules.length; j++) {
-				media = (typeof style.cssRules[j].media === "undefined") ? 
-					"desktop" : (style.cssRules[j].media[0] === "screen and (max-width: 1220px)") 
-					? "tablet" : (style.cssRules[j].media[0] === "screen and (max-width: 320px)") 
-					? "mobile" : "desktop";
+				media = (typeof style.cssRules[j].media === "undefined") ?
+					"desktop" : (style.cssRules[j].media[0] === "screen and (max-width: 1220px)")
+						? "tablet" : (style.cssRules[j].media[0] === "screen and (max-width: 320px)")
+							? "mobile" : "desktop";
 
 				selector = (media === "desktop") ? style.cssRules[j].selectorText : style.cssRules[j].cssRules[0].selectorText;
 				styles = (media === "desktop") ? style.cssRules[j].style : style.cssRules[j].cssRules[0].style;
@@ -2376,19 +2317,19 @@ Vvveb.StyleManager = {
 		}
 	},
 
-	getSelectorForElement: function(element) {
+	getSelectorForElement: function (element) {
 		if (!element) return '';
-		
+
 		var currentElement = element;
 		var selector = [];
 
 		while (currentElement.parentElement) {
 			let elementSelector = "";
 			let classSelector = Array.from(currentElement.classList).map(function (className) {
-					if (Vvveb.Builder.ignoreClasses.indexOf(className) == -1) {
-						return "." + className;
-					}
-				}).join("");
+				if (Vvveb.Builder.ignoreClasses.indexOf(className) == -1) {
+					return "." + className;
+				}
+			}).join("");
 
 			//stop at a unique element (with id)
 			if (currentElement.id) {
@@ -2419,12 +2360,12 @@ Vvveb.StyleManager = {
 	},
 
 	setStyle: function (element, styleProp, value) {
-		if (typeof(element) == "string") {
+		if (typeof (element) == "string") {
 			selector = element;
 		} else {
 			selector = this.getSelectorForElement(element.get(0));
 		}
-		
+
 		media = $("#canvas").hasClass("tablet") ? "tablet" : $("#canvas").hasClass("mobile") ? "mobile" : "desktop";
 
 		//styles[media][selector][styleProp] = value
@@ -2483,13 +2424,13 @@ Vvveb.StyleManager = {
 	},
 
 
-	_getCssStyle: function(element, styleProp){
+	_getCssStyle: function (element, styleProp) {
 		if (!element.length) return '';
-		
+
 		var value = "";
 		var el = element.get(0);
 
-		if (typeof(element) == "string") {
+		if (typeof (element) == "string") {
 			selector = element;
 		} else {
 			selector = this.getSelectorForElement(el);
@@ -2499,7 +2440,7 @@ Vvveb.StyleManager = {
 
 		if (el.style && el.style.length > 0 && el.style[styleProp])//check inline
 			var value = el.style[styleProp];
-		else if (this.styles[media] !== undefined &&  this.styles[media][selector] !== undefined && this.styles[media][selector][styleProp] !== undefined) {	//check defined css
+		else if (this.styles[media] !== undefined && this.styles[media][selector] !== undefined && this.styles[media][selector][styleProp] !== undefined) {	//check defined css
 			var value = this.styles[media][selector][styleProp];
 		}
 		else if (window.getComputedStyle) {
@@ -2517,55 +2458,55 @@ Vvveb.StyleManager = {
 }
 
 Vvveb.ContentManager = {
-	getAttr: function(element, attrName) {
+	getAttr: function (element, attrName) {
 		return element.attr(attrName);
 	},
-	
-	setAttr: function(element, attrName, value) {
+
+	setAttr: function (element, attrName, value) {
 		return element.attr(attrName, value);
 	},
-	
-	setHtml: function(element, html) {
+
+	setHtml: function (element, html) {
 		return element.html(html);
 	},
-	
-	getHtml: function(element) {
+
+	getHtml: function (element) {
 		return element.html();
 	},
 
-	setText: function(element, text) {
+	setText: function (element, text) {
 		return element.text(text);
 	},
-	
-	getText: function(element) {
+
+	getText: function (element) {
 		return element.text();
 	},
 };
 
-function getNodeTree (node, parent, allowedComponents) {
-	
-	function getNodeTreeTraverse (node, parent) {
-		
+function getNodeTree(node, parent, allowedComponents) {
+
+	function getNodeTreeTraverse(node, parent) {
+
 		if (node.hasChildNodes()) {
 			for (var j = 0; j < node.childNodes.length; j++) {
-				
+
 				child = node.childNodes[j];
 
 				//skip text and comments nodes
 				if (child.nodeType == 3 || child.nodeType == 8) {
 					continue;
 				}
-				
-				if (child && child["attributes"] != undefined && 
+
+				if (child && child["attributes"] != undefined &&
 					(matchChild = Vvveb.Components.matchNode(child))) {
 
 					if (Array.isArray(allowedComponents)
 						&& allowedComponents.indexOf(matchChild.type) == -1) {
-						
-						element = getNodeTreeTraverse(child, parent);	
+
+						element = getNodeTreeTraverse(child, parent);
 						continue;
 					}
-				
+
 					element = {
 						name: matchChild.name,
 						image: matchChild.image,
@@ -2573,49 +2514,45 @@ function getNodeTree (node, parent, allowedComponents) {
 						node: child,
 						children: []
 					};
-					
+
 					element.children = [];
 					parent.push(element);
-					
+
 					element = getNodeTreeTraverse(child, element.children);
-				} else
-				{
-					element = getNodeTreeTraverse(child, parent);	
+				} else {
+					element = getNodeTreeTraverse(child, parent);
 				}
 			}
 		}
 
 		return false;
 	}
-	
+
 	getNodeTreeTraverse(node, parent);
 }
 
 function drawComponentsTree(tree) {
 	var j = 1;
 	var prefix = Math.floor(Math.random() * 100);
-	
+
 	function drawComponentsTreeTraverse(tree) {
 		var html = $("<ol></ol>");
 		j++;
-		
-		for (i in tree)
-		{
+
+		for (i in tree) {
 			var node = tree[i];
-			var id = prefix + '-' + j + '-' + i; 
-			
-			if (tree[i].children.length > 0) 
-			{
+			var id = prefix + '-' + j + '-' + i;
+
+			if (tree[i].children.length > 0) {
 				var li = $('<li data-component="' + node.name + '">\
 								<label for="id' + id + '" style="background-image:url(' + Vvveb.imgBaseUrl + node.image + ')"><span>' + node.name + '</span></label>\
 								<input type="checkbox" id="id' + id + '">\
-							</li>');		
+							</li>');
 				li.append(drawComponentsTreeTraverse(node.children));
 			}
-			else 
-			{
-				var li =$('<li data-component="' + node.name + '" class="file">\
-							<label for="id' +  id + '" style="background-image:url(' + Vvveb.imgBaseUrl + node.image + ')"><span>' + node.name + '</span></label>\
+			else {
+				var li = $('<li data-component="' + node.name + '" class="file">\
+							<label for="id' + id + '" style="background-image:url(' + Vvveb.imgBaseUrl + node.image + ')"><span>' + node.name + '</span></label>\
 							<input type="checkbox" id="id' + id + '">\
 							</li>');
 			}
@@ -2623,10 +2560,10 @@ function drawComponentsTree(tree) {
 			li.data("node", node.node);
 			html.append(li);
 		}
-		
+
 		return html;
 	}
-	
+
 	return drawComponentsTreeTraverse(tree);
 }
 
@@ -2635,23 +2572,23 @@ var selected = null;
 var dragover = null;
 
 Vvveb.SectionList = {
-	
+
 	selector: '.sections-container',
 	allowedComponents: {},
-	
-	init: function(allowedComponents = {}) {
+
+	init: function (allowedComponents = {}) {
 
 		this.allowedComponents = allowedComponents;
-		
+
 		$(this.selector).on("click", "> div .controls", function (e) {
 			var node = $(e.currentTarget.parentNode).data("node");
 			if (node) {
-				
-			delay(
-				() => Vvveb.Builder.frameHtml.animate({
-					scrollTop: $(node).offset().top - ($(node).height() / 2)
-				}, 500), 
-			300);				
+
+				delay(
+					() => Vvveb.Builder.frameHtml.animate({
+						scrollTop: $(node).offset().top - ($(node).height() / 2)
+					}, 500),
+					300);
 
 				//node.click();
 				Vvveb.Builder.selectNode(node);
@@ -2661,21 +2598,21 @@ Vvveb.SectionList = {
 			node = $(e.currentTarget).data("node");
 			node.click();
 		});
-		
-		
+
+
 		$(this.selector).on("click", "li[data-component] label ", function (e) {
 			node = $(e.currentTarget.parentNode).data("node");
-			
+
 			delay(
 				() => Vvveb.Builder.frameHtml.animate({
 					scrollTop: $(node).offset().top - ($(node).height() / 2)
-				}, 1000), 
-			300);
+				}, 1000),
+				300);
 
 			node.click();
 		}).on("mouseenter", "li[data-component] label", function (e) {
 			node = $($(e.currentTarget.parentNode).data("node"));
-			node.css("outline","1px dashed blue");
+			node.css("outline", "1px dashed blue");
 			/*
 			delay(
 				() => Vvveb.Builder.frameHtml.animate({
@@ -2684,30 +2621,30 @@ Vvveb.SectionList = {
 			1000);
 
 			$(node).trigger("mousemove");
-			*/ 
-		}).on("mouseleave",  "li[data-component] label",  function (e){
+			*/
+		}).on("mouseleave", "li[data-component] label", function (e) {
 			node = $($(e.currentTarget.parentNode).data("node"));
-			node.css("outline","");
+			node.css("outline", "");
 			if (node.attr("style") == "") node.removeAttr("style");
-		});		
-		
+		});
+
 		$(this.selector).on("dragstart", "> div", this.dragStart);
 		$(this.selector).on("dragover", "> div", this.dragOver);
 		$(this.selector).on("dragend", "> div", this.dragEnd);
-		
+
 		$(this.selector).on("click", ".delete-btn", function (e) {
 			var section = $(e.currentTarget).parents(".section-item");
 			var node = section.data("node");
 			node.remove();
 			section.remove();
-			
+
 			e.stopPropagation();
 			e.preventDefault();
 		});
-		
+
 		$(".sections-list").on("mouseenter", "li[data-section]", function (e) {
 			var src = $("img", this).attr("src");
-			$(".block-preview img").attr("src", src ).show();
+			$(".block-preview img").attr("src", src).show();
 		}).on("mouseleave", "li[data-section]", function (e) {
 			$(".block-preview img").attr("src", "").hide();
 		});
@@ -2731,29 +2668,29 @@ Vvveb.SectionList = {
 			e.preventDefault();
 		});
 		*/
-		
-		
+
+
 		var self = this;
 		$("#sections .sections-list").on("click", " .add-section-btn", function (e) {
 			var section = Vvveb.Sections.get(this.parentNode.dataset.type);
 			var node = $(section.html);
 			var sectionType = node[0].tagName.toLowerCase();
 			var afterSection = $("> " + sectionType + ":last", Vvveb.Builder.frameBody);
-			
+
 			if (afterSection.length) {
 				afterSection.after(node);
 			} else {
 				if (sectionType == "nav") {
-					afterSection = $("> nav:first,> header:first", Vvveb.Builder.frameBody);		
-					
+					afterSection = $("> nav:first,> header:first", Vvveb.Builder.frameBody);
+
 					if (afterSection.length) {
 						afterSection.before(node);
 					} else {
 						$(Vvveb.Builder.frameBody).append(node);
 					}
 				} else if (sectionType != "footer") {
-					afterSection = $("body > footer:last", Vvveb.Builder.frameBody);		
-					
+					afterSection = $("body > footer:last", Vvveb.Builder.frameBody);
+
 					if (afterSection.length) {
 						afterSection.before(node);
 					} else {
@@ -2767,63 +2704,65 @@ Vvveb.SectionList = {
 			Vvveb.Builder.frameHtml.animate({
 				scrollTop: $(node).offset().top
 			}, 1000);
-			
+
 			delay(() => node.click(), 1000);
-			
+
 			node = node.get(0);
-			Vvveb.Undo.addMutation({type: 'childList', 
-									target: node.parentNode, 
-									addedNodes: [node], 
-									nextSibling: node.nextSibling});								
+			Vvveb.Undo.addMutation({
+				type: 'childList',
+				target: node.parentNode,
+				addedNodes: [node],
+				nextSibling: node.nextSibling
+			});
 
 
 			self.loadSections();
 			e.preventDefault();
 		});
-		
+
 		$(this.selector).on("click", ".properties-btn", function (e) {
 			var section = $(e.currentTarget).parents(".section-item");
 			var node = section.data("node");
 			node.click();
-			
+
 			e.preventDefault();
 		});
-		
+
 	},
-	
-	getSections: function() {
+
+	getSections: function () {
 		var sections = [];
-		var sectionList = 
+		var sectionList =
 			$('> section, > header, > footer, > main, > nav', window.FrameDocument.body);
-		
-			sectionList.each(function (i, node) {
+
+		sectionList.each(function (i, node) {
 			var id = node.id ? node.id : (node.title ? node.title : node.className);
 			if (!id) {
-					id = 'section-' +  Math.floor(Math.random() * 10000);
+				id = 'section-' + Math.floor(Math.random() * 10000);
 			}
 			var section = {
-				name: id.replace(/[^\w+]+/g,' '),
+				name: id.replace(/[^\w+]+/g, ' '),
 				id: node.id,
 				type: node.tagName.toLowerCase(),
 				node: node
 			};
 			sections.push(section);
 		});
-		
+
 		return sections;
 	},
 
-	loadComponents: function(sectionListItem, section, allowedComponents = {}) {
+	loadComponents: function (sectionListItem, section, allowedComponents = {}) {
 
 		var tree = [];
 		getNodeTree(section, tree, allowedComponents);
-		
+
 		var html = drawComponentsTree(tree);
 		$("ol", sectionListItem).replaceWith(html);
 	},
-	
-	
-	addSection: function(data) {
+
+
+	addSection: function (data) {
 		var section = $(tmpl("vvveb-section", data));
 		section.data("node", data.node);
 		$(this.selector).append(section);
@@ -2831,7 +2770,7 @@ Vvveb.SectionList = {
 		this.loadComponents(section, data.node, this.allowedComponents);
 	},
 
-	loadSections: function() {
+	loadSections: function () {
 		var sections = this.getSections();
 
 		$(this.selector).html("");
@@ -2840,16 +2779,16 @@ Vvveb.SectionList = {
 		}
 
 	},
-	
+
 	//drag and drop 
-	dragOver: function(e) {
-		if (e.target != dragover && 
+	dragOver: function (e) {
+		if (e.target != dragover &&
 			e.target.className == "section-item") {
 
 			if (dragover) {
 				dragover.classList.remove("drag-over");
 			}
-			dragover = e.target;  
+			dragover = e.target;
 			dragover.classList.add("drag-over");
 		}
 	},
@@ -2872,16 +2811,18 @@ Vvveb.SectionList = {
 				//replace section
 				replaceNode.parentNode.insertBefore(selectedNode, replaceNode);
 			}
-			
+
 			dragover.classList.remove("drag-over");
-			
+
 			var node = selectedNode.get(0);
-			
-			self.dragMoveMutation = {type: 'move', 
-								target: node,
-								oldParent: node.parentNode,
-								oldNextSibling: node.nextSibling};
-											
+
+			self.dragMoveMutation = {
+				type: 'move',
+				target: node,
+				oldParent: node.parentNode,
+				oldNextSibling: node.nextSibling
+			};
+
 		}
 
 		selected = null
@@ -2894,21 +2835,21 @@ Vvveb.SectionList = {
 }
 
 Vvveb.FileManager = {
-	tree:false,
-	pages:{},
+	tree: false,
+	pages: {},
 	currentPage: false,
 	allowedComponents: {},
-	
-	init: function(allowedComponents = {}) {
-		
+
+	init: function (allowedComponents = {}) {
+
 		this.allowedComponents = allowedComponents;
 		this.tree = $("#filemanager .tree > ol").html("");
-		
+
 		$(this.tree).on("click", "a", function (e) {
 			e.preventDefault();
 			return false;
 		});
-		
+
 		$(this.tree).on("click", ".delete", function (e) {
 			let element = $(e.target).closest("li");
 			Vvveb.FileManager.deletePage(element, e);
@@ -2929,25 +2870,25 @@ Vvveb.FileManager = {
 			e.preventDefault();
 			return false;
 		});
-		
+
 		$(this.tree).on("click", "li[data-page] label", function (e) {
 			var page = $(this.parentNode).data("page");
 			if (page) Vvveb.FileManager.loadPage(page, allowedComponents);
-			return false;			
+			return false;
 		})
-		
+
 		$(this.tree).on("click", "li[data-component] label ", function (e) {
 			node = $(e.currentTarget.parentNode).data("node");
-			
+
 			delay(
 				() => Vvveb.Builder.frameHtml.animate({
 					scrollTop: $(node).offset().top - ($(node).height() / 2)
 				}, 500),
-			500);
-			
+				500);
+
 
 			node.click();
-			
+
 		}).on("mouseenter", "li[data-component] label", function (e) {
 
 			node = $(e.currentTarget.parentNode).data("node");
@@ -2956,23 +2897,23 @@ Vvveb.FileManager = {
 				() => Vvveb.Builder.frameHtml.animate({
 					scrollTop: $(node).offset().top - ($(node).height() / 2)
 				}, 500),
-			 1000);
+				1000);
 
 			$(node).trigger("mousemove");
-			
+
 		});
 	},
-	
-	deletePage: function(element, e) {
+
+	deletePage: function (element, e) {
 		let page = element[0].dataset;
 		if (confirm(`Are you sure you want to delete "${page.file}"template?`)) {
 			$.ajax({
 				type: "POST",
 				url: deleteUrl,//set your server side save script url
-				data: {file:page.file},
+				data: { file: page.file },
 				success: function (data, text) {
 					let bg = "bg-success";
-					if (data.success) {		
+					if (data.success) {
 						$("#top-panel .save-btn").attr("disabled", "true");
 					} else {
 						//bg = "bg-danger";
@@ -2986,9 +2927,9 @@ Vvveb.FileManager = {
 			});
 			element.remove();
 		}
-	},	
-	
-	renamePage: function(element, e, duplicate = false) {
+	},
+
+	renamePage: function (element, e, duplicate = false) {
 		let page = element[0].dataset;
 		let newfile = prompt(`Enter new file name for "${page.file}"`, page.file);
 		let _self = this;
@@ -2996,10 +2937,10 @@ Vvveb.FileManager = {
 			$.ajax({
 				type: "POST",
 				url: renameUrl,//set your server side save script url
-				data: {file:page.file, newfile:newfile, duplicate},
+				data: { file: page.file, newfile: newfile, duplicate },
 				success: function (data, text) {
 					let bg = "bg-success";
-					if (data.success) {		
+					if (data.success) {
 						$("#top-panel .save-btn").attr("disabled", "true");
 					} else {
 						//bg = "bg-danger";
@@ -3015,99 +2956,95 @@ Vvveb.FileManager = {
 						data["title"] = newName;
 						Vvveb.FileManager.addPage(baseName, data);
 					} else {
-					_self.pages[page.page]["file"] = newfile;
+						_self.pages[page.page]["file"] = newfile;
 						_self.pages[page.page]["title"] = newName;
 						$("> label span", element).html(newName);
-					page.url = page.url.replace(page.file, newfile);
-					page.file = newfile;
-					_self.pages[page.page]["url"] = page.url;
-					_self.pages[page.page]["file"] = page.file;
+						page.url = page.url.replace(page.file, newfile);
+						page.file = newfile;
+						_self.pages[page.page]["url"] = page.url;
+						_self.pages[page.page]["file"] = page.file;
 					}
-					
+
 				},
 				error: function (data) {
 					displayToast("bg-danger", data.responseText);
 				}
 			});
 
-			
+
 		}
 	},
-	
-	addPage: function(name, data) {
+
+	addPage: function (name, data) {
 		this.pages[name] = data;
 		data['name'] = name;
 
 		var folder = this.tree;
-		if (data.folder)
-		{
-			if (!(folder = this.tree.find('li[data-folder="' + data.folder + '"]')).length) 
-			{
+		if (data.folder) {
+			if (!(folder = this.tree.find('li[data-folder="' + data.folder + '"]')).length) {
 				data.folderTitle = data.folder[0].toUpperCase() + data.folder.slice(1);
 				folder = $(tmpl("vvveb-filemanager-folder", data));
 				this.tree.append(folder);
 			}
-			
+
 			folder = folder.find("> ol");
-		} 
-		
+		}
+
 		folder.append(
 			tmpl("vvveb-filemanager-page", data));
 	},
-	
-	addPages: function(pages) {
+
+	addPages: function (pages) {
 		for (page in pages) {
 			this.addPage(pages[page]['name'], pages[page]);
 		}
 	},
-	
-	addComponent: function(name, url, title, page) {
+
+	addComponent: function (name, url, title, page) {
 		$("[data-page='" + page + "'] > ol", this.tree).append(
-			tmpl("vvveb-filemanager-component", {name:name, url:url, title:title}));
+			tmpl("vvveb-filemanager-component", { name: name, url: url, title: title }));
 	},
-	
-	loadComponents: function(allowedComponents = {}) {
+
+	loadComponents: function (allowedComponents = {}) {
 
 		var tree = [];
 		getNodeTree(window.FrameDocument.body, tree, allowedComponents);
-		
+
 		var html = drawComponentsTree(tree);
-		console.log(this.html);
 		$("[data-page='" + this.currentPage + "'] > ol", this.tree).replaceWith(html);
 	},
-	
-	getCurrentUrl: function() {
-		if (this.currentPage) {
-		return this.pages[this.currentPage]['url'];
-		}
-	},	
 
-	getCurrentPage: function() {
-		return this.currentPage;
-	},	
-    
-   	getPageData: function(key) {
+	getCurrentUrl: function () {
 		if (this.currentPage) {
-		return this.pages[this.currentPage][key];
+			return this.pages[this.currentPage]['url'];
 		}
-	},	
-    
-    
-    getCurrentFileName: function() {
-		if (this.currentPage)
-        {
-            var folder = this.pages[this.currentPage]['folder'];
-            folder = folder ? folder + '/': ''; 
-            return folder + this.pages[this.currentPage]['file'];
-        }
 	},
-	
-	reloadCurrentPage: function() {
-		if (this.currentPage)
-		return this.loadPage(this.currentPage);
+
+	getCurrentPage: function () {
+		return this.currentPage;
 	},
-	
-	loadPage: function(name, allowedComponents = false, disableCache = true, loadComponents = false) {
+
+	getPageData: function (key) {
+		if (this.currentPage) {
+			return this.pages[this.currentPage][key];
+		}
+	},
+
+
+	getCurrentFileName: function () {
+		if (this.currentPage) {
+			var folder = this.pages[this.currentPage]['folder'];
+			folder = folder ? folder + '/' : '';
+			return folder + this.pages[this.currentPage]['file'];
+		}
+	},
+
+	reloadCurrentPage: function () {
+		if (this.currentPage)
+			return this.loadPage(this.currentPage);
+	},
+
+	loadPage: function (name, allowedComponents = false, disableCache = true, loadComponents = false) {
 		let page = $("[data-page='" + name + "']", this.tree);
 		//remove active from current active page
 		$("[data-page]", this.tree).removeClass("active");
@@ -3119,25 +3056,25 @@ Vvveb.FileManager = {
 		this.currentPage = name;
 		var url = this.pages[name]['url'];
 		$(".btn-preview-url").attr("href", url);
-		
-		Vvveb.Builder.loadUrl(url + (disableCache ? (url.indexOf('?') > -1 ? '&r=':'?r=') + Math.random():''), 
-			function () { 
+
+		Vvveb.Builder.loadUrl(url + (disableCache ? (url.indexOf('?') > -1 ? '&r=' : '?r=') + Math.random() : ''),
+			function () {
 				if (loadComponents) { Vvveb.FileManager.loadComponents(allowedComponents); }
-				Vvveb.SectionList.loadSections(allowedComponents); 
-				Vvveb.StyleManager.init(); 
+				Vvveb.SectionList.loadSections(allowedComponents);
+				Vvveb.StyleManager.init();
 			});
 	},
 
-	scrollBottom: function() {
-		var scroll = this.tree.parent();	
-		scroll.scrollTop(scroll.prop("scrollHeight"));	
+	scrollBottom: function () {
+		var scroll = this.tree.parent();
+		scroll.scrollTop(scroll.prop("scrollHeight"));
 	},
 }
 
 Vvveb.Breadcrumb = {
-	tree:false,	
-	
-	init: function() {
+	tree: false,
+
+	init: function () {
 		this.tree = $(".breadcrumb-navigator > .breadcrumb").html("");
 
 		$(this.tree).on("click", ".breadcrumb-item", function (e) {
@@ -3149,7 +3086,7 @@ Vvveb.Breadcrumb = {
 					() => Vvveb.Builder.frameHtml.animate({
 						scrollTop: $(node).offset().top - ($(node).height() / 2)
 					}, 500),
-				 100);
+					100);
 			}
 			e.preventDefault();
 		}).on("mouseenter", ".breadcrumb-item", function (e) {
@@ -3168,7 +3105,7 @@ Vvveb.Breadcrumb = {
 
 			$(node).trigger("mousemove");
 			*/
-			
+
 		})/*.on("mouseleave", ".breadcrumb-item", function (e){
 			let node = $($(this).data("node"));
 			node.css("outline","");
@@ -3176,65 +3113,65 @@ Vvveb.Breadcrumb = {
 		});*/
 
 	},
-	
-	addElement: function(data, element) {
+
+	addElement: function (data, element) {
 		var li = $(tmpl("vvveb-breadcrumb-navigaton-item", data));
-		li.data("node", element);	
+		li.data("node", element);
 		$(this.tree).prepend(li);
 	},
-		
-	loadBreadcrumb: function(element) {
+
+	loadBreadcrumb: function (element) {
 		this.tree.html("");
 		var currentElement = element;
-		
+
 		while (currentElement.parentElement) {
 			let elementType = Vvveb.Builder._getElementType(currentElement);
 			let el = elementType[1].toLowerCase();
-		
+
 			this.addElement({
-				"name":  el + " " + elementType[0],
+				"name": el + " " + elementType[0],
 				"className": "el-" + el
 			}, currentElement);
-			
+
 			currentElement = currentElement.parentElement;
 		}
 	}
 }
 
 Vvveb.FontsManager = {
-	
-	activeFonts:[],
+
+	activeFonts: [],
 	providers: {},//{"google":GoogleFontsManager};
-	
-	addProvider: function(provider, Obj) {
+
+	addProvider: function (provider, Obj) {
 		this.providers[provider] = Obj;
 	},
-	
+
 	//add also element so we can keep track of the used fonts to remove unused ones
-	addFont: function(provider, fontFamily, element = false) {
+	addFont: function (provider, fontFamily, element = false) {
 		if (!provider) return;
-		
+
 		let providerObj = this.providers[provider];
 		if (providerObj) {
 			providerObj.addFont(fontFamily);
-			this.activeFonts.push({provider, fontFamily, element});
+			this.activeFonts.push({ provider, fontFamily, element });
 		}
 	},
-	
-	removeFont: function(provider, fontFamily) {
+
+	removeFont: function (provider, fontFamily) {
 		let providerObj = this.providers[provider];
-		if (provider!= "default" && providerObj) {
+		if (provider != "default" && providerObj) {
 			providerObj.removeFont(fontFamily);
 		}
 	},
-	
+
 	//check if the added fonts are still used for the elements they were set and remove unused ones
-	cleanUnusedFonts: function (){
+	cleanUnusedFonts: function () {
 		for (i in this.activeFonts) {
 			let elementFont = this.activeFonts[i];
 			if (elementFont.element) {
 				//if (getComputedStyle(elementFont.element)['font-family'] != elementFont.fontFamily) {
-				if (Vvveb.StyleManager.getStyle(element,'font-family') != elementFont.fontFamily) {
+				if (Vvveb.StyleManager.getStyle(element, 'font-family') != elementFont.fontFamily) {
 					this.removeFont(elementFont.provider, elementFont.fontFamily);
 				}
 			}
@@ -3242,135 +3179,135 @@ Vvveb.FontsManager = {
 	}
 };
 
-	
+
 function friendlyName(name) {
-	name = name.replaceAll("--bs-","").replaceAll("-", " ").trim();  
+	name = name.replaceAll("--bs-", "").replaceAll("-", " ").trim();
 	return name = name[0].toUpperCase() + name.slice(1);
 }
 
 Vvveb.ColorPaletteManager = {
-	
-	getAllCSSVariableNames:  function (styleSheets = document.styleSheets, selector){
-	   let cssVars = {"font": {}, "color" : {}, "dimensions": {}};
-	   for(var i = 0; i < styleSheets.length; i++){
-		  try{ 
-			 let cssRules =  styleSheets[i].cssRules;
-			 for( var j = 0; j < cssRules.length; j++){
-				try{
-				   let style = cssRules[j].style;	
-				   if (selector && cssRules[j].selectorText && cssRules[j].selectorText != selector) continue;
-				   for(var k = 0; k < style.length; k++){
-					  let name = style[k];
-					  let value = style.getPropertyValue(name).trim();
-					  let type = "";
-					  
-					  
-					  if(name.startsWith("--")){
-						//ignore bootstrap rgb variables
-						if (name.endsWith("-rgb")) continue;
-						//ignore variables depending on other variables
-						if (value.startsWith("var(")) continue;
 
-						 let friendlyName = name.replace("--bs-","").replaceAll("-", " ");  
-						 
-						 if (value.startsWith("#")) {
-							 type = "color";
-						} else if (value.indexOf('"') >= 0 || value.indexOf("'") >= 0) {
-							type = "font";
-						} else if (value.endsWith('em') > 0 || value.endsWith('px') > 0) {
-							type = "dimensions";
-						} else if (!isNaN(parseFloat(value))) {
-							type = "dimensions";
-						}
+	getAllCSSVariableNames: function (styleSheets = document.styleSheets, selector) {
+		let cssVars = { "font": {}, "color": {}, "dimensions": {} };
+		for (var i = 0; i < styleSheets.length; i++) {
+			try {
+				let cssRules = styleSheets[i].cssRules;
+				for (var j = 0; j < cssRules.length; j++) {
+					try {
+						let style = cssRules[j].style;
+						if (selector && cssRules[j].selectorText && cssRules[j].selectorText != selector) continue;
+						for (var k = 0; k < style.length; k++) {
+							let name = style[k];
+							let value = style.getPropertyValue(name).trim();
+							let type = "";
 
-						if (type) {
-							 if (!cssVars[type]) cssVars[type] = {};
-							 cssVars[type][name] = {value, type, friendlyName};
-						 }
-					  }
-				   }
-				} catch (error) {}
-			 }
-		  } catch (error) {}
-	   }
-	   return cssVars;
-	},
-	
-	getCssWithVars:  function (styleSheets = document.styleSheets, vars){
-	   let cssVars = {};
-	   let css = "";
-	   let cssStyles = "";
-	   for(var i = 0; i < styleSheets.length; i++){
-		  try{ 
-			 let cssRules =  styleSheets[i].cssRules;
-			 for( var j = 0; j < cssRules.length; j++){
-				try{
-				   let style = cssRules[j].style;	
-				   //if (selector && cssRules[j].selectorText && cssRules[j].selectorText != selector) continue;
-				   cssStyles = "";
-				   for(var k = 0; k < style.length; k++){
-					  let name = style[k];
-					  let value = style.getPropertyValue(name);
-					  if(name.startsWith('--bs-btn-')) {
-						  for (v in vars) {
-							  if (value == vars[v]) {
-								  cssVars[name] = v;
-								  cssStyles += name + ":var(" + v + ");\n";
+
+							if (name.startsWith("--")) {
+								//ignore bootstrap rgb variables
+								if (name.endsWith("-rgb")) continue;
+								//ignore variables depending on other variables
+								if (value.startsWith("var(")) continue;
+
+								let friendlyName = name.replace("--bs-", "").replaceAll("-", " ");
+
+								if (value.startsWith("#")) {
+									type = "color";
+								} else if (value.indexOf('"') >= 0 || value.indexOf("'") >= 0) {
+									type = "font";
+								} else if (value.endsWith('em') > 0 || value.endsWith('px') > 0) {
+									type = "dimensions";
+								} else if (!isNaN(parseFloat(value))) {
+									type = "dimensions";
+								}
+
+								if (type) {
+									if (!cssVars[type]) cssVars[type] = {};
+									cssVars[type][name] = { value, type, friendlyName };
+								}
 							}
-						  }
-					  }
-					  
-				   }
-				   if (cssStyles) {
-				   css += cssRules[j].selectorText + "{\n"
-				   css += cssStyles;
-				   css += "}\n";
-					}
-				} catch (error) {}
-			 }
-		  } catch (error) {}
-	   }
-	   return cssVars;
+						}
+					} catch (error) { }
+				}
+			} catch (error) { }
+		}
+		return cssVars;
 	},
 
-	init: function(document) {
+	getCssWithVars: function (styleSheets = document.styleSheets, vars) {
+		let cssVars = {};
+		let css = "";
+		let cssStyles = "";
+		for (var i = 0; i < styleSheets.length; i++) {
+			try {
+				let cssRules = styleSheets[i].cssRules;
+				for (var j = 0; j < cssRules.length; j++) {
+					try {
+						let style = cssRules[j].style;
+						//if (selector && cssRules[j].selectorText && cssRules[j].selectorText != selector) continue;
+						cssStyles = "";
+						for (var k = 0; k < style.length; k++) {
+							let name = style[k];
+							let value = style.getPropertyValue(name);
+							if (name.startsWith('--bs-btn-')) {
+								for (v in vars) {
+									if (value == vars[v]) {
+										cssVars[name] = v;
+										cssStyles += name + ":var(" + v + ");\n";
+									}
+								}
+							}
+
+						}
+						if (cssStyles) {
+							css += cssRules[j].selectorText + "{\n"
+							css += cssStyles;
+							css += "}\n";
+						}
+					} catch (error) { }
+				}
+			} catch (error) { }
+		}
+		return cssVars;
+	},
+
+	init: function (document) {
 		Vvveb.Builder.selectedEl = $(document.body);
 		Vvveb.Components.render("config/bootstrap", "#configuration .component-properties");
 	},
-	
+
 };
 
 
 // Toggle fullscreen
 function launchFullScreen(document) {
-  if(document.documentElement.requestFullScreen) {
-    
+	if (document.documentElement.requestFullScreen) {
+
 		if (document.FullScreenElement)
 			document.exitFullScreen();
 		else
 			document.documentElement.requestFullScreen();
-//mozilla		
-  } else if(document.documentElement.mozRequestFullScreen) {
+		//mozilla		
+	} else if (document.documentElement.mozRequestFullScreen) {
 
 		if (document.mozFullScreenElement)
 			document.mozCancelFullScreen();
 		else
 			document.documentElement.mozRequestFullScreen();
-//webkit	  
-  } else if(document.documentElement.webkitRequestFullScreen) {
+		//webkit	  
+	} else if (document.documentElement.webkitRequestFullScreen) {
 
 		if (document.webkitFullscreenElement)
 			document.webkitExitFullscreen();
 		else
 			document.documentElement.webkitRequestFullScreen();
-//ie	  
-  } else if(document.documentElement.msRequestFullscreen) {
+		//ie	  
+	} else if (document.documentElement.msRequestFullscreen) {
 
 		if (document.msFullScreenElement)
 			document.msExitFullscreen();
 		else
 			document.documentElement.msRequestFullscreen();
-  }
+	}
 }
 
 

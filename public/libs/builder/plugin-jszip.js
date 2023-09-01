@@ -17,77 +17,77 @@ https://github.com/givanz/Vvvebjs
 */
 
 Vvveb.Gui.download =
-function () {
+  function () {
     let assets = [];
-    
+
     function addUrl(url, href, binary) {
-        assets.push({url, href, binary});
+      assets.push({ url, href, binary });
     }
 
     let html = Vvveb.Builder.frameHtml;
 
     //stylesheets
-    $("link[href$='.css']", html).each(function(i, e) {
-        addUrl(e.href, e.getAttribute("href"), false);
+    $("link[href$='.css']", html).each(function (i, e) {
+      addUrl(e.href, e.getAttribute("href"), false);
     });
 
     //javascripts
-    $("script[src$='.js']", html).each(function(i, e) {
-        addUrl(e.src, e.getAttribute("src"), false);
+    $("script[src$='.js']", html).each(function (i, e) {
+      addUrl(e.src, e.getAttribute("src"), false);
     });
-    
+
     //images
-    $("img[src]", html).each(function(i, e) {
-        addUrl(e.src, e.getAttribute("src"), true);
+    $("img[src]", html).each(function (i, e) {
+      addUrl(e.src, e.getAttribute("src"), true);
     });
 
 
     let zip = new JSZip();
     let promises = [];
-    
+
     for (i in assets) {
-        let asset = assets[i];
-        let url = asset.url;
-        let href = asset.href;
-        let binary = asset.binary;
-        
-        let filename = href.substring(href.lastIndexOf('/')+1);
-        let path = href.substring(0, href.lastIndexOf('/')).replace(/\.\.\//g, "");
-        if (href.indexOf("://") > 0) {
-			//ignore path for external assets
-			path = "";
-		}
+      let asset = assets[i];
+      let url = asset.url;
+      let href = asset.href;
+      let binary = asset.binary;
 
-        promises.push(new Promise((resolve, reject) => {
+      let filename = href.substring(href.lastIndexOf('/') + 1);
+      let path = href.substring(0, href.lastIndexOf('/')).replace(/\.\.\//g, "");
+      if (href.indexOf("://") > 0) {
+        //ignore path for external assets
+        path = "";
+      }
 
-          let request = new XMLHttpRequest();
-          request.open('GET', url);
-          if (binary) {
-            request.responseType = 'blob';
+      promises.push(new Promise((resolve, reject) => {
+
+        let request = new XMLHttpRequest();
+        request.open('GET', url);
+        if (binary) {
+          request.responseType = 'blob';
+        } else {
+          request.responseType = 'text';
+        }
+
+        request.onload = function () {
+          if (request.status === 200) {
+            resolve({ url, href, filename, path, binary, data: request.response, status: request.status });
           } else {
-            request.responseType = 'text';
+            //reject(Error('Error code:' + request.statusText));
+            console.error('Error code:' + request.statusText);
+            resolve({ status: request.status });
           }
+        };
 
-          request.onload = function() {
-            if (request.status === 200) {
-              resolve({url, href, filename, path, binary, data:request.response, status:request.status});
-            } else {
-              //reject(Error('Error code:' + request.statusText));
-              console.error('Error code:' + request.statusText);
-              resolve({status:request.status});
-            }
-          };
+        request.onerror = function () {
+          reject(Error('There was a network error.'));
+        };
 
-          request.onerror = function() {
-              reject(Error('There was a network error.'));
-          };
-
-          // Send the request
-          try {
-			request.send();          
-		 } catch (error) {
-			  console.error(error);
-		 }
+        // Send the request
+        try {
+          request.send();
+        } catch (error) {
+          console.error(error);
+        }
         /*  
         $.ajax({
           url: url,
@@ -100,56 +100,46 @@ function () {
             reject(error)
           },
         });
-        */ 
-     }));
+        */
+      }));
     }
-    
+
     Promise.all(promises).then((data) => {
-        let html = Vvveb.Builder.getHtml();
-        
-        for (i in data) {
-            let file = data[i];
-            let folder = zip;
-            
-            if (file.status == 200) {
-				if (file.path) {
-					file.path = file.path.replace(/^\//, "");
-					folder = zip.folder(file.path);
-				} else {
-					folder = zip;
-				}
-				
-				let url =  (file.path ? file.path + "/" : "") + file.filename.trim().replace(/^\//, "");
-				html = html.replace(file.href, url);
-								
-				folder.file(file.filename, file.data, {base64: file.binary});
-			}
+      let html = Vvveb.Builder.getHtml();
+
+      for (i in data) {
+        let file = data[i];
+        let folder = zip;
+
+        if (file.status == 200) {
+          if (file.path) {
+            file.path = file.path.replace(/^\//, "");
+            folder = zip.folder(file.path);
+          } else {
+            folder = zip;
+          }
+
+          let url = (file.path ? file.path + "/" : "") + file.filename.trim().replace(/^\//, "");
+          html = html.replace(file.href, url);
+
+          folder.file(file.filename, file.data, { base64: file.binary });
         }
-        
-        zip.file("index.html", html);
-        zip.generateAsync({type:"blob"})
-        .then(function(content) {
-            saveAs(content, Vvveb.FileManager.getCurrentPage());
-            // console.log(window.frames["myframe1"].document.getElementById("needCanvas").innerHTML);
-            console.log(Vvveb.FileManager.getCurrentPage());
-            setTimeout(() => {
-              document.getElementById("myframe1").contentWindow.location.reload(true);
-            }, 200)
-            document.getElementById("frameCanvas").src="http://localhost:8080/public/demo/"+Vvveb.FileManager.getCurrentPage()+"/index.html";
-            setTimeout(() => {
-              document.getElementById("myframe1").contentWindow.location.reload(true);
-            }, 200)
-            var xx = window.frames["myframe1"].document.getElementById("needCanvas").innerHTML;
-            // console.log(window.frames["myframe1"].document.getElementById("needCanvas").innerHTML);
-            document.getElementById("ss").innerHTML = xx;
-            html2canvas(document.getElementById("ss")).then(function (canvas) {
-              var a = document.createElement('a');
-              a.href = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-              a.download = Vvveb.FileManager.getCurrentPage()+'.png';
-              a.click();
-            });
+      }
+
+      zip.file("index.html", html);
+      zip.generateAsync({ type: "blob" })
+        .then(function (content) {
+          saveAs(content, Vvveb.FileManager.getCurrentPage());
+          console.log(Vvveb.FileManager.getCurrentPage());
+          document.getElementById("ss").innerHTML = html;
+          html2canvas(document.getElementById("ss")).then(function (canvas) {
+            var a = document.createElement('a');
+            a.href = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+            a.download = Vvveb.FileManager.getCurrentPage() + '.png';
+            a.click();
+          });
         });
     }).catch((error) => {
-        console.log(error)
-  })
-};
+      console.log(error)
+    })
+  };

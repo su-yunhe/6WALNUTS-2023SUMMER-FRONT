@@ -10,11 +10,15 @@ import Member from '@/views/Team/components/member.vue'
 import AllProject from '@/views/AllProject/index.vue'
 import SingleProject from '@/views/SingleProject/index.vue'
 import AddProject from '@/views/AddProject/index.vue'
+import ProjectFile from '@/views/projectFile/index.vue'
+import ProjectPrototype from '@/views/projectPrototype/index.vue'
 import Message from '@/views/Message/index.vue'
 import MessageReference from '@/views/Message/components/MessageReference.vue'
 import DocumentReference from "@/views/Message/components/DocumentReference.vue";
 import ChatReference from "@/views/Message/components/ChatReference.vue";
 import UserInfo from '@/views/UserInfo/index.vue'
+import UserMain from '@/views/UserMain/index.vue'
+import ProtoView from '@/views/SingleProject/ProtoView/index.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,10 +41,19 @@ const router = createRouter({
           path: '/addproject',
           component: AddProject
         },
+        {
+          path: '/projectFile/:projectId/:projectName',
+          // name: 'projectFile',
+          component: ProjectFile
+        },
+        {
+          path: '/projectPrototype/:id',
+          component: ProjectPrototype
+        },
         // 文章部分
         // 写文章
         {
-          path: '/writeArticle',
+          path: '/writeArticle/:projectId',
           component: WriteArticle
         },
         // 读文章
@@ -52,8 +65,8 @@ const router = createRouter({
         {
           path: '/modifyArticle/:id',
           component: WriteArticle
-        }
-        
+        },
+
       ]
     },
     {
@@ -67,25 +80,20 @@ const router = createRouter({
       component: Chat
     },
     {
-      path: '/user',
-      name: 'user',
-      component: User
-    },
-    {
       path: '/team',
       meta: {
         showFooter: true,
       },
       component: Team,
       name: 'team',
-      children:[
+      children: [
         {
           path: 'detail',
           name: 'detail',
           meta: {
             showFooter: false
           },
-          children:[
+          children: [
             {
               path: 'member',
               name: 'member',
@@ -108,6 +116,22 @@ const router = createRouter({
               path: '/addproject',
               component: AddProject
             },
+            // 文章部分
+            // 写文章
+            {
+              path: '/writeArticle',
+              component: WriteArticle
+            },
+            // 读文章
+            {
+              path: '/article/:id',
+              component: ReadArticle
+            },
+            // 修改文章
+            {
+              path: '/modifyArticle/:id',
+              component: WriteArticle
+            },
             {
               path: 'chat',
               name: 'chat'
@@ -121,16 +145,26 @@ const router = createRouter({
       path: '/message',
       component: Message,
       name: 'message',
-      children:[
-        {path:'reference',component:MessageReference},
-        {path:'document',component:DocumentReference},
-        {path:'document',component:ChatReference}
+      children: [
+        { path: 'reference', component: MessageReference },
+        { path: 'document', component: DocumentReference },
+        { path: 'document', component: ChatReference }
       ]
     },
     {
       path: '/userInfo',
       name: 'userInfo',
       component: UserInfo
+    },
+    {
+      path: '/userMain',
+      name: 'userMain',
+      component: UserMain
+    },
+    {
+      path: '/protoView',
+      name: 'protoView',
+      component: ProtoView
     }
   ]
 })

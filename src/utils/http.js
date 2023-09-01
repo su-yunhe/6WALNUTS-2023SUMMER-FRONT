@@ -2,26 +2,28 @@ import axios from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/userStore'
 import router from '@/router/index'
+import Qs from 'qs'
 // 创建axios实例
 const httpInstance = axios.create({
   baseURL: '/api',
   timeout: 5000
 })
-// axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 // axios请求拦截器
 httpInstance.interceptors.request.use(config => {
   // 设置请求头
   config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+  config.data = Qs.stringify(config.data)
   // 1. 从 pinia 获取 token 数据
-  const userStore = useUserStore()
-  const username = userStore.userInfo.username
-  const token = userStore.userInfo.authorization
-  if (username && token) {
-    config.data = config.data || {}
-    config.data.username = username
-    config.data.authorization = token
-  }
+  // const userStore = useUserStore()
+  // const username = userStore.userInfo.username
+  // const token = userStore.userInfo.authorization
+  // if (username && token) {
+  //   config.data = config.data || {}
+  //   config.data.username = username
+  //   config.data.authorization = token
+  // }
 
   return config
 }, e => Promise.reject(e))
