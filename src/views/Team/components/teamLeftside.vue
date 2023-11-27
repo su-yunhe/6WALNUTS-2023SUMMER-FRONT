@@ -44,7 +44,7 @@ const handleClose = (key, keyPath) => {
 }
 </script>
 
-<style>
+<style scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 100px;
   min-height: 400px;

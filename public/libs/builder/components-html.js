@@ -3,7 +3,7 @@ Vvveb.ComponentsGroup['Base'] =
 
 Vvveb.Components.extend("_base", "html/heading", {
     image: "icons/heading.svg",
-    name: "Heading",
+    name: "标题",
     nodes: ["h1", "h2","h3", "h4","h5","h6"],
     html: "<h1>Heading</h1>",
     
@@ -106,7 +106,7 @@ let linkComponentProperties = [
 
 Vvveb.Components.extend("_base", "html/link", {
     nodes: ["a"],
-    name: "Link",
+    name: "链接",
     html: '<a href="#" rel="noopener">Link Text</a>',
 	image: "icons/link.svg",
     properties: linkComponentProperties
@@ -114,7 +114,7 @@ Vvveb.Components.extend("_base", "html/link", {
 
 Vvveb.Components.extend("_base", "html/image", {
     nodes: ["img"],
-    name: "Image",
+    name: "图片",
     html: '<img src="' +  Vvveb.baseUrl + 'icons/image.svg" class="mw-100 align-center">',
     image: "icons/image.svg",
     resizable:true,//show select box resize handlers
@@ -230,7 +230,7 @@ Vvveb.Components.extend("_base", "html/image", {
 Vvveb.Components.extend("_base", "html/hr", {
     image: "icons/hr.svg",
     nodes: ["hr"],
-    name: "Horizontal Rule",
+    name: "水平线",
     html: "<hr>",
 	properties:[{
         name: "Type",
@@ -326,7 +326,7 @@ Vvveb.Components.extend("_base", "html/hr", {
 });
 
 Vvveb.Components.extend("_base", "html/label", {
-    name: "Label",
+    name: "标签",
     nodes: ["label"],
     html: '<label for="">Label</label>',
     properties: [{
@@ -339,7 +339,7 @@ Vvveb.Components.extend("_base", "html/label", {
 
 
 Vvveb.Components.extend("_base", "html/textinput", {
-    name: "Input",
+    name: "输入框",
 	nodes: ["input"],
 	//attributes: {"type":"text"},
     image: "icons/text_input.svg",
@@ -455,7 +455,7 @@ Vvveb.Components.extend("_base", "html/textinput", {
 
 Vvveb.Components.extend("_base", "html/selectinput", {
 	nodes: ["select"],
-    name: "Select Input",
+    name: "选择输入框",
     image: "icons/select_input.svg",
     html: '<select class="form-control"><option value="value1">Text 1</option><option value="value2">Text 2</option><option value="value3">Text 3</option></select>',
 
@@ -551,7 +551,7 @@ Vvveb.Components.extend("_base", "html/selectinput", {
 
 Vvveb.Components.extend("_base", "html/textareainput", {
 	nodes: ["textarea"],
-    name: "Text Area",
+    name: "文本框",
     image: "icons/text_area.svg",
     html: '<textarea class="form-control"></textarea>',
 	properties: [{
@@ -596,7 +596,7 @@ Vvveb.Components.extend("_base", "html/textareainput", {
     }]	
 });
 Vvveb.Components.extend("_base", "html/radiobutton", {
-    name: "Radio Button",
+    name: "选择按钮",
 	attributes: {"type":"radio"},
     image: "icons/radio.svg",
     html: `<div class="form-check">
@@ -653,7 +653,7 @@ Vvveb.Components.extend("_base", "html/radiobutton", {
 });
 
 Vvveb.Components.extend("_base", "html/checkbox", {
-    name: "Checkbox",
+    name: "勾选框",
     attributes: {"type":"checkbox"},
     image: "icons/checkbox.svg",
     html: `<div class="form-check">
@@ -710,7 +710,7 @@ Vvveb.Components.extend("_base", "html/fileinput", {
 
 Vvveb.Components.extend("_base", "html/video", {
     nodes: ["video"],
-    name: "Video",
+    name: "视频",
     html: '<video width="320" height="240" playsinline loop autoplay muted src="../../media/sample.webm" poster="../../media/sample.webp"><video>',
     dragHtml: '<img  width="320" height="240" src="' + Vvveb.baseUrl + 'icons/video.svg">',
 	image: "icons/video.svg",
@@ -778,7 +778,7 @@ Vvveb.Components.extend("_base", "html/video", {
 
 Vvveb.Components.extend("_base", "html/button", {
     nodes: ["button"],
-    name: "Html Button",
+    name: "网页按钮",
     image: "icons/button.svg",
     html: '<button>Button</button>',
     properties: [{
@@ -827,7 +827,7 @@ Vvveb.Components.extend("_base", "html/button", {
 
 Vvveb.Components.extend("_base", "html/paragraph", {
     nodes: ["p"],
-    name: "Paragraph",
+    name: "文段",
 	image: "icons/paragraph.svg",
 	html: '<p>Lorem ipsum</p>',
     properties: [{
@@ -870,7 +870,7 @@ Vvveb.Components.extend("_base", "html/paragraph", {
 
 Vvveb.Components.extend("_base", "html/blockquote", {
     nodes: ["blockquote"],
-    name: "Blockquote",
+    name: "块引用",
 	image: "icons/blockquote.svg",
 	html: `<blockquote cite="https://en.wikipedia.org/wiki/Marcus_Aurelius">
 				<p>Today I shall be meeting with interference, ingratitude, insolence, disloyalty, ill-will, and selfishness all of them due to the offenders' ignorance of what is good or evil.</p>
@@ -889,7 +889,7 @@ Vvveb.Components.extend("_base", "html/blockquote", {
 
 Vvveb.Components.extend("_base", "html/list", {
     nodes: ["ul", "ol"],
-    name: "List",
+    name: "列表",
 	image: "icons/list.svg",
 	html: `<ul>
 				<li>Today I shall be meeting with interference, ingratitude, insolence, disloyalty, ill-will, and selfishness all of them due to the offenders' ignorance of what is good or evil..</li>
@@ -900,7 +900,7 @@ Vvveb.Components.extend("_base", "html/list", {
 
 Vvveb.Components.extend("_base", "html/preformatted", {
     nodes: ["pre"],
-    name: "Preformatted",
+    name: "预格式化文本",
 	image: "icons/paragraph.svg",
 	html: `<pre>Today I shall be meeting with interference, 
 ingratitude, insolence, disloyalty, ill-will, and
@@ -921,7 +921,7 @@ ignorance of what is good or evil..</pre>`,
 Vvveb.Components.extend("_base", "html/form", {
     nodes: ["form"],
     image: "icons/form.svg",
-    name: "Form",
+    name: "组合类型",
     html: `<form action="" method="POST">
 	  <div class="mb-3">
 		<label for="exampleInputEmail1" class="form-label">Email address</label>
@@ -1003,7 +1003,7 @@ Vvveb.Components.extend("_base", "html/form", {
 
 Vvveb.Components.extend("_base", "html/tablerow", {
     nodes: ["tr"],
-    name: "Table Row",
+    name: "表行",
     html: "<tr><td>Cell 1</td><td>Cell 2</td><td>Cell 3</td></tr>",
     properties: [{
         name: "Type",
@@ -1033,19 +1033,19 @@ Vvveb.Components.extend("_base", "html/tablerow", {
 });
 Vvveb.Components.extend("_base", "html/tablecell", {
     nodes: ["td"],
-    name: "Table Cell",
+    name: "表块",
     html: "<td>Cell</td>"
 });
 
 Vvveb.Components.extend("_base", "html/tableheadercell", {
     nodes: ["th"],
-    name: "Table Header Cell",
+    name: "表头块",
     html: "<th>Head</th>"
 });
 
 Vvveb.Components.extend("_base", "html/tablehead", {
     nodes: ["thead"],
-    name: "Table Head",
+    name: "表头",
     html: "<thead><tr><th>Head 1</th><th>Head 2</th><th>Head 3</th></tr></thead>",
     properties: [{
         name: "Type",
@@ -1078,7 +1078,7 @@ Vvveb.Components.extend("_base", "html/table", {
     nodes: ["table"],
     classes: ["table"],
     image: "icons/table.svg",
-    name: "Table",
+    name: "表格",
     html: `<table class="table table-striped table-hover">
 			  <thead>
 				<tr>
@@ -1240,7 +1240,7 @@ Vvveb.Components.extend("_base", "html/table", {
 Vvveb.Components.extend("_base", "html/audio", {
     nodes: ["audio"],
     attributes: ["data-component-audio"],
-    name: "Audio",
+    name: "音频",
     image: "icons/audio.svg",
     html: `<figure data-component-audio><audio controls src="#"></audio></figure>`,
     properties: [{
@@ -1285,7 +1285,7 @@ Vvveb.Components.extend("_base", "html/audio", {
 Vvveb.Components.extend("_base", "html/pdf", {
     attributes: ["data-component-pdf"],
     image: "icons/pdf.svg",
-    name: "Pdf embed",
+    name: "内置PDF",
     html: `<object data="" type="application/pdf" data-component-pdf></object>`,
     properties: [{
         name: "Data",
@@ -1298,7 +1298,7 @@ Vvveb.Components.extend("_base", "html/pdf", {
 Vvveb.Components.extend("_base", "html/embed", {
     attributes: ["data-component-embed"],
     image: "icons/embed.svg",
-    name: "Embed",
+    name: "嵌入式",
     html: `<object data="" type="application/pdf" data-component-pdf></object>`,
     properties: [{
         name: "Data",
@@ -1310,7 +1310,7 @@ Vvveb.Components.extend("_base", "html/embed", {
 
 Vvveb.Components.extend("_base", "html/html", {
     nodes: ["html"],
-    name: "Html Page",
+    name: "网页",
     image: "icons/posts.svg",
     html: `<html><body></body></html>`,
     properties: [{
@@ -1342,7 +1342,7 @@ Vvveb.ComponentsGroup['Base'] =
 
 Vvveb.Components.extend("_base", "html/iframe", {
 	attributes: ["data-component-iframe"],
-    name: "Iframe",
+    name: "Iframe组件",
     image: "icons/file.svg",
     html: '<div data-component-iframe><iframe src="https://www.vvveb.com" width="320" height="240"></iframe></div>',
 	properties: [{

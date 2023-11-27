@@ -15,14 +15,14 @@ const userStore = useUserStore()
 
 // 1. 准备表单对象
 const form = ref({
-  username: 'syh',
+  userName: 'syh',
   password: '123456abc',
   agree: true
 })
 
 // 2. 准备规则对象
 const rules = {
-  username: [
+  userName: [
     { required: true, message: '用户名不能为空', trigger: 'blur' }
   ],
   password: [
@@ -50,7 +50,9 @@ const formRef = ref(null)
 const router = useRouter()
 
 const doLogin = () => {
-  const { username, password } = form.value
+  const { userName, password } = form.value
+  console.log({userName,password})
+  console.log(formRef.value)
   // 调用实例方法
   formRef.value.validate(async (valid) => {
     // valid: 所有表单都通过校验  才为true
@@ -58,12 +60,12 @@ const doLogin = () => {
     // 以valid做为判断条件 如果通过校验才执行登录逻辑
     if (valid) {
       // TODO LOGIN
-      console.log({ username, password })
-      await userStore.getUserInfo({ username, password })
+      console.log({ userName, password })
+      await userStore.getUserInfo({ userName, password })
       // 1. 提示用户
       ElMessage({ type: 'success', message: '登录成功' })
       // 2. 跳转首页
-      router.replace({ path: '/' })
+      router.replace({ path: '/team' })
     }
   })
 }
@@ -93,11 +95,11 @@ const doLogin = () => {
         <nav>
           <a href="javascript:;">账户登录</a>
         </nav>
-        <div class="username-box">
+        <div class="userName-box">
           <div class="form">
             <el-form ref="formRef" :model="form" :rules="rules" label-position="right" label-width="60px" status-icon>
-              <el-form-item prop="username" label="账户">
-                <el-input v-model="form.username" />
+              <el-form-item prop="userName" label="账户">
+                <el-input v-model="form.userName" />
               </el-form-item>
               <el-form-item prop="password" label="密码">
                 <el-input v-model="form.password" />
@@ -234,7 +236,7 @@ const doLogin = () => {
   }
 }
 
-.username-box {
+.userName-box {
   .toggle {
     padding: 15px 40px;
     text-align: right;

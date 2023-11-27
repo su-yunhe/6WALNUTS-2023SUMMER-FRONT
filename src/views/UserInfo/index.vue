@@ -1,71 +1,54 @@
 <template>
-  <el-upload
-    class="avatar-uploader"
-    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-    :show-file-list="false"
-    :on-success="handleAvatarSuccess"
-    :before-upload="beforeAvatarUpload"
-  >
-    <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-    <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-  </el-upload>
+  <div type="container">
+    <button type="primary" @click="handleStart">开始</button>
+    <div id="aa">522</div>
+    <img id="bb" src="../../assets/images/logo.png" />
+    <div id="cc">6549459</div>
+  </div>
+  <el-form :model="newProject" label-width="120px">
+      <el-form-item label="项目名称">
+        <el-input v-model="newProject.workname" />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="getList">预览</el-button>
+        <el-button>取消</el-button>
+        <el-link :href="url" target="_blank">default</el-link>
+      </el-form-item>
+    </el-form>
 </template>
-
-<script lang="ts" setup>
-import { ref } from 'vue'
-import { ElMessage } from 'element-plus'
-import { Plus } from '@element-plus/icons-vue'
-
-import type { UploadProps } from 'element-plus'
-
-const imageUrl = ref('')
-
-const handleAvatarSuccess: UploadProps['onSuccess'] = (
-  response,
-  uploadFile
-) => {
-  imageUrl.value = URL.createObjectURL(uploadFile.raw!)
+<script setup>
+// import intro from "intro.js";
+import "intro.js/minified/introjs.min.css";
+import { inject,ref } from 'vue'
+import httpInstance from '@/utils/http'
+import { useRoute, useRouter } from 'vue-router'
+const router = useRouter()
+const test = inject('$test')
+const newProject = ref({
+  protoName: 'job1',
+  workIs: 'job1',
+  protoInclude: 'http://localhost:8080/public/demo/narrow-jumbotron/index.html'
+})
+const onSubmit = async () => {
+  await httpInstance.post('/page_add', {
+    protoName: 'job1',
+    workIs: '5',
+    protoInclude: 'http://localhost:8080/public/demo/narrow-jumbotron/index.html'
+  }).then(res => {
+    console.log(res)
+    // router.push({ path: '/project' })
+  })
 }
 
-const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  if (rawFile.type !== 'image/jpeg') {
-    ElMessage.error('Avatar picture must be JPG format!')
-    return false
-  } else if (rawFile.size / 1024 / 1024 > 2) {
-    ElMessage.error('Avatar picture size can not exceed 2MB!')
-    return false
-  }
-  return true
+const url = ref('')
+const getList = async () => {
+  await httpInstance.post('/page_get', {
+    workId: '5',
+  }).then(res => {
+    console.log(res.results)
+    url.value = res.results[0].protoInclude
+    // router.push({ path: '/project' })
+  })
 }
 </script>
 
-<style scoped>
-.avatar-uploader .avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
-</style>
-
-<style>
-.avatar-uploader .el-upload {
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
-}
-
-.el-icon.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  text-align: center;
-}
-</style>

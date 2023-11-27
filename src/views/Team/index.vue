@@ -1,15 +1,17 @@
 <template>
-  <div>
-    <div v-show="$route.meta.showFooter">
-      <el-card class="box-card teamcard">
-        <div class="card-header">
-          <!-- <el-table :data="tableData" stripe style="width: 100%" @row-click="openTeam">
-            <el-table-column prop="groupId" label="团队id" width="100" />
-            <el-table-column prop="groupName" label="团队名称" width="180" />
-            <el-table-column prop="groupBuilder" label="创建者" width="180" />
-            <el-table-column prop="buildTime" label="创建时间" :formatter="dateFormat" width="240" />
-            <el-table-column prop="occupation" label="我的身份" />
-            </el-table> -->
+  <div id="mainBackground">
+    <Navigator></Navigator>
+    <div v-show="$route.meta.showFooter" style="margin: 30px;margin-bottom: 750px;">
+      <!-- <el-card class="box-card teamcard"> -->
+        <div class="divteamCard teamCard-create">
+          <el-link
+            id="createTeam"
+            type="primary"
+            :underline="false"
+            :icon="CirclePlus"
+            @click="createTeam"
+            style="font-size: 50px; margin-left: 45%; margin-top: 12%"
+          ></el-link>
         </div>
         <div
           v-for="item in tableData"
@@ -17,34 +19,24 @@
           class="divteamCard"
           @click="openTeam(item.groupId)"
         >
+          <div class="teamCardBackground"></div>
           <div class="teamCard">
-            <div class="teamDiscription">
-              <div class="cardTitle">
-                {{ item.groupName }}
-              </div>
-            </div>
-            <div class="teamDiscription">
-              <el-text>创建人</el-text>
-              <el-divider direction="vertical" />
-              <el-text size="large">{{ item.groupBuilder }}</el-text>
-            </div>
-            <div class="teamDiscription">
-              <el-text>创建时间</el-text>
-              <el-divider direction="vertical" />
-              <el-text size="large">{{
-                moment(item.buildTime).utcOffset(8).format('YYYY-MM-DD HH:mm')
-              }}</el-text>
+            <div class="cardText">
+              <p class="h3"> {{ item.groupName }} </p>
+              <p class="p">
+                <span>
+                  创建人
+                  <el-divider direction="vertical" />
+                  {{ item.groupBuilder }}
+                </span>
+                <span style="margin-left: 30%;">
+                  创建时间
+                  <el-divider direction="vertical" />
+                  {{ moment(item.buildTime).utcOffset(8).format('YYYY-MM-DD HH:mm') }}
+                </span>
+              </p>
             </div>
           </div>
-        </div>
-        <div class="divteamCard teamCard-create">
-          <el-link
-            type="primary"
-            :underline="false"
-            :icon="CirclePlus"
-            @click="createTeam"
-            style="font-size: 50px; margin-left: 45%; margin-top: 12%"
-          ></el-link>
         </div>
         <el-dialog v-model="showDialog" title="创建团队" width="30%">
           <span>
@@ -56,14 +48,14 @@
             </span>
           </template>
         </el-dialog>
-      </el-card>
+      <!-- </el-card> -->
     </div>
     <router-view></router-view>
   </div>
 </template>
 
 <script setup>
-import { ref, onBeforeMount, reactive } from 'vue'
+import { ref, onBeforeMount, onMounted, reactive } from 'vue'
 import axios, { Axios } from 'axios'
 import { useRouter, useRoute } from 'vue-router'
 import moment from 'moment'
@@ -71,12 +63,13 @@ import { useUserStore } from '@/stores/userStore'
 import { CirclePlus } from '@element-plus/icons-vue'
 import httpInstance from '@/utils/http'
 import { ElMessage } from 'element-plus'
+import Navigator from './components/Navigator.vue'
 
 const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()
-// const userId = userStore.userInfo.data.userid
-const userId = 1
+
+const userId = userStore.userInfo.userid
 const tableData = reactive([])
 const loadTeam = () => {
   httpInstance
@@ -101,7 +94,7 @@ const showDialog = ref(false)
 const createTeam = () => {
   showDialog.value = true
 }
-const userName = '苏云鹤'
+const userName = userStore.userInfo.username
 const input = ref('')
 const submit = () => {
   console.log(input.value)
@@ -132,12 +125,25 @@ const dateFormat = (row, column) => {
   return moment(date).utcOffset(8).format('YYYY-MM-DD HH:mm')
 }
 
+const showNewUserIntro = () => {
+  const showIntro = userStore.pages.isNewUser[0]
+  if(showIntro){
+    userStore.handleStart()
+    userStore.pages.isNewUser[0] = false
+  }
+}
+
+onMounted(() => {
+  showNewUserIntro()
+})
+
 onBeforeMount(() => {
   loadTeam()
 })
 </script>
 
-<style>
+<style scoped>
+@import '../../assets/font/font.css';
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -153,34 +159,44 @@ onBeforeMount(() => {
 }
 
 .box-card {
+  background-color: rgba(0,0,0,0.1);
   width: 100%;
   margin-top: 10px;
   border-radius: 10px;
   box-shadow: 3px 3px 10px #888888;
 }
-.teamcard {
-  height: auto;
-}
-
 .divteamCard {
   margin: 20px;
   width: 45%;
   float: left;
+  background: linear-gradient(135deg, #ebadb6 0%, #aceae1 100%);
+ border-radius: 7px;
+ transition-duration: 0.5s;
+ box-shadow: 20px 20px 60px #bebebe;
+}
+
+.divteamCard:hover{
+  transform: translateY(-20px);
+}
+
+.teamCardBackground{
+  height: 80px;
 }
 
 .teamCard {
-  background-color: rgba(226, 231, 236, 0.667);
-  height: 200px;
+  background-color: rgba(245, 249, 253, 0.84);
+  height: 120px;
   border-radius: 10px;
   transition-duration: 0.5s;
-  padding: 20px;
+  padding: 10px;
   /* text-align: center; */
 }
 
 .teamCard:hover {
-  background-color: #d9ecff83;
+  background-color: #3f9df637;
+  /* transform: translateY(-10px); */
   box-shadow: 1px 1px 10px #888888;
-  color: #79bbff;
+  color: #79bcffe4;
 }
 
 .teamCard-create {
@@ -199,5 +215,39 @@ onBeforeMount(() => {
 .cardTitle {
   font-size: 20px;
   font-weight: bold;
+}
+
+#mainBackground{
+  /* background-image: url('/src/assets/images/Bora Bora.jpg'); */
+  background-size: 100% 100%;
+  min-height: 100vh;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  background: #FFEEEE;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #f6faef, #fef4f4);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #eff4e6, #fbf1f1); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.cardText {
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: space-around;
+}
+
+.cardText .h3 {
+  font-family: 'Lucida';
+  font-size: 20px;
+  font-weight: 600;
+  color: black;
+}
+
+.cardText .p {
+  font-family: 'Lucida';
+  color: #999999;
+  font-size: 15px;
+  margin-top: 15px;
 }
 </style>

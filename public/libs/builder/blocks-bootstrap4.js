@@ -23,7 +23,7 @@ Vvveb.BlocksGroup['Bootstrap'] =
 
 
 Vvveb.Blocks.add("bootstrap4/product-card", {
-    name: "Product Cards with Transition",
+    name: "带介绍的产品页面",
     image: "https://d2d3qesrx8xj6s.cloudfront.net/img/screenshots/0c3153bcb2ed97483a82b1f4ea966f8187379792.png",
     html: `
 <div class="container">
@@ -192,7 +192,7 @@ Vvveb.Blocks.add("bootstrap4/product-card", {
 });    
 
 Vvveb.Blocks.add("bootstrap4/user-online", {
-    name: "User online",
+    name: "在线用户页面",
     image: "https://d2d3qesrx8xj6s.cloudfront.net/img/screenshots/75091e3b5e6efba238457f05e6f9edd847de1bf8.jpg",
     html: `
    	<div class="container user-online-thumb">
@@ -248,7 +248,7 @@ border: 5px solid white;
 });    
 
 Vvveb.Blocks.add("bootstrap4/our-team", {
-    name: "Our team",
+    name: "团队页面",
     image: "https://d2d3qesrx8xj6s.cloudfront.net/img/screenshots/b43c39513963d870d399a0aab2438af225f9f485.jpg",
     html:`
 <div class="team pb-5">
@@ -682,7 +682,7 @@ section .section-title {
 
 
 Vvveb.Blocks.add("bootstrap4/login-form", {
-    name: "Login form",
+    name: "登录页面",
     image: "https://d2d3qesrx8xj6s.cloudfront.net/img/screenshots/fd3f41be24ffb976d66edf08adc4b2453a871b19.jpeg",
     html:`
 <div class="container">
@@ -867,7 +867,7 @@ body{
 
 
 Vvveb.Blocks.add("bootstrap4/about-team", {
-    name: "About and Team Section",
+    name: "关于和团队页面",
     image: "https://assets.startbootstrap.com/img/screenshots/snippets/about-team.jpg",
     html:`
 <div class="container">
@@ -922,7 +922,7 @@ Vvveb.Blocks.add("bootstrap4/about-team", {
 
 
 Vvveb.Blocks.add("bootstrap4/pricing-1", {
-    name: "Pricing table",
+    name: "价格表页面",
     image: "https://d2d3qesrx8xj6s.cloudfront.net/img/screenshots/e92f797807bb4cd880bc3f161d9f9869854b6991.jpeg",
     html:`
 <div id="plans">
@@ -1040,7 +1040,7 @@ Vvveb.Blocks.add("bootstrap4/pricing-1", {
 });
 
 Vvveb.Blocks.add("bootstrap4/loading-circle", {
-    name: "Loading circle",
+    name: "加载页面",
     image: "https://d2d3qesrx8xj6s.cloudfront.net/img/screenshots/39f0571b9a377cb7ac9c0c11d2346b07dabe1c66.png",
     html:`
 <div class="loading-circle">
@@ -1079,7 +1079,7 @@ Vvveb.Blocks.add("bootstrap4/loading-circle", {
 
 
 Vvveb.Blocks.add("bootstrap4/block-quote", {
-    name: "Block quote",
+    name: "块引用页面",
     image: "https://d2d3qesrx8xj6s.cloudfront.net/img/screenshots/d9f382e143b77d5a630dd79a2a3860611a8a953c.jpg",
     html:`
 <div class="container">
@@ -1144,7 +1144,7 @@ blockquote{
 });
 
 Vvveb.Blocks.add("bootstrap4/subscribe-newsletter", {
-    name: "Subscribe newsletter",
+    name: "订阅新闻页面",
     image: "https://d2d3qesrx8xj6s.cloudfront.net/img/screenshots/4f610196b7cb9596555c9c8c475d93ab4ef084f6.jpg",
     html:`
 <div class="subscribe-area pb-50 pt-70">

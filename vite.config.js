@@ -29,9 +29,9 @@ export default defineConfig({
     port: '8080',
     proxy:{
       '/api': {
-        target:'http://127.0.0.1:8000',
+        // target:'http://127.0.0.1:8000',
         // target: 'http://127.0.0.1:4523/m1/3177387-0-default',
-        // target:'http://8.130.137.197',  
+        target:'http://8.130.107.193',  
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, '')
       }

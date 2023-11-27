@@ -108,7 +108,7 @@
         <el-col :span="6">
           <div class="outCard" @click="handleLink()">
             <div class="card" style="background-color:Lavender;">
-              <div class="card__wrapper">
+              <!-- <div class="card__wrapper">
                 <div class="card___wrapper-acounts">
                   <div class="card__score">+3</div>
                   <div class="card__acounts">
@@ -233,7 +233,7 @@
                     </g>
                   </svg>
                 </div>
-              </div>
+              </div> -->
               <div class="card__title">新建原型</div>
               <div class="card__subtitle">
                 「原型设计」是由六个核桃自主研发的一款全新开放世界冒险游戏。
@@ -249,9 +249,9 @@
 
         </el-col>
         <el-col :span="6">
-          <div class="outCard">
+          <div class="outCard" @click="handleLink2()">
             <div class="card" style="background-color:LightSteelBlue;">
-              <div class="card__wrapper">
+              <!-- <div class="card__wrapper">
                 <div class="card___wrapper-acounts">
                   <div class="card__score">+3</div>
                   <div class="card__acounts">
@@ -376,7 +376,7 @@
                     </g>
                   </svg>
                 </div>
-              </div>
+              </div> -->
               <div class="card__title">项目原型</div>
               <div class="card__subtitle">
                 游戏发生在一个被称作「项目原型」的幻想世界。</div>
@@ -392,7 +392,7 @@
         <el-col :span="6">
           <div class="outCard" @click="writeFile()">
             <div class="card" style="background-color:AliceBlue;">
-              <div class="card__wrapper">
+              <!-- <div class="card__wrapper">
                 <div class="card___wrapper-acounts">
                   <div class="card__score">+3</div>
                   <div class="card__acounts">
@@ -517,7 +517,7 @@
                     </g>
                   </svg>
                 </div>
-              </div>
+              </div> -->
               <div class="card__title">新建文档</div>
               <div class="card__subtitle">
                 在这里，被神选中的人将被授予「新建文档」，导引元素之力。
@@ -534,7 +534,7 @@
         <el-col :span="6">
           <div class="outCard" @click="toProjectFile()">
             <div class="card" style="background-color:PaleTurquoise;">
-              <div class="card__wrapper">
+              <!-- <div class="card__wrapper">
                 <div class="card___wrapper-acounts">
                   <div class="card__score">+3</div>
                   <div class="card__acounts">
@@ -659,7 +659,7 @@
                     </g>
                   </svg>
                 </div>
-              </div>
+              </div> -->
               <div class="card__title">项目文档</div>
               <div class="card__subtitle">
                 你将扮演一位名为「项目文档」的神秘角色，邂逅性格各异的同伴们。
@@ -688,6 +688,8 @@ import httpInstance from "@/utils/http";
 // import router from '@/router/index'
 import { useRoute, useRouter } from "vue-router";
 import { openURL } from "quasar";
+import { useUserStore } from '@/stores/userStore'
+const userStore = useUserStore();
 const route = useRoute();
 const router = useRouter();
 // 定义某个项目变量
@@ -703,9 +705,18 @@ const renameProject = ref({
   name: ''
 })
 // 钩子函数
-onMounted(() => {
-  getOneProject();
-  getProjectArticle();
+onMounted(async () => {
+  // getOneProject();
+  await httpInstance
+    .post("/get_single_work", {
+      workId: route.params.id,
+    })
+    .then((res) => {
+      oneProject.value = res.results[0];
+      oneProject.value.create_time = oneProject.value.create_time.slice(0, 10)
+      console.log(oneProject.value);
+    });
+  // getProjectArticle();
 });
 
 // 获取这个项目
@@ -719,6 +730,15 @@ const getOneProject = async () => {
       oneProject.value = res.results[0];
       oneProject.value.create_time = oneProject.value.create_time.slice(0, 10)
       console.log(oneProject.value);
+    });
+  await httpInstance
+    .post("/get_work_file", {
+      workId: route.params.id,
+    })
+    .then((res) => {
+      // console.log(res)
+      projectArticle.value = res.results;
+      console.log(projectArticle.value);
     });
 };
 
@@ -754,9 +774,13 @@ const toArticle = (id) => {
 // 跳转到项目原型
 const handleLink = () => {
   // window.location.href = "www.baidu.com"
-  window.open("http://localhost:8080/public/editor.html"); //"_blank"
+  window.open('http://localhost:8080/public/editor.html?id=' + oneProject.value.workId); //"_blank"
 };
-
+const handleLink2 = () => {
+  userStore.pages.proId = oneProject.value.workId
+  router.push({ path: `/protoview` })
+  // router.push({ path: `/protoview?id=${oneProject.value.workId}` })
+}
 // 跳转到项目列表
 const backToProject = () => {
   router.push('/project')
@@ -1160,4 +1184,5 @@ button:hover::before {
 .card__progress progress::-webkit-progress-value {
   background-color: var(--main-color);
   border-radius: 100px;
-}</style>
+}
+</style>

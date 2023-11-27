@@ -3,8 +3,8 @@
     <div class="header">
       <div class="name">
         <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
-        <span>     团队项目</span>
-        
+        <span> 团队项目</span>
+
       </div>
       <div class="search">
         <div class="box">
@@ -16,8 +16,20 @@
         </div>
       </div>
       <div class="button">
+        <el-dropdown>
+          <span class="el-dropdown-link">
+            <el-button type="success">排序</el-button>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="sortProject(1)">由新到旧</el-dropdown-item>
+              <el-dropdown-item @click="sortProject(2)">由旧到新</el-dropdown-item>
+              <el-dropdown-item @click="sortProject(3)">负责人</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+        <el-button type="success" @click="recoverProject1()">恢复</el-button>
         <el-button type="success" @click="addProject()">新建</el-button>
-        <el-button type="success">排序</el-button>
       </div>
     </div>
     <div class="_main">
@@ -33,6 +45,24 @@
           <span class="dialog-footer">
             <el-button round @click="dialogFormVisible = false">取消</el-button>
             <el-button type="primary" round @click="rename()">
+              确定
+            </el-button>
+          </span>
+        </template>
+      </el-dialog>
+
+      <!-- 恢复项目弹框 -->
+      <el-dialog v-model="dialogFormVisible2" title="恢复项目">
+        <el-select v-model="recoverProjectId" placeholder="请选择要恢复的项目">
+          <el-option v-for="(item, index) in deletedProject" :key="index" 
+            :label="'项目id: ' + item.workId + '   ' + '项目名称: ' + item.workName"
+            :value="item.workId">
+          </el-option>
+        </el-select>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button round @click="dialogFormVisible2 = false">取消</el-button>
+            <el-button type="primary" round @click="recoverProject2()">
               确定
             </el-button>
           </span>
@@ -270,7 +300,10 @@
               </div>
               <div class="_text">
                 <div class="text_m">{{ item.workName }}</div>
-                <div class="text_s"> 项目编号: {{ item.workId }}</div>
+                <div class="text_s">
+                  <div>创建日期: {{ item.create_time.slice(0, 10) }}</div>
+                  <div>负责人：{{ item.leader }}</div>
+                </div>
               </div>
             </div>
             <div class="btns">
@@ -286,7 +319,7 @@
                 <span class="comments_text">重命名</span>
               </div>
               <div class="views">
-                <span class="views_text">复制</span>
+                <span class="views_text" @click="copyProject(item.workId)">复制</span>
               </div>
             </div>
           </div>
@@ -315,20 +348,27 @@ import httpInstance from '@/utils/http'
 // import router from '@/router/index'
 import { useRoute, useRouter } from "vue-router"
 import { ArrowDown } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { ElDropdown, ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores/userStore'
+
+const userStore = useUserStore()
+
 const route = useRoute()
 const router = useRouter()
 const allProject = ref([])
 const isDelete = ref(false)
 const dialogFormVisible = ref(false)
+const dialogFormVisible2 = ref(false)
 const renameProject = ref({
   id: '',
   name: ''
 })
+const deletedProject = ref([])
+const recoverProjectId = ref(0)
 const searchProject = ref('')
 const currentPage = ref(1);
 const pageSize = ref(8);
-onMounted(() => {
+onMounted(async() => {
   console.log("onMounted")
   getAllProject()
   isDelete.value = false
@@ -353,13 +393,14 @@ const toDelete = () => {
 // 获取所有项目
 const getAllProject = async () => {
   await httpInstance.post('/get_all_work', {
-    groupId: 6 // TODO: 改成小组id
+    groupId: userStore.pages.teamId
   }).then(res => {
     console.log(res.results)
     allProject.value = res.results
     console.log(allProject)
   })
 }
+
 
 // 删除项目
 const deleteProject = async (id) => {
@@ -369,11 +410,35 @@ const deleteProject = async (id) => {
     workId: id
   }).then(res => {
     ElMessage({
-      message: '项目删除成功~可在回收站恢复',
+      message: '项目删除成功~ 可在回收站恢复',
       type: 'success',
     })
     getAllProject()
   })
+}
+
+// 复制项目
+const copyProject = async (id) => {
+  await httpInstance.post('/work_copy', {
+    workId: id,
+  }).then(res => {
+    ElMessage({
+      message: '已成功为该项目创建副本~',
+      type: 'success',
+    })
+    getAllProject()
+  })
+}
+
+// 项目排序
+const sortProject = (op) => {
+  if (op === 1) { // 有新到旧
+    allProject.value.sort((a, b) => b.workId - a.workId)
+  } else if (op === 2) { // 由旧到新
+    allProject.value.sort((a, b) => a.workId - b.workId)
+  } else if (op === 3) { // 项目负责人
+    allProject.value.sort((a, b) => a.leader.toString().localeCompare(b.leader.toString()))
+  }
 }
 
 // 跳转到某一个具体项目
@@ -387,11 +452,30 @@ const addProject = () => {
   router.push({ path: '/addproject' })
 }
 
-// 恢复项目
-const toReDelete = async () => {
+// 恢复项目(第一步)
+const recoverProject1 = async () => {
   await httpInstance.get('/get_work_deleted').then(res => {
     console.log(res.results)
+    deletedProject.value = res.results
+    dialogFormVisible2.value = true
   })
+}
+
+// 恢复项目(第二步)
+const recoverProject2 = async () => {
+  // console.log(recoverProjectId.value)
+  await httpInstance.post('/work_modify_condition', {
+    isDelete: 'False',
+    workId: recoverProjectId.value
+  }).then(res => {
+    dialogFormVisible2.value = false
+    ElMessage({
+      message: '该项目已被成功恢复~',
+      type: 'success',
+    })
+    getAllProject()
+  })
+  
 }
 
 // 项目重命名
@@ -847,6 +931,8 @@ const _search = async () => {
 }
 
 button {
+  width: 20px;
+  margin: 0 2px;
   padding: 15px 25px;
   border: unset;
   border-radius: 15px;
@@ -908,5 +994,10 @@ button:hover::before {
   color: var(--el-color-primary);
   display: flex;
   align-items: center;
+}
+
+.el-form-item__content {
+  display: flex;
+  justify-content: center;
 }
 </style>

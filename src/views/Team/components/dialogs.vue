@@ -1,12 +1,12 @@
 <template>
   <div>
-    <el-dialog v-model="showAddMemberDialog" title="添加成员" width="30%">
+    <el-dialog v-model="showAddMemberDialog" title="邀请成员" width="30%">
       <span>
-        <el-input v-model="addUsername" placeholder="输入用户名" />
+        <el-input v-model="addUsername" placeholder="请输入邀请成员用户名" />
       </span>
       <template #footer>
         <span class="dialog-footer">
-          <el-button type="primary" @click="submitMember"> 提交 </el-button>
+          <el-button type="primary" @click="submitMember"> 邀请 </el-button>
         </span>
       </template>
     </el-dialog>
@@ -41,8 +41,7 @@ import { toRaw } from '@vue/reactivity'
 import { ElMessage } from 'element-plus'
 
 const userStore = useUserStore()
-// const userId = userStore.userInfo.data.userid
-const userId = 1
+const userId = userStore.userInfo.userid
 const route = useRoute()
 const teamId = userStore.pages.teamId
 
@@ -51,12 +50,23 @@ const showAddMemberDialog = ref(false)
 const addMember = () => {
   showAddMemberDialog.value = true
 }
+
+const send = () => {
+  httpInstance.post('/invite',{
+    type:'sendMessage',
+    csrfmiddlewaretoken:'{{ csrf_token }}',
+    email:'daemonafrono@gmail.com'
+  }).then(res => {
+    console.log(res)
+  })
+}
+
 const submitMember = () => {
   httpInstance
     .post('/addUser', {
       adminid: userId,
       groupid: teamId,
-      username: addUsername.value,
+      Username: addUsername.value,
     })
     .then((res) => {
       console.log(res.data)
@@ -72,22 +82,23 @@ const submitMember = () => {
 }
 
 const memberList = userStore.pages.memberlist
-const ml = toRaw(memberList)
+const ml = ref()
 const addAdminname = ref('')
 const showAddAdminDialog = ref(false)
 const addAdmin = () => {
   showAddAdminDialog.value = true
-  console.log(ml)
 }
 //计算属性过滤创建者和管理员
 const filteredMembers = computed(() => {
-  return ml.filter((member) => member.userType == 3)
+  ml.value = toRaw(memberList)
+  return ml.value.filter((member) => member.userType == 3)
 })
 const submitAdmin = () => {
+  console.log("admin:"+addAdminname.value)
   httpInstance
     .post('/addAdmin', {
       adminid: userId,
-      username: addAdminname.value,
+      Username: addAdminname.value,
       groupid: teamId,
     })
     .then((res) => {

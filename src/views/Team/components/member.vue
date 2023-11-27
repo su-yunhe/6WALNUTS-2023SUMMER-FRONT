@@ -4,13 +4,12 @@
       <el-table
         :data="userStore.pages.memberlist"
         :default-sort="{ prop: 'userType', order: 'ascending' }"
-        style="width: 100%"
+        style="width: 100%, background-color:rgba(255,255,255,0.2)"
         size="large"
         :row-class-name="tableRowClassName"
-        @row-click="memberInfo"
       >
         <el-table-column type="expand">
-          <template #default="scope"> </template>
+          <!-- <template #default="scope"> </template> -->
         </el-table-column>
         <el-table-column prop="userName" label="用户名" width="180">
           <template #default="scope">
@@ -95,7 +94,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onBeforeMount } from 'vue'
+import { ref, reactive, onBeforeMount, onMounted } from 'vue'
 import axios from 'axios'
 import httpInstance from '@/utils/http'
 import { useUserStore } from '@/stores/userStore'
@@ -103,8 +102,8 @@ import { ElMessage } from 'element-plus'
 import router from '@/router'
 
 const userStore = useUserStore()
-const userId = userStore.userInfo.data.userid
-const userName = userStore.userInfo.data.username
+const userId = userStore.userInfo.userid
+const userName = userStore.userInfo.username
 
 const myType = ref()
 const team_id = userStore.pages.teamId
@@ -139,7 +138,7 @@ const cancelAdmin = (userName) => {
     .post('/cancelAdmin', {
       adminid: userId,
       groupid: userStore.pages.teamId,
-      username: userName,
+      Username: userName,
     })
     .then((res) => {
       console.log(res)
@@ -157,7 +156,7 @@ const removeMember = (userName) => {
     .post('/deleteUser', {
       adminid: userId,
       groupid: userStore.pages.teamId,
-      username: userName,
+      Username: userName,
     })
     .then((res) => {
       console.log(res)
@@ -170,9 +169,13 @@ const removeMember = (userName) => {
     })
 }
 
+onMounted(() => {
+  userStore.loadMember()
+})
+
 onBeforeMount(() => {
   userStore.pages.memberlist.length = 0
-  userStore.loadMember()
+  console.log("刷新")
   getType()
 })
 </script>
@@ -187,4 +190,5 @@ onBeforeMount(() => {
 .el-table .primary-row {
   --el-table-tr-bg-color: var(--el-color-primary-light-9);
 }
+
 </style>

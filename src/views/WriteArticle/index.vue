@@ -1,14 +1,4 @@
 <template>
-  <!-- @ 弹框 -->
-  <el-popover :visible="visible" placement="right-end" title="选择团队成员" :width="200" offsite="100px" content="选择小组成员">
-    <template #reference>
-      <div class="ce"></div>
-    </template>
-
-    <el-table :data="member" stripe @row-click="selectMember">
-      <el-table-column width="150" property="userRealName" label="名字" />
-    </el-table>
-  </el-popover>
   <div class="container">
     <el-container>
       <el-main>
@@ -27,10 +17,19 @@
             <!-- 右侧按钮 -->
             <template #extra>
               <div class="flex items-center">
-                <el-button v-if="isTitle" round type="success" @click="finishRename()">完成</el-button>
-                <el-button v-else round @click="rename()">重命名</el-button>
+                <!-- <el-button v-if="isTitle" round type="success" @click="finishRename()">完成</el-button>
+                <el-button v-else round @click="rename()">重命名</el-button> -->
+                <!-- @ 弹框 -->
+                <el-popover :visible="visible" title="选择团队成员" :width="200" offsite="100px" content="选择要@的成员">
+                  <template #reference>
+                    <el-button round class="ml-2" @click="visible = !visible">@成员</el-button>
+                  </template>
+                  <el-table :data="member" stripe @row-click="selectMember">
+                    <el-table-column width="150" property="userRealName" label="名字" />
+                  </el-table>
+                </el-popover>
                 <el-button v-if="route.params.id" round @click="getfileVersion()">版本回退</el-button>
-                <el-button round type="primary" class="ml-2" @click="check()">保存</el-button>
+                <el-button round class="ml-2" @click="check()">保存</el-button>
               </div>
             </template>
           </el-page-header>
@@ -52,9 +51,9 @@
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">Cancel</el-button>
+          <el-button @click="dialogFormVisible = false">取消</el-button>
           <el-button type="primary" @click="upload()">
-            Confirm
+            确定
           </el-button>
         </span>
       </template>
@@ -90,6 +89,9 @@ import { useRoute, useRouter } from "vue-router"
 import { ElButton, ElDrawer } from 'element-plus'
 import { SuccessFilled, CircleCloseFilled } from '@element-plus/icons-vue'
 import VueNativeSock from 'vue-native-websocket'
+import { useUserStore } from '@/stores/userStore'
+
+const userStore = useUserStore()
 
 const vditor = ref<Vditor | null>(null)
 const webSocket = ref<WebSocket | null>(null)
@@ -101,7 +103,7 @@ const route = useRoute()
 const drawerVisible = ref(false)
 // 定义文章
 const article = ref({
-  "fileId": 0,
+  "fileId": -1,
   "fileName": "",
   "fileInclude": "",
   "fileUrl": "",
@@ -122,34 +124,86 @@ const form = ref({
 // 定义文章历史版本
 const fileVersion = ref([])
 
-onMounted(() => {
+
+onMounted(async() => {
   if (route.params.id) { // 编辑
-    getArticle()
+    console.log(1)
+    // getArticle()
+    await httpInstance.post('/get_single_file', { fileId: route.params.id }).then(res => {
+    article.value = res.results[0]
+    console.log(article.value)
+    vditor.value = new Vditor('vditor', {
+      "height": "600px",
+      "cache": {
+        "enable": false
+      },
+      "value": article.value.fileInclude,
+      "mode": "ir",
+      "toolbarConfig": {
+        "pin": true
+      },
+      "counter": {
+        "enable": true
+      },
+      "upload": {
+        "url": "http://8.130.137.197/home/static/pics"
+      },
+      "outline": {
+        "enable": true,
+        "position": "left"
+      },
+      input(md) {
+        // console.log("输入内容："+ md)
+        // sendcontent(md)
+        // wsContent.value.fileId = article.value.fileId
+        // wsContent.value.fileInclude = md
+        // console.log(wsContent.value)
+        sendcontent(md)
+      }
+    })
+    title.value = article.value.fileName
+  })
   } else { // 新建
     setVditer()
   }
 
-  // 添加键盘监听事件
-  keyCodeForEvent()
+  
 
   // 获取团队列表
-  getMember()
+  // getMember()
+  await httpInstance.post('/getGroupInf', {
+    groupId: userStore.pages.teamId
+  }).then(res => {
+    console.log(res)
+    member.value = res.data
+    console.log(member.value)
+  })
 
   isTitle.value = false
 
   // 获取文件夹
-  getFolders()
+  // getFolders()
+  await httpInstance.post('/get_file_tree', {
+    workId: route.params.projectId
+  }).then(res => {
+    console.log(res)
+    for (const key in res.root_folders) {
+      forders.value.push(res.root_folders[key])
+    }
+  })
+  console.log(forders.value)
 
-  // console.log(route.params.id)
-
+  console.log(route.params.id)
+  // 添加键盘监听事件
+  keyCodeForEvent()
   // 初始化 websocket 连接
   initWebSocket()
 })
 
-onBeforeUnmount(() =>  {
-if (webSocket.value) {
-  webSocket.value.close()
-}
+onBeforeUnmount(() => {
+  if (webSocket.value) {
+    webSocket.value.close()
+  }
 })
 
 // 获取文件夹
@@ -245,9 +299,13 @@ const getArticle = async () => {
       "outline": {
         "enable": true,
         "position": "left"
-      }, 
-      input (md) {
+      },
+      input(md) {
         // console.log("输入内容："+ md)
+        // sendcontent(md)
+        // wsContent.value.fileId = article.value.fileId
+        // wsContent.value.fileInclude = md
+        // console.log(wsContent.value)
         sendcontent(md)
       }
     })
@@ -277,10 +335,12 @@ const setVditer = () => {
       "enable": true,
       "position": "left"
     },
-    input (md) {
-        // console.log("输入内容："+ md)
-        sendcontent(md)
-      }
+    input(md) {
+      // wsContent.value.fileId = article.value.fileId
+      // wsContent.value.fileInclude = md
+      // console.log(wsContent.value)
+      sendcontent(md)
+    }
   })
 }
 
@@ -306,6 +366,7 @@ const check = async () => {
           router.back()
         })
         .catch(() => {
+          visible.value = false
         })
     })
   } else {
@@ -315,19 +376,18 @@ const check = async () => {
 
 // 上传文档
 const upload = async () => {
-  // 需要判断是新增还是修改
   // 新增
   console.log(form.value.name)
   // 在根目录
   if (form.value.folders === "0") {
-
+    console.log(22)
     await httpInstance.post('file_add', {
       fileName: form.value.name,
       fileInclude: vditor.value.getValue(),
-      groupId: 6,
+      groupId: userStore.pages.teamId,
       fileUrl: "http://localhost:8080/test", //TODO: 修改
       workId: route.params.projectId,
-      isRoot: '1',
+      is_root: '1',
       folderId: '0'
     }).then(res => {
       // 提示用户成功上传了文件，用户可以选择继续修改或退出
@@ -347,17 +407,20 @@ const upload = async () => {
         })
     })
   }
+  // 在其他目录
   else {
     console.log(1)
+    console.log(form.value.folders)
     await httpInstance.post('file_add', {
       fileName: form.value.name,
       fileInclude: vditor.value.getValue(),
-      groupId: 6,
+      groupId: userStore.pages.teamId,
       fileUrl: "http://localhost:8080/test", //TODO: 修改
       workId: route.params.projectId,
-      isRoot: '0',
+      is_root: '0',
       folderId: form.value.folders,
     }).then(res => {
+      console.log(res)
       // 提示用户成功上传了文件，用户可以选择继续修改或退出
       ElMessageBox.confirm(
         '您已经成功保存文档~ 是否退出?',
@@ -375,8 +438,6 @@ const upload = async () => {
         })
     })
   }
-
-
 }
 
 // 监听键盘事件
@@ -415,8 +476,10 @@ const keyCodeForEvent = () => {
 
 // 获取团队列表
 const getMember = async () => {
-  await httpInstance.post('/manage/getGroupInf',).then(res => {
-    // console.log(res)
+  await httpInstance.post('/getGroupInf', {
+    groupId: userStore.pages.teamId
+  }).then(res => {
+    console.log(res)
     member.value = res.data
     console.log(member.value)
   })
@@ -428,29 +491,35 @@ const quxiao = () => {
 }
 
 // 选择成员
-const selectMember = (row) => {
-  console.log(row)
-  ElMessage({
-    showClose: true,
-    type: "success",
-    message: '成功发送了消息！！',
-  })
-  visible.value = false
-  vditor.value.setValue(vditor.value.getValue().trim() + row.userRealName.trim())
-  const textarea = document.querySelector('textarea');
-  const pos = textarea.selectionStart + 4;
-  textarea.setSelectionRange(pos, pos);
+const selectMember = async (row) => {
+  if (article.value.fileId === -1) {
+    ElMessage({
+      message: '请先保存文档',
+      type: 'warning',
+    })
+  }
+  else {
+    console.log(row)
+    visible.value = false
+    const a_tmp = vditor.value.getValue().trim()
+    console.log(a_tmp[a_tmp.length - 1])
+    if (a_tmp[a_tmp.length - 1] === '@') {
+      vditor.value.setValue(a_tmp + row.userRealName.trim())
+    }
+    else {
+      vditor.value.setValue(a_tmp + '@' + row.userRealName.trim())
+    }
+    await httpInstance.post('/message_relate', {
+      fileId: article.value.fileId, 
+      sendId: userStore.userInfo.userid, 
+      receiveName: member.value.userName,
+    }).then()
+  }
+
 }
 
-// 文档重命名
-const rename = () => {
-  isTitle.value = true
-}
 
-// 完成重命名
-const finishRename = () => {
-  isTitle.value = false
-}
+
 
 // 检测输入变化
 const checkInput = () => {
@@ -459,7 +528,7 @@ const checkInput = () => {
 
 // 初始化websocket
 const initWebSocket = () => {
-  const wsuri = "ws://124.222.224.186:8800"
+  const wsuri = "ws://8.130.107.193/ws/file/?id=" + article.value.fileId
   webSocket.value = new WebSocket(wsuri)
   webSocket.value.onmessage = webSocketonmessage
   webSocket.value.onopen = websocketonopen
@@ -469,12 +538,16 @@ const initWebSocket = () => {
 
 // 数据接收
 const webSocketonmessage = (e) => {
-  const jsondata = e
-  console.log(jsondata)
+  // const jsondata = e
+  // console.log(jsondata)
+  // vditor.value.setValue(jsondata)
+  const websocket_data = JSON.parse(e.data)
+  console.log(websocket_data)
+  vditor.value.setValue(websocket_data.fileInclude)
 }
 
 //连接建立之后执行 send 方法发送数据
-const websocketonopen = () => { 
+const websocketonopen = () => {
   console.log('连接成功！')
 }
 
@@ -489,8 +562,11 @@ const websocketonclose = () => {
 }
 
 // 发送消息
-const sendcontent = (value) => {
-  webSocket.value.send(value)
+const sendcontent = (md) => {
+  webSocket.value.send(JSON.stringify({
+    fileId: article.value.fileId,
+    fileInclude: md
+  }))
 }
 
 

@@ -1,26 +1,19 @@
 <script setup>
 import { useUserStore } from '@/stores/userStore'
+import router from './router'
 const userStore = useUserStore()
-// const username = userStore.userInfo.username
+const username = userStore.userInfo.username
+
+import Navigator from '@/views/Team/components/Navigator.vue'
+
+const logout = () => {
+
+  router.push({name:'login'})
+}
 </script>
 
 <template>
-  <!-- 一级路由出口组件 -->
-  <el-menu
-    :default-active="activeIndex"
-    class="el-menu-demo"
-    mode="horizontal"
-    @select="handleSelect"
-    router
-  >
-    <el-menu-item index="/team">团队</el-menu-item>
-    <el-menu-item index="/project">项目</el-menu-item>
-    <el-menu-item index="message">消息中心</el-menu-item>
-    <el-menu-item index="/user">个人信息</el-menu-item>
-    <div class="hello">游客，您好</div>
-    <el-avatar :size="50" :src="circleUrl" style="margin-top: 5px;margin-left: 60%;"/>
-  </el-menu>
-  <div class="h-6" />
+  <!-- <Navigator></Navigator> -->
   <RouterView />
 </template>
 
@@ -95,6 +88,7 @@ nav a:first-of-type {
 .hello{
   position: absolute;
   margin-top: 18px;
-  margin-left: 92%;
+  margin-left: 87%;
 }
+
 </style>

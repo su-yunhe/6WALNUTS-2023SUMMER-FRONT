@@ -1,6 +1,7 @@
 <template>
   <div>
-    <el-card class="box-card teamcard">
+    <!-- <el-card class="box-card teamcard"> -->
+    <div class="box-card">
       <el-link
         type="primary"
         :underline="false"
@@ -10,7 +11,7 @@
       <span class="teamName">
         <el-text tag="b" size="large">{{ teamName }}</el-text>
       </span>
-      <span class="team-right">
+      <span id="typeIntro" class="team-right">
         <el-tag v-if="myType == 3" class="mx-1" size="large">成员</el-tag>
         <el-tag v-if="myType == 1" class="ml-2" size="large" type="warning"
           >创建者</el-tag
@@ -46,7 +47,7 @@
       </span>
       <div class="common-layout">
         <el-container>
-          <el-aside width="160px">
+          <el-aside width="160px" >
             <div class="teamNavigator">
               <el-radio-group
                 class="radio"
@@ -66,20 +67,21 @@
                 class="el-menu-vertical-demo"
                 :collapse="isCollapse"
                 router
+                background-color="rgba(255,255,255,0)"
               >
-                <el-menu-item index="/team/detail/member">
+                <el-menu-item id="memberIntro" index="/team/detail/member">
                   <el-icon><User /></el-icon>
                   <template #title>成员</template>
                 </el-menu-item>
-                <el-menu-item index="/team/detail/notice">
+                <el-menu-item id="noticeIntro" index="/team/detail/notice">
                   <el-icon><Memo /></el-icon>
                   <template #title>公告</template>
                 </el-menu-item>
-                <el-menu-item index="/team/detail/project">
+                <el-menu-item id="projectIntro" index="/project">
                   <el-icon><Suitcase /></el-icon>
                   <template #title>项目</template>
                 </el-menu-item>
-                <el-menu-item index="/team/detail/chat">
+                <el-menu-item id="chatIntro" index="/team/detail/chat">
                   <el-icon><ChatDotSquare /></el-icon>
                   <template #title>聊天</template>
                 </el-menu-item>
@@ -92,7 +94,8 @@
         </el-container>
       </div>
       <Dialogs ref="RefChild"></Dialogs>
-    </el-card>
+    <!-- </el-card> -->
+    </div>
   </div>
 </template>
 
@@ -139,8 +142,8 @@ const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 
-// const userId = userStore.userInfo.data.userid
-const userId = 1
+const userId = userStore.userInfo.userid
+
 const team_id = userStore.pages.teamId
 const teamName = ref('')
 const getName = () => {
@@ -151,6 +154,7 @@ const getName = () => {
     })
     .then((res) => {
       teamName.value = res.data.GroupName
+      console.log(teamName.value)
     })
 }
 
@@ -188,14 +192,23 @@ const backToTeam = () => {
   router.push({ name: 'team' })
 }
 
+const showNewUserIntro = () => {
+  const showIntro = userStore.pages.isNewUser[1]
+  if(showIntro){
+    userStore.handleStart()
+    userStore.pages.isNewUser[1] = false
+  }
+}
+
+onMounted(() => {
+  showNewUserIntro()
+})
+
 onBeforeMount(() => {
   getName()
   getType()
 })
 
-onMounted(() => {
-  userStore.pages.tabName = 'members'
-})
 </script>
 
 <style scoped>
@@ -210,8 +223,10 @@ onMounted(() => {
 .box-card {
   width: 100%;
   margin-top: 10px;
-  border-radius: 10px;
-  box-shadow: 3px 3px 10px #888888;
+  padding: 18px;
+  /* border-radius: 10px; */
+  /* box-shadow: 3px 3px 10px #888888; */
+  /* height: 100%; */
 }
 .teamName {
   position: absolute;
@@ -221,10 +236,10 @@ onMounted(() => {
 }
 .el-tab {
   margin-top: 20px;
-  height: 1000px;
+  height: 100%;
 }
 .teamcard {
-  height: 1000px;
+  height: 100%;
 }
 .team-right {
   float: right;
@@ -248,4 +263,5 @@ onMounted(() => {
 .radio {
   margin-left: 28px;
 }
+
 </style>

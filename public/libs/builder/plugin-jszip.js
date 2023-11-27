@@ -129,10 +129,11 @@ Vvveb.Gui.download =
       zip.file("index.html", html);
       zip.generateAsync({ type: "blob" })
         .then(function (content) {
-          saveAs(content, Vvveb.FileManager.getCurrentPage());
+          // saveAs(content, Vvveb.FileManager.getCurrentPage());
           console.log(Vvveb.FileManager.getCurrentPage());
-          document.getElementById("ss").innerHTML = html;
-          html2canvas(document.getElementById("ss")).then(function (canvas) {
+          var div = document.createElement('div');
+		      div.innerHTML = html;
+          html2canvas(div).then(function (canvas) {
             var a = document.createElement('a');
             a.href = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
             a.download = Vvveb.FileManager.getCurrentPage() + '.png';

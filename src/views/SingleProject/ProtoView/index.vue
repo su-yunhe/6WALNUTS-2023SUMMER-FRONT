@@ -2,22 +2,41 @@
   <el-card class="a11" style="width: 100%">
     <div v-for="item in paginatedData">
       <div class="card" style="float: left; width: 80%; margin-left: 40px">
-        <a class="card1" href="../../../public/demo/album/index.html">
-          <p style="font-size: 25px">{{ item.protoName }}</p>
+        <a class="card1" @click="view(item.protoInclude, item.is_vaild)">
+          <p style="font-size: 25px">文件名：{{ item.protoName }}</p>
           <br />
-          <p class="small">
-            Card description with lots of great facts and interesting details.
-          </p>
+          <p class="small">你说得对，但是【原型设计】</p>
 
           <div class="go-corner">
             <div class="go-arrow">→</div>
           </div>
         </a>
       </div>
-      <button style="float: left; margin-top: 40px">
-        开放预览
-        <div class="arrow-wrapper">
-          <div class="arrow"></div>
+      <button
+        @click="changeView(item.protoId)"
+        style="float: left; margin-top: 35px"
+        v-bind:class="{
+          red: item.is_vaild == true,
+          blue: item.is_vaild == false,
+        }"
+      >
+        <div
+          style="color: DarkSlateBlue"
+          v-bind:class="{
+            no: item.is_vaild == true,
+            ys: item.is_vaild == false,
+          }"
+        >
+          开放预览
+        </div>
+        <div
+          style="color: DarkSlateBlue"
+          v-bind:class="{
+            ys: item.is_vaild == true,
+            no: item.is_vaild == false,
+          }"
+        >
+          关闭预览
         </div>
       </button>
     </div>
@@ -33,37 +52,82 @@
   </div>
 </template>
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import httpInstance from "@/utils/http";
-const items = ref([]);
+import { ref, computed, onMounted, onBeforeMount } from 'vue'
+import httpInstance from '@/utils/http'
+import { useUserStore } from '@/stores/userStore'
+const userStore = useUserStore()
+const items = ref([])
 const getList = async () => {
   await httpInstance
-    .post("/page_get", {
-      workId: "5",
+    .post('/page_get', {
+      workId: userStore.pages.proId,
     })
     .then((res) => {
-      console.log(res.results);
-      items.value=res.results;
+      console.log(res.results)
+      items.value = res.results
       //url.value = res.results[0].protoInclude;
       // router.push({ path: '/project' })
-    });
-};
-console.log(items.value.length);
-const currentPage = ref(1);
-const pageSize = ref(5);
+    })
+}
+const currentPage = ref(1)
+const pageSize = ref(5)
 const paginatedData = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return items.value.slice(start, end);
-});
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return items.value.slice(start, end)
+})
 const handleCurrentChange = (newPage) => {
-  currentPage.value = newPage;
-};
-onMounted(() => {
-  getList();
-});
+  currentPage.value = newPage
+}
+const changeView = async (id) => {
+  console.log(id)
+  await httpInstance
+    .post('/change_page_vaild', {
+      protoId: id,
+    })
+    .then((res) => {
+      getList()
+    })
+}
+const view = async (d64, is) => {
+  // console.log(d64)
+  if (is) {
+    let myWindow = window.open('', '', 'width:100%,height:100%')
+    let myWindowDocument = myWindow.document
+    var img = new Image()
+    img.src = d64
+    myWindowDocument.body.appendChild(img)
+    myWindow.focus()
+  }
+}
+onMounted(async() => {
+  // getList()
+  await httpInstance
+    .post('/page_get', {
+      workId: 21,
+    })
+    .then((res) => {
+      console.log(1)
+      console.log(res.results)
+      items.value = res.results
+      //url.value = res.results[0].protoInclude;
+      // router.push({ path: '/project' })
+    })
+})
 </script>
 <style scoped>
+.ys {
+  display: '';
+}
+.no {
+  display: none;
+}
+.red {
+  background-color: white;
+}
+.blue {
+  background-color: pink;
+}
 .footer {
   height: 50px;
   display: flex;
@@ -115,7 +179,7 @@ onMounted(() => {
 }
 
 .card1:before {
-  content: "";
+  content: '';
   position: absolute;
   z-index: -1;
   top: -16px;
@@ -167,7 +231,7 @@ onMounted(() => {
 }
 
 .card2:before {
-  content: "";
+  content: '';
   position: absolute;
   z-index: -1;
   top: -16px;
@@ -267,68 +331,37 @@ onMounted(() => {
   opacity: 1;
 }
 
-button {
-  --primary-color: #645bff;
-  --secondary-color: #fff;
-  --hover-color: #111;
-  --arrow-width: 10px;
-  --arrow-stroke: 2px;
-  box-sizing: border-box;
-  border: 0;
-  border-radius: 20px;
-  color: var(--secondary-color);
-  padding: 1em 1.8em;
-  background: var(--primary-color);
-  display: flex;
-  transition: 0.2s background;
-  align-items: center;
-  gap: 0.6em;
-  font-weight: bold;
-}
-
-button .arrow-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-button .arrow {
-  margin-top: 1px;
-  width: var(--arrow-width);
-  background: var(--primary-color);
-  height: var(--arrow-stroke);
-  position: relative;
-  transition: 0.2s;
-}
-
-button .arrow::before {
-  content: "";
-  box-sizing: border-box;
-  position: absolute;
-  border: solid var(--secondary-color);
-  border-width: 0 var(--arrow-stroke) var(--arrow-stroke) 0;
-  display: inline-block;
-  top: -3px;
-  right: 3px;
-  transition: 0.2s;
-  padding: 3px;
-  transform: rotate(-45deg);
-}
-
-button:hover {
-  background-color: var(--hover-color);
-}
-
-button:hover .arrow {
-  background: var(--secondary-color);
-}
-
-button:hover .arrow:before {
-  right: 0;
-}
 .a11 {
-  background-image: url("@/assets/images/a11.jpg");
+  background-image: url('@/assets/images/a11.jpg');
   background-repeat: no-repeat;
   background-size: 100%, 100%;
+}
+button {
+  background-color: #eee;
+  border: none;
+  padding: 1rem;
+  font-size: 1rem;
+  width: 10em;
+  border-radius: 1rem;
+  color: lightcoral;
+  box-shadow: 0 0.4rem #dfd9d9;
+  cursor: pointer;
+}
+
+button:active {
+  color: white;
+  box-shadow: 0 0.2rem #dfd9d9;
+  transform: translateY(0.2rem);
+}
+
+button:hover:not(:disabled) {
+  background: lightcoral;
+  color: white;
+  text-shadow: 0 0.1rem #bcb4b4;
+}
+
+button:disabled {
+  cursor: auto;
+  color: grey;
 }
 </style>

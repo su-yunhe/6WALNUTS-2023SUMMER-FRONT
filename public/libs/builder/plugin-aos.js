@@ -190,9 +190,9 @@ var ComponentBaseAnimateScroll = {
 		name:false,
 		sort: base_sort++,
 		section: advanced_section,
-		data: {header:"Animate on scroll"},
+		data: {header:"滚动动画"},
 	}, {
-        name: "Animation type",
+        name: "动画类型",
         key: "type",
 		htmlAttr: "data-aos",
         sort: base_sort++,
@@ -222,7 +222,7 @@ var ComponentBaseAnimateScroll = {
 			options: aosEasing,
 		}*/
 	}, {
-        name: "Duration",
+        name: "持续时间",
         key: "duration",
 		htmlAttr: "data-aos-duration",
         sort: base_sort++,
@@ -235,7 +235,7 @@ var ComponentBaseAnimateScroll = {
 	   },
 	   defaultValue: 1000
 	}, {
-        name: "Delay",
+        name: "延迟",
         key: "delay",
 		htmlAttr: "data-aos-delay",
         sort: base_sort++,

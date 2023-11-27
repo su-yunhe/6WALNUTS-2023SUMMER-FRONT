@@ -6,8 +6,8 @@
           <el-page-header :icon="null"  @back="onBack()">
             <template #content>
               <div class="flex items-center">
-                <!-- <el-avatar :size="60" class="mr-3"
-                  src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" /> -->
+                <el-avatar :size="60" class="mr-3"
+                  src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
                 <span class="text-large font-600 mr-1"> 我的项目  > 新建项目 </span>
               </div>
             </template>
@@ -41,13 +41,16 @@
 import { ref, onMounted } from 'vue'
 import httpInstance from '@/utils/http'
 import { useRoute, useRouter } from "vue-router"
+import { useUserStore } from '@/stores/userStore'
+
+const userStore = useUserStore()
 
 const route = useRoute()
 const router = useRouter()
 const isDelete = ref(false)
 const newProject = ref({
   workName: '',
-  groupId: 6,
+  groupId: userStore.pages.teamId,
   leader: '',
   introduction: ''
 })
@@ -57,8 +60,13 @@ onMounted(() => {
 })
 
 const onSubmit = async () => {
-  console.log(newProject.value)
-  await httpInstance.post('/addwork', newProject.value).then(res => {
+  await httpInstance.post('/addwork', {
+    workName: newProject.value.workName,
+    groupId: userStore.pages.teamId,
+    leader: newProject.value.leader,
+    introduction: newProject.value.introduction
+
+  }).then(res => {
     console.log(res)
     router.push({ path: '/project' })
   })
